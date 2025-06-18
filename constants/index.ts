@@ -75,3 +75,13 @@ export const researchLinks = [
     underlined: true,
   },
 ]
+
+export const ImageWithDescriptionItems = [
+  {
+    image: "/assets/about-us.jpg",
+    alt: "About Us",
+    title: "من نحن",
+    description:
+      "نحن نؤمن بأن الكلمات لها القوة لتغيير العالم. نحن [اسم موقعك]، مكان يسعى لنقل الأخبار والقضايا الهامة بأسلوب متميز وإلهامي.",
+  },
+]

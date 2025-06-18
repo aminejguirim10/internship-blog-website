@@ -1,5 +1,4 @@
 import Link from "next/link"
-
 import Image from "next/image"
 import { Icons } from "@/components/shared/icons"
 import { navigationItems, navigationsIconsItems } from "@/constants"
