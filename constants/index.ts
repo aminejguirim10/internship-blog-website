@@ -92,3 +92,35 @@ export const ImageWithDescriptionItems = [
       "هل ترغب في مشاركة مهاراتك ككاتب مع مجتمعنا؟ نحن نبحث دائمًا عن مواهب جديدة لإثراء محتوانا. إذا كنت تمتلك شغفًا للكتابة وترغب في الانضمام إلى فريقنا، فنحن نرحب بك!",
   },
 ]
+
+export const fileTypes = {
+  "image/jpeg": [".jpeg", ".jpg"],
+  "image/png": [".png"],
+  "image/webp": [".webp"],
+  "image/gif": [".gif"],
+  "image/bmp": [".bmp"],
+  "image/svg+xml": [".svg"],
+  "image/tiff": [".tif", ".tiff"],
+  "image/x-icon": [".ico"],
+  "image/heif": [".heif"],
+  "image/heic": [".heic"],
+  "image/avif": [".avif"],
+}
+
+export const profileNavigationItems = [
+  {
+    href: "/profile",
+    label: "معلوماتي",
+    icon: Icons.user,
+  },
+  {
+    href: "/favorites",
+    label: "قائمة المفضلة",
+    icon: Icons.heart,
+  },
+  {
+    href: "/settings",
+    label: "إعدادات",
+    icon: Icons.settings,
+  },
+]

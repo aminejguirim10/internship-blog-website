@@ -8,7 +8,7 @@ export default function AuthLayout({
 }>) {
   return (
     <div>
-      <Navbar type="home" />
+      <Navbar />
       {children}
       <Footer />
     </div>

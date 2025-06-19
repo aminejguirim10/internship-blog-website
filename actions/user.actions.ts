@@ -8,7 +8,6 @@ import nodemailer from "nodemailer"
 export const updateUser = async (
   userId: string,
   name: string,
-  image: string,
   dateNaissance: string,
   phoneNumber: string
 ) => {
@@ -23,15 +22,37 @@ export const updateUser = async (
       },
       data: {
         name,
-        image,
         dateNaissance,
         phoneNumber,
       },
     })
-    revalidatePath("") // TODO:add path to revalidate
+    revalidatePath("/profile")
+    revalidatePath("/admin")
     return { message: "User updated successfully", status: 200 }
   } catch (error: any) {
     return { message: "Error updating user ", status: 500 }
+  }
+}
+
+export const updatePhoto = async (image: string) => {
+  const user = await checkUser()
+  if (!user) {
+    return { message: "User not authorized", status: 401 }
+  }
+  try {
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        image,
+      },
+    })
+    revalidatePath("/profile")
+    revalidatePath("/admin")
+    return { message: "Photo updated successfully", status: 200 }
+  } catch (error: any) {
+    return { message: "Error updating photo", status: 500 }
   }
 }
 

@@ -1,4 +1,4 @@
-import { Menu } from "lucide-react"
+import { Menu, User, Heart, Settings, LogOut } from "lucide-react"
 
 import { FaUser, FaPhoneAlt } from "react-icons/fa"
 
@@ -27,4 +27,8 @@ export const Icons = {
   phone: FaPhoneAlt,
   email: IoMdMail,
   location: FaLocationDot,
+  user: User,
+  heart: Heart,
+  settings: Settings,
+  logout: LogOut,
 }

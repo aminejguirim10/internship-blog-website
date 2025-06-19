@@ -8,7 +8,7 @@ export default function HomeLayout({
 }>) {
   return (
     <div>
-      <Navbar type="home" />
+      <Navbar />
       {children}
       <Footer />
     </div>

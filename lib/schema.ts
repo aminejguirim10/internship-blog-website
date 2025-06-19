@@ -20,3 +20,34 @@ export const contactSchema = z.object({
   subject: z.string().min(5, "الموضوع مطلوب").max(200, "الموضوع طويل جدا"),
   message: z.string().min(10, "الرسالة مطلوبة").max(1000, "الرسالة طويلة جدا"),
 })
+
+export const userSchema = z.object({
+  name: z.string().min(2, "الاسم مطلوب").max(50, "الاسم طويل جدا"),
+  email: z.string().email("البريد الإلكتروني غير صالح"),
+  phoneNumber: z
+    .string()
+    .optional()
+    .refine(
+      (value) => {
+        if (!value) return true
+        return /^[0-9]{10}$/.test(value)
+      },
+      {
+        message: "رقم الهاتف التركي غير صالح، يجب أن يحتوي على 10 أرقام",
+      }
+    ),
+
+  dateNaissance: z
+    .string()
+    .optional()
+    .refine(
+      (value) => {
+        if (!value) return true
+        return /^\d{4}-\d{2}-\d{2}$/.test(value) && !isNaN(Date.parse(value))
+      },
+      {
+        message:
+          "تاريخ الميلاد غير صالح، الرجاء استخدام التنسيق YYYY-MM-DD (مثال: 1990-08-15)",
+      }
+    ),
+})
