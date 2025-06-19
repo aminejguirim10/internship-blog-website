@@ -60,12 +60,12 @@ export const contactAdmin = async (
 
     await transporter.sendMail(mailOptions)
     return {
-      message: "Message sent successfully",
+      message: "تم إرسال الرسالة بنجاح",
       status: 200,
     }
   } catch (error: any) {
     return {
-      message: "Error sending message ",
+      message: "حدث خطأ أثناء إرسال الرسالة",
       status: 500,
     }
   }

@@ -9,6 +9,7 @@ import {
   UserButton,
 } from "@clerk/nextjs"
 import { arSA } from "@clerk/localizations"
+import { Toaster } from "@/components/ui/sonner"
 import "./globals.css"
 
 const geistSans = Geist({
@@ -40,7 +41,10 @@ export default function RootLayout({
   return (
     <ClerkProvider localization={arSA}>
       <html lang="en" dir="rtl">
-        <body className={`${poppins.variable} antialiased`}>{children}</body>
+        <body className={`${poppins.variable} antialiased`}>
+          {children}
+          <Toaster />
+        </body>
       </html>
     </ClerkProvider>
   )

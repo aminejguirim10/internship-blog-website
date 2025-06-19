@@ -11,7 +11,7 @@ const AboutUsPage = () => {
         image={image}
         title={title}
       />
-      <section className="flex flex-col gap-4 px-4 py-8 sm:px-6 md:gap-6 lg:px-8">
+      <section className="flex flex-col gap-4 px-4 py-8 sm:px-6 md:gap-6 md:py-10 lg:px-8">
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl font-bold">مهمتنا : </h2>
           <p className="md:text-xl">

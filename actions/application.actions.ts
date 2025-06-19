@@ -2,6 +2,7 @@
 
 import { checkAdmin } from "@/lib/auth"
 import { prisma } from "@/lib/db"
+import { revalidatePath } from "next/cache"
 import nodemailer from "nodemailer"
 
 export const createApplication = async (
@@ -40,13 +41,14 @@ export const createApplication = async (
     }
 
     await transporter.sendMail(mailOptions)
+    revalidatePath("/admin")
     return {
-      message: "Application created successfully",
+      message: "تم إنشاء الطلب بنجاح",
       status: 200,
     }
   } catch (error: any) {
     return {
-      message: "Error creating application ",
+      message: "حدث خطأ أثناء إنشاء الطلب",
       status: 500,
     }
   }
@@ -84,6 +86,7 @@ export const responseApplication = async (
     }
 
     await transporter.sendMail(mailOptions)
+    revalidatePath("/admin")
     return {
       message: `Application ${response.toLowerCase()}`,
       status: 200,
