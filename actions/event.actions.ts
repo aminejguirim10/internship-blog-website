@@ -8,7 +8,8 @@ export const createEvent = async (
   description: string,
   image: string,
   date: Date,
-  link: string
+  link: string,
+  hour: string
 ) => {
   const admin = checkAdmin()
   if (!admin) {
@@ -22,6 +23,7 @@ export const createEvent = async (
         image,
         date,
         link,
+        hour,
       },
     })
     return { message: "Event created successfully", status: 201 }
@@ -53,7 +55,8 @@ export const updateEvent = async (
   description: string,
   image: string,
   date: Date,
-  link: string
+  link: string,
+  hour: string
 ) => {
   const admin = checkAdmin()
   if (!admin) {
@@ -70,6 +73,7 @@ export const updateEvent = async (
         image,
         date,
         link,
+        hour,
       },
     })
     return { message: "Event updated successfully", status: 200 }

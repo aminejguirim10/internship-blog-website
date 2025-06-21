@@ -51,7 +51,7 @@ export default function ProfileSideBar() {
         <Button
           onClick={handleSignOut}
           variant="ghost"
-          className="flex w-full items-center justify-start gap-3 py-3 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700"
+          className="flex w-full cursor-pointer items-center justify-start gap-3 py-3 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700"
         >
           <Icons.logout className="mr-[6px] size-5" />
           <span>تسجيل خروج</span>

@@ -51,3 +51,16 @@ export const userSchema = z.object({
       }
     ),
 })
+
+export const blogSchema = z.object({
+  title: z
+    .string()
+    .min(5, "العنوان يجب أن يكون على الأقل 5 أحرف")
+    .max(100, "العنوان لا يجب أن يتجاوز 100 حرف"),
+  content: z.string().min(50, "المحتوى يجب أن يكون على الأقل 50 حرف"),
+  type: z.enum(["ARTICLE", "RECHERCHE", "RAPPORT"], {
+    required_error: "يرجى اختيار نوع المدونة",
+  }),
+  imageUrl: z.string().optional(),
+  tags: z.array(z.string()).optional().default([]),
+})

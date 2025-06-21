@@ -1,4 +1,21 @@
-import { Menu, User, Heart, Settings, LogOut } from "lucide-react"
+import {
+  Menu,
+  User,
+  Heart,
+  Settings,
+  LogOut,
+  Clock,
+  Plus,
+  X,
+  Tag,
+  Search,
+  Trash2,
+  Check,
+  Upload,
+  Save,
+  ImageIcon,
+  Loader2,
+} from "lucide-react"
 
 import { FaUser, FaPhoneAlt } from "react-icons/fa"
 
@@ -10,6 +27,8 @@ import {
   FaInstagram,
   FaFacebookF,
   FaLocationDot,
+  FaRegCalendar,
+  FaCloudArrowUp,
 } from "react-icons/fa6"
 import { TiSocialLinkedin } from "react-icons/ti"
 import { IoMdMail } from "react-icons/io"
@@ -31,4 +50,16 @@ export const Icons = {
   heart: Heart,
   settings: Settings,
   logout: LogOut,
+  calendar: FaRegCalendar,
+  clock: Clock,
+  plus: Plus,
+  x: X,
+  tag: Tag,
+  trash2: Trash2,
+  check: Check,
+  uploadImage: FaCloudArrowUp,
+  upload: Upload,
+  save: Save,
+  imageIcon: ImageIcon,
+  loader2: Loader2,
 }
