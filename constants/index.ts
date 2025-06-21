@@ -143,3 +143,51 @@ export const event = {
   date: "2023/09/27",
   hour: "14h",
 }
+
+export const data = {
+  user: {
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
+  },
+  navMain: [
+    {
+      title: "لوحة القيادة",
+      url: "/dashboard",
+      icon: Icons.layoutDashboard,
+    },
+    {
+      title: "المستخدمين",
+      url: "/dashboard/users",
+      icon: Icons.iconUsers,
+    },
+    {
+      title: "طلبات",
+      url: "/dashboard/applications",
+      icon: Icons.handHelping,
+    },
+    {
+      title: "فعاليات",
+      url: "/dashboard/events",
+      icon: Icons.calendar2,
+    },
+  ],
+
+  documents: [
+    {
+      name: "أبحاث",
+      url: "/dashboard/recherches",
+      icon: Icons.microscope,
+    },
+    {
+      name: "تقارير",
+      url: "/dashboard/rapports",
+      icon: Icons.iconReport,
+    },
+    {
+      name: "مقالات",
+      url: "/dashboard/articles",
+      icon: Icons.newspaper,
+    },
+  ],
+}

@@ -5,9 +5,6 @@ import { redirect } from "next/navigation"
 
 const WriteWithUsPage = async () => {
   const editor = await checkEditor()
-  if (!editor) {
-    redirect("/")
-  }
 
   return (
     <>

@@ -13,6 +13,19 @@ export const createApplication = async (
   exemple: string
 ) => {
   try {
+    const applicationExists = await prisma.application.findFirst({
+      where: {
+        email,
+      },
+    })
+
+    if (applicationExists) {
+      return {
+        message: "هذا البريد الإلكتروني مرتبط بالفعل بطلب سابق",
+        status: 400,
+      }
+    }
+
     const application = await prisma.application.create({
       data: {
         name,
@@ -91,6 +104,7 @@ export const responseApplication = async (
       message: `Application ${response.toLowerCase()}`,
       status: 200,
     }
+    //Todo: create the editor if response is ACCEPTED
   } catch (error: any) {
     return {
       message: "Error responding to application ",

@@ -48,6 +48,11 @@ const WriteWithUsForm = () => {
           toast.success("تم إرسال طلبك بنجاح! سنقوم بمراجعة مقالتك قريبًا.", {
             description: response.message,
           })
+        } else if (response.status === 400) {
+          form.reset()
+          toast.error("يوجد طلب سابق بهذا البريد الإلكتروني.", {
+            description: response.message,
+          })
         } else {
           toast.error("حدث خطأ أثناء إرسال طلبك. يرجى المحاولة مرة أخرى.", {
             description: response.message,
@@ -165,7 +170,7 @@ const WriteWithUsForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" disabled={loading}>
           {loading ? "جاري الإرسال..." : "إرسال"}
           {loading && (
             <svg

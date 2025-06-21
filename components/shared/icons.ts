@@ -15,6 +15,11 @@ import {
   Save,
   ImageIcon,
   Loader2,
+  Microscope,
+  Newspaper,
+  HandHelping,
+  Calendar,
+  LayoutDashboard,
 } from "lucide-react"
 
 import { FaUser, FaPhoneAlt } from "react-icons/fa"
@@ -32,6 +37,12 @@ import {
 } from "react-icons/fa6"
 import { TiSocialLinkedin } from "react-icons/ti"
 import { IoMdMail } from "react-icons/io"
+import {
+  IconReport,
+  IconUsers,
+  IconDotsVertical,
+  IconLogout,
+} from "@tabler/icons-react"
 
 export const Icons = {
   account: FaUser,
@@ -62,4 +73,14 @@ export const Icons = {
   save: Save,
   imageIcon: ImageIcon,
   loader2: Loader2,
+  layoutDashboard: LayoutDashboard,
+  microscope: Microscope,
+  newspaper: Newspaper,
+  handHelping: HandHelping,
+  calendar2: Calendar,
+  iconReport: IconReport,
+  iconUsers: IconUsers,
+  search: Search,
+  iconDotsVertical: IconDotsVertical,
+  iconLogout: IconLogout,
 }
