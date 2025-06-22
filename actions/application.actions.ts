@@ -54,7 +54,7 @@ export const createApplication = async (
     }
 
     await transporter.sendMail(mailOptions)
-    revalidatePath("/admin")
+    revalidatePath("/dashboard/applications")
     return {
       message: "تم إنشاء الطلب بنجاح",
       status: 200,
@@ -99,7 +99,7 @@ export const responseApplication = async (
     }
 
     await transporter.sendMail(mailOptions)
-    revalidatePath("/admin")
+    revalidatePath("/dashboard/applications")
     return {
       message: `Application ${response.toLowerCase()}`,
       status: 200,

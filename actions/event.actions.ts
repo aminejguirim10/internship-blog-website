@@ -2,6 +2,7 @@
 
 import { checkAdmin } from "@/lib/auth"
 import { prisma } from "@/lib/db"
+import { revalidatePath } from "next/cache"
 
 export const createEvent = async (
   title: string,
@@ -26,6 +27,7 @@ export const createEvent = async (
         hour,
       },
     })
+    revalidatePath("/dashboard/events")
     return { message: "Event created successfully", status: 201 }
   } catch (error: any) {
     return { message: "Error creating event ", status: 500 }
@@ -43,6 +45,7 @@ export const deleteEvent = async (eventId: string) => {
         id: eventId,
       },
     })
+    revalidatePath("/dashboard/events")
     return { message: "Event deleted successfully", status: 200 }
   } catch (error: any) {
     return { message: "Error deleting event ", status: 500 }
@@ -76,6 +79,7 @@ export const updateEvent = async (
         hour,
       },
     })
+    revalidatePath("/dashboard/events")
     return { message: "Event updated successfully", status: 200 }
   } catch (error: any) {
     return { message: "Error updating event ", status: 500 }

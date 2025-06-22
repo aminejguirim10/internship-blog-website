@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Icons } from "@/components/shared/icons"
 import { getFallback } from "@/lib/utils"
+import { useClerk } from "@clerk/nextjs"
 
 export function NavUser({
   user,
@@ -28,7 +29,7 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
-
+  const { signOut } = useClerk()
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -80,7 +81,10 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex items-center justify-end transition-colors duration-200 hover:cursor-pointer">
+            <DropdownMenuItem
+              className="flex items-center justify-end transition-colors duration-200 hover:cursor-pointer"
+              onClick={() => signOut({ redirectUrl: "/" })}
+            >
               تسجيل الخروج
               <Icons.iconLogout />
             </DropdownMenuItem>

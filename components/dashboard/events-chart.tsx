@@ -26,25 +26,44 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 const chartConfig = {
-  applications: {
-    label: "طلبات جديدة",
-    color: "hsl(var(--primary))",
+  events: {
+    label: "أحداث جديدة",
+    color: "var(--primary)",
   },
-  pending: {
-    label: "قيد المراجعة",
-    color: "hsl(var(--primary))",
+  upcoming: {
+    label: "أحداث قادمة",
+    color: "var(--primary)",
   },
 } satisfies ChartConfig
 
-interface ApplicationsChartProps {
+interface EventsChartProps {
   data: Array<{
     date: string
-    applications: number
-    pending: number
+    events: number
+    upcoming: number
   }>
 }
 
-export function ApplicationsChart({ data }: ApplicationsChartProps) {
+// Fonction pour remplir les jours manquants avec 0
+function fillMissingDates(
+  data: EventsChartProps["data"],
+  startDate: Date,
+  endDate: Date
+): EventsChartProps["data"] {
+  const result: EventsChartProps["data"] = []
+  const map = new Map(data.map((item) => [item.date, item]))
+  const current = new Date(startDate)
+
+  while (current <= endDate) {
+    const dateStr = current.toISOString().split("T")[0]
+    result.push(map.get(dateStr) ?? { date: dateStr, events: 0, upcoming: 0 })
+    current.setDate(current.getDate() + 1)
+  }
+
+  return result
+}
+
+export function EventsChart({ data }: EventsChartProps) {
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("30d")
 
@@ -54,29 +73,36 @@ export function ApplicationsChart({ data }: ApplicationsChartProps) {
     }
   }, [isMobile])
 
-  const filteredData = data.filter((item) => {
+  const referenceDate = new Date()
+  let daysToSubtract = 30
+  if (timeRange === "90d") {
+    daysToSubtract = 90
+  } else if (timeRange === "7d") {
+    daysToSubtract = 7
+  }
+  const startDate = new Date(referenceDate)
+  startDate.setDate(startDate.getDate() - daysToSubtract)
+
+  const filteredRawData = data.filter((item) => {
     const date = new Date(item.date)
-    const referenceDate = new Date()
-    let daysToSubtract = 30
-    if (timeRange === "90d") {
-      daysToSubtract = 90
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7
-    }
-    const startDate = new Date(referenceDate)
-    startDate.setDate(startDate.getDate() - daysToSubtract)
     return date >= startDate
   })
+
+  const filteredData = fillMissingDates(
+    filteredRawData,
+    startDate,
+    referenceDate
+  )
 
   return (
     <Card className="@container/card" dir="rtl">
       <CardHeader>
-        <CardTitle>نظرة عامة على الطلبات</CardTitle>
+        <CardTitle>نظرة عامة على الأحداث</CardTitle>
         <CardDescription>
           <span className="hidden @[540px]/card:block">
-            الطلبات الجديدة المستلمة عبر الوقت
+            الأحداث المجدولة عبر الوقت
           </span>
-          <span className="@[540px]/card:hidden">الجدول الزمني للطلبات</span>
+          <span className="@[540px]/card:hidden">الجدول الزمني للأحداث</span>
         </CardDescription>
         <div className="flex items-center gap-2">
           <ToggleGroup
@@ -119,15 +145,15 @@ export function ApplicationsChart({ data }: ApplicationsChartProps) {
         >
           <AreaChart data={filteredData}>
             <defs>
-              <linearGradient id="fillApplications" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillEvents" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
-                  stopColor="var(--color-applications)"
-                  stopOpacity={0.8}
+                  stopColor="var(--color-events)"
+                  stopOpacity={1.0}
                 />
                 <stop
                   offset="95%"
-                  stopColor="var(--color-applications)"
+                  stopColor="var(--color-events)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
@@ -163,11 +189,12 @@ export function ApplicationsChart({ data }: ApplicationsChartProps) {
               }
             />
             <Area
-              dataKey="applications"
-              type="natural"
-              fill="url(#fillApplications)"
-              stroke="var(--color-applications)"
+              dataKey="events"
+              type="monotone"
+              fill="url(#fillEvents)"
+              stroke="var(--color-events)"
               stackId="a"
+              connectNulls={true}
             />
           </AreaChart>
         </ChartContainer>

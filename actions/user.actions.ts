@@ -1,6 +1,6 @@
 "use server"
 
-import { checkUser } from "@/lib/auth"
+import { checkAdmin, checkUser } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { revalidatePath } from "next/cache"
 import nodemailer from "nodemailer"
@@ -27,7 +27,7 @@ export const updateUser = async (
       },
     })
     revalidatePath("/profile")
-    revalidatePath("/admin")
+
     return { message: "User updated successfully", status: 200 }
   } catch (error: any) {
     return { message: "Error updating user ", status: 500 }
@@ -49,10 +49,28 @@ export const updatePhoto = async (image: string) => {
       },
     })
     revalidatePath("/profile")
-    revalidatePath("/admin")
+
     return { message: "Photo updated successfully", status: 200 }
   } catch (error: any) {
     return { message: "Error updating photo", status: 500 }
+  }
+}
+
+export const deleteUser = async (userId: string) => {
+  const admin = await checkAdmin()
+  if (!admin) {
+    return { message: "Admin not authenticated", status: 401 }
+  }
+  try {
+    await prisma.user.delete({
+      where: {
+        id: userId,
+      },
+    })
+    revalidatePath("/dashboard/users")
+    return { message: "User deleted successfully", status: 200 }
+  } catch (error: any) {
+    return { message: "Error deleting user", status: 500 }
   }
 }
 

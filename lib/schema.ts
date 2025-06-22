@@ -64,3 +64,12 @@ export const blogSchema = z.object({
   imageUrl: z.string().optional(),
   tags: z.array(z.string()).optional().default([]),
 })
+
+export const eventSchema = z.object({
+  title: z.string().min(2, "عنوان الحدث مطلوب"),
+  description: z.string().min(10, "وصف الحدث مطلوب"),
+  date: z.string().min(1, "تاريخ الحدث مطلوب"),
+  hour: z.string().min(2, "وقت الحدث مطلوب"),
+  link: z.string().url("يجب أن يكون الرابط صحيحاً"),
+  imageUrl: z.string().optional(),
+})

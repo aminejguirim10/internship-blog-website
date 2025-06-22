@@ -53,7 +53,7 @@ export const deleteBlog = async (blogId: string) => {
   }
 }
 
-const responseBlog = async (
+export const responseBlog = async (
   idBlog: string,
   response: "ACCEPTED" | "REJECTED"
 ) => {

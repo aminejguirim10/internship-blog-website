@@ -1,19 +1,10 @@
-import { ApplicationsMetrics } from "@/components/v0/applications-metrics"
-import { ApplicationsChart } from "@/components/v0/applications-chart"
-import { ApplicationsTable } from "@/components/v0/applications-table"
-import {
-  getAllApplications,
-  getApplicationsChartData,
-  getApplicationsMetrics,
-} from "@/data/get-applications"
-
-export default async function ApplicationsPage() {
-  const [applications, metrics, chartData] = await Promise.all([
-    getAllApplications(),
-    getApplicationsMetrics(),
-    getApplicationsChartData(),
-  ])
-
+import { ApplicationsChartAsync } from "@/components/suspense/applications-chart-async"
+import { ChartSuspense } from "@/components/suspense/chart-suspense"
+import { TableSuspense } from "@/components/suspense/table-suspense"
+import { ApplicationsTableAsync } from "@/components/suspense/applications-table-async"
+import { MetricsSuspense } from "@/components/suspense/metrics-suspense"
+import { ApplicationsMetricsAsync } from "@/components/suspense/applications-metrics-async"
+export default function ApplicationsPage() {
   return (
     <div className="flex flex-1 flex-col">
       <div className="@container/main flex flex-1 flex-col gap-2 py-6">
@@ -29,11 +20,14 @@ export default async function ApplicationsPage() {
           </div>
 
           {/* Metrics Cards */}
-          <ApplicationsMetrics metrics={metrics} />
-
+          <MetricsSuspense>
+            <ApplicationsMetricsAsync />
+          </MetricsSuspense>
           {/* Chart */}
           <div className="px-4 lg:px-6">
-            <ApplicationsChart data={chartData} />
+            <ChartSuspense>
+              <ApplicationsChartAsync />
+            </ChartSuspense>
           </div>
 
           {/* Applications Table */}
@@ -44,7 +38,9 @@ export default async function ApplicationsPage() {
               </h2>
             </div>
             <div className="px-6">
-              <ApplicationsTable data={applications} />
+              <TableSuspense>
+                <ApplicationsTableAsync />
+              </TableSuspense>
             </div>
           </div>
         </div>

@@ -25,8 +25,9 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 }
 
 export function AppSidebar({ admin, ...props }: AppSidebarProps) {
+  //TODO: Hope to fixe the sidebar bug
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="offcanvas" {...props} className="bg-sidebar">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

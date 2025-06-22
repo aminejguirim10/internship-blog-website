@@ -1,0 +1,425 @@
+"use client"
+import { useState, useCallback, useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import { Plus, Calendar, Upload, X, Loader2, Save } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { toast } from "sonner"
+import { useDropzone } from "@uploadthing/react"
+import { useUploadThing } from "@/lib/uploadthing"
+import { createEvent } from "@/actions/event.actions"
+import { useRouter } from "next/navigation"
+import { fileTypes } from "@/constants"
+import { eventSchema } from "@/lib/schema"
+
+type EventFormData = z.infer<typeof eventSchema>
+
+export function CreateEventDialog() {
+  const [open, setOpen] = useState(false)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const router = useRouter()
+
+  const form = useForm<EventFormData>({
+    resolver: zodResolver(eventSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+      date: "",
+      hour: "",
+      link: "",
+      imageUrl: "",
+    },
+  })
+
+  const { setValue, reset } = form
+
+  // Configuration UploadThing
+  const { startUpload } = useUploadThing("imageUploader", {
+    onClientUploadComplete: async (res) => {
+      const uploadedUrl = res[0]?.url
+      if (uploadedUrl) {
+        setValue("imageUrl", uploadedUrl)
+        setImagePreview(uploadedUrl)
+        toast.success("تم رفع الصورة بنجاح!")
+      }
+      setIsUploading(false)
+    },
+    onUploadError: (error) => {
+      setIsUploading(false)
+      toast.error("حدث خطأ أثناء رفع الصورة. يرجى المحاولة مرة أخرى.")
+    },
+    onUploadBegin: () => {
+      setIsUploading(true)
+    },
+  })
+
+  // Function to handle file drop
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      const file = acceptedFiles[0]
+      if (!file) return
+
+      // Clean up the previous image preview URL if it's a blob
+      if (imagePreview && imagePreview.startsWith("blob:")) {
+        URL.revokeObjectURL(imagePreview)
+      }
+
+      // Create a new preview URL for the dropped file
+      const previewUrl = URL.createObjectURL(file)
+      setImagePreview(previewUrl)
+
+      // Start the upload process
+      startUpload([file])
+    },
+    [startUpload, imagePreview]
+  )
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: fileTypes,
+    maxFiles: 1,
+    multiple: false,
+    disabled: isUploading,
+  })
+
+  const removeImage = () => {
+    // Clean up the image preview URL if it's a blob
+    if (imagePreview && imagePreview.startsWith("blob:")) {
+      URL.revokeObjectURL(imagePreview)
+    }
+    setImagePreview(null)
+    setValue("imageUrl", "")
+  }
+
+  const resetForm = () => {
+    reset()
+    setImagePreview(null)
+    if (imagePreview && imagePreview.startsWith("blob:")) {
+      URL.revokeObjectURL(imagePreview)
+    }
+  }
+
+  const onSubmit = async (data: EventFormData) => {
+    setIsSubmitting(true)
+    try {
+      // Convert date string to Date object
+      const eventDate = new Date(data.date)
+
+      const response = await createEvent(
+        data.title,
+        data.description,
+        data.imageUrl || "",
+        eventDate,
+        data.link,
+        data.hour
+      )
+
+      if (response.status === 201) {
+        toast.success("تم إنشاء الحدث بنجاح!")
+        resetForm()
+        setOpen(false)
+        router.refresh()
+      } else {
+        toast.error("حدث خطأ أثناء إنشاء الحدث")
+      }
+    } catch (error: any) {
+      toast.error("حدث خطأ أثناء إنشاء الحدث")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  // Cleanup the image preview URL when the component unmounts
+  useEffect(() => {
+    return () => {
+      if (imagePreview && imagePreview.startsWith("blob:")) {
+        URL.revokeObjectURL(imagePreview)
+      }
+    }
+  }, [imagePreview])
+
+  // Disable fields when uploading or submitting
+  const fieldsDisabled = isUploading || isSubmitting
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button className="hover:cursor-pointer" variant={"default"}>
+          <Plus className="ml-2 h-4 w-4" />
+          إنشاء حدث جديد
+        </Button>
+      </DialogTrigger>
+      <DialogContent
+        className="max-h-[90vh] max-w-2xl overflow-y-auto"
+        dir="rtl"
+      >
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-2xl font-bold text-slate-900">
+            <div className="bg-secondary/30 rounded-lg p-2">
+              <Calendar className="text-primary h-6 w-6" />
+            </div>
+            إنشاء حدث جديد
+          </DialogTitle>
+        </DialogHeader>
+
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6 py-4"
+          >
+            {/* Title Field */}
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-semibold text-slate-700">
+                    عنوان الحدث
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="أدخل عنوان الحدث..."
+                      className="focus:ring-primary focus:border-primary h-12 border-slate-200"
+                      disabled={fieldsDisabled}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Description Field */}
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-semibold text-slate-700">
+                    وصف الحدث
+                  </FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder="أدخل وصف الحدث..."
+                      className="focus:ring-primary focus:border-primary min-h-[100px] border-slate-200"
+                      disabled={fieldsDisabled}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Date and Time Fields */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <FormField
+                control={form.control}
+                name="date"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-semibold text-slate-700">
+                      تاريخ الحدث
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="date"
+                        className="focus:ring-primary focus:border-primary h-12 border-slate-200"
+                        disabled={fieldsDisabled}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="hour"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-semibold text-slate-700">
+                      وقت الحدث
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="مثال: 14:30"
+                        className="focus:ring-primary focus:border-primary h-12 border-slate-200"
+                        disabled={fieldsDisabled}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Link Field */}
+            <FormField
+              control={form.control}
+              name="link"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-semibold text-slate-700">
+                    رابط الحدث
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="url"
+                      placeholder="https://example.com"
+                      className="focus:ring-primary focus:border-primary h-12 border-slate-200"
+                      disabled={fieldsDisabled}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Image Upload Field */}
+            <FormField
+              control={form.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-semibold text-slate-700">
+                    صورة الحدث (اختياري)
+                  </FormLabel>
+                  <FormControl>
+                    <div
+                      {...getRootProps()}
+                      className={`relative rounded-lg border-2 border-dashed p-6 text-center transition-colors ${
+                        isDragActive
+                          ? "border-primary bg-primary/10"
+                          : isUploading
+                            ? "border-primary/40 bg-primary/5"
+                            : "hover:border-primary/80 border-slate-300"
+                      } ${isUploading ? "cursor-not-allowed" : "cursor-pointer"}`}
+                    >
+                      <input {...getInputProps()} />
+
+                      {imagePreview ? (
+                        <div className="space-y-4">
+                          <div className="relative inline-block">
+                            <img
+                              src={imagePreview || "/placeholder.svg"} //Todo:event image placeholder
+                              alt="معاينة"
+                              className="mx-auto max-h-32 rounded-lg object-cover"
+                            />
+                            {isUploading && (
+                              <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/50">
+                                <div className="text-center text-white">
+                                  <Loader2 className="mx-auto h-6 w-6 animate-spin" />
+                                </div>
+                              </div>
+                            )}
+                            {!isUploading && (
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="sm"
+                                className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  removeImage()
+                                }}
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            )}
+                          </div>
+                          {!isUploading && (
+                            <p className="text-slate-600">
+                              انقر أو اسحب صورة جديدة لتغييرها
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          {isUploading ? (
+                            <>
+                              <Loader2 className="text-primary mx-auto h-8 w-8 animate-spin" />
+                              <p className="text-primary/70 font-medium">
+                                جاري رفع الصورة...
+                              </p>
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="mx-auto h-8 w-8 text-slate-400" />
+                              <div>
+                                <p className="text-primary font-medium">
+                                  انقر لرفع صورة أو اسحبها هنا
+                                </p>
+                                <p className="mt-1 text-sm text-slate-500">
+                                  PNG, JPG, GIF حتى 16 ميجابايت
+                                </p>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Submit Button */}
+            <div className="flex gap-3 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                disabled={fieldsDisabled}
+                className="flex-1 hover:cursor-pointer"
+              >
+                إلغاء
+              </Button>
+              <Button
+                type="submit"
+                disabled={fieldsDisabled}
+                className="flex-1 hover:cursor-pointer"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                    جاري الإنشاء...
+                  </>
+                ) : (
+                  <>
+                    <Save className="ml-2 h-4 w-4" />
+                    إنشاء الحدث
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  )
+}
