@@ -5,7 +5,7 @@ import { redirect } from "next/navigation"
 export async function getEvents(pageSize = 4) {
   const events = await prisma.event.findMany({
     orderBy: {
-      date: "asc",
+      date: "desc",
     },
     take: pageSize,
   })
@@ -20,7 +20,7 @@ export async function getAllEvents() {
 
   const events = await prisma.event.findMany({
     orderBy: {
-      date: "asc",
+      date: "desc",
     },
   })
 

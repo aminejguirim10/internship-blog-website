@@ -510,7 +510,7 @@ export default function RichTextEditor({
                     "#EE82EE",
                     "#90EE90",
                     "#FFB6C1",
-                    "#DDA0DD",
+                    "#FFA07A",
                   ].map((color) => (
                     <button
                       key={color}

@@ -77,7 +77,6 @@ export default function TagManager({
 
       toast.success("تم إنشاء العلامة بنجاح")
     } catch (error) {
-      console.error("خطأ في إنشاء العلامة:", error)
       toast.error("فشل في إنشاء العلامة")
     } finally {
       setIsCreating(false)
@@ -98,7 +97,6 @@ export default function TagManager({
 
       toast.success(`تم حذف العلامة "${tagToDelete?.name}" بنجاح`)
     } catch (error) {
-      console.error("خطأ في حذف العلامة:", error)
       toast.error("فشل في حذف العلامة")
     }
   }

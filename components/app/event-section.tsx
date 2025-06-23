@@ -2,14 +2,20 @@ import Image from "next/image"
 import { Icons } from "@/components/shared/icons"
 import Link from "next/link"
 import { Event } from "@prisma/client"
+import { getEvent } from "@/data/get-events"
+import { notFound } from "next/navigation"
 
 //Todo Fixe the type of event
-const EventSection = ({ event }: { event: any }) => {
+const EventSection = async ({ id }: { id: string }) => {
+  const event = (await getEvent(id)) as Event | null
+  if (!event) {
+    return notFound()
+  }
   return (
     <div className="relative flex flex-col gap-4 md:w-3/5 lg:w-[70%] xl:w-[75%]">
       <div className="relative h-[250px] w-full md:h-[350px]">
         <Image
-          src={event.image!}
+          src={event.image || "/assets/write-with-us.jpg"} //Todo: image default
           alt="image"
           width={2664}
           height={2000}
@@ -29,12 +35,13 @@ const EventSection = ({ event }: { event: any }) => {
       <div className="text-primary flex gap-8 px-4 font-semibold">
         <div className="flex items-center justify-center gap-2">
           <Icons.calendar className="size-6" />
-          {
-            /*event.date.toLocaleDateString("ar-Oman", {
-            year: "numeric",
-          })*/
-            event.date
-          }
+          {new Date(event.createdAt)
+            .toLocaleDateString("fr-FR", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            })
+            .replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3/$2/$1")}
         </div>
         <div className="flex items-center justify-center gap-2">
           <Icons.clock className="size-6" />

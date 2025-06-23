@@ -3,46 +3,26 @@ import { prisma } from "@/lib/db"
 import { redirect } from "next/navigation"
 import type { BlogType } from "@prisma/client"
 
-export async function getLatestRapports(pageSize = 6) {
-  const rapports = await prisma.blog.findMany({
+export async function getLatestBlogs(pageSize = 6, type: BlogType) {
+  const blogs = await prisma.blog.findMany({
     where: {
-      type: "RAPPORT",
+      type,
       status: "ACCEPTED",
     },
     orderBy: {
       createdAt: "desc",
     },
+    include: {
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
     take: pageSize,
   })
-  return rapports
-}
 
-export async function getLatestRecherches(pageSize = 6) {
-  const recherches = await prisma.blog.findMany({
-    where: {
-      type: "RECHERCHE",
-      status: "ACCEPTED",
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    take: pageSize,
-  })
-  return recherches
-}
-
-export async function getLatestArticles(pageSize = 6) {
-  const articles = await prisma.blog.findMany({
-    where: {
-      type: "ARTICLE",
-      status: "ACCEPTED",
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    take: pageSize,
-  })
-  return articles
+  return blogs
 }
 
 export async function getAllBlogsByType(type: BlogType) {
@@ -77,7 +57,7 @@ export async function getAllBlogsByType(type: BlogType) {
   return blogs
 }
 
-export async function getBlog(id: string) {
+export async function getBlog(id: string, type: BlogType) {
   const user = await checkUser()
   if (!user) {
     redirect("/sign-in")
@@ -87,8 +67,9 @@ export async function getBlog(id: string) {
     where: {
       id,
       status: "ACCEPTED",
+      type,
     },
-    select: {
+    include: {
       tags: true,
       author: {
         select: {
@@ -97,6 +78,21 @@ export async function getBlog(id: string) {
       },
     },
   })
+
+  await prisma.blogView.upsert({
+    where: {
+      blogId_userId: {
+        blogId: id,
+        userId: user.id,
+      },
+    },
+    update: {},
+    create: {
+      blogId: id,
+      userId: user.id,
+    },
+  })
+
   const viewsCount = await prisma.blogView.count({
     where: {
       blogId: id,
@@ -106,11 +102,22 @@ export async function getBlog(id: string) {
   return blog ? { ...blog, viewsCount } : null
 }
 
-export async function getMostViewedBlogs(pageSize = 3) {
+export async function getMostViewedBlogs(pageSize = 3, type: BlogType) {
   const blogs = await prisma.blog.findMany({
+    where: {
+      type,
+      status: "ACCEPTED",
+    },
     orderBy: {
       blogViews: {
         _count: "desc",
+      },
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+        },
       },
     },
     take: pageSize,
