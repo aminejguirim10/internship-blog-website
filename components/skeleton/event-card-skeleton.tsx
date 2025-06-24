@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export default function EventCardSkeleton() {
   return (
-    <div className="shadow-2xl">
+    <div className="rounded-2xl shadow-lg">
       <div className="relative h-[180px] w-full md:h-[250px]">
         {/* Image skeleton */}
         <Skeleton className="h-full w-full rounded-lg" />
