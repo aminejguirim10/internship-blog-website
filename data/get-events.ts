@@ -233,3 +233,45 @@ export async function getEventsChartData() {
     upcoming: data.upcoming,
   }))
 }
+
+export const filterEvents = async (
+  title: string | null,
+  page = 1,
+  pageSize = 10,
+  date: Date | null
+) => {
+  const where: any = {}
+
+  if (title) {
+    where.title = {
+      contains: title,
+      mode: "insensitive",
+    }
+  }
+
+  if (date) {
+    const startOfDay = new Date(date)
+    startOfDay.setHours(0, 0, 0, 0)
+
+    const endOfDay = new Date(date)
+    endOfDay.setHours(23, 59, 59, 999)
+
+    where.date = {
+      gte: startOfDay,
+      lte: endOfDay,
+    }
+  }
+
+  const totalCount = await prisma.event.count({ where })
+
+  const events = await prisma.event.findMany({
+    where,
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+    orderBy: {
+      date: "desc",
+    },
+  })
+
+  return { events, totalCount }
+}

@@ -1,0 +1,136 @@
+"use client"
+
+import { Checkbox } from "@/components/ui/checkbox"
+import { Calendar } from "@/components/ui/calendar"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useState, useEffect } from "react"
+import { Input } from "@/components/ui/input"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Button } from "@/components/ui/button"
+import { Calendar as CalendarIcon } from "lucide-react"
+import { types } from "@/constants"
+
+export default function SidebarFilters({
+  hasTypes,
+  isBlog,
+}: {
+  hasTypes: boolean
+  isBlog: boolean
+}) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const formatDateToLocal = (date: Date): string => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, "0")
+    const day = String(date.getDate()).padStart(2, "0")
+    return `${year}-${month}-${day}`
+  }
+
+  // Fonction pour parser une date depuis une string locale
+  const parseDateFromLocal = (dateString: string): Date => {
+    const [year, month, day] = dateString.split("-").map(Number)
+    return new Date(year, month - 1, day) // month - 1 car les mois commencent à 0
+  }
+
+  const [selectedType, setSelectedType] = useState(searchParams.get("type"))
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    searchParams.get("date")
+      ? parseDateFromLocal(searchParams.get("date")!)
+      : undefined
+  )
+  const [authorInput, setAuthorInput] = useState(
+    searchParams.get("author") || ""
+  )
+
+  // Debounce author input
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      const params = new URLSearchParams(searchParams)
+      if (authorInput) params.set("author", authorInput)
+      else params.delete("author")
+      params.set("page", "1")
+      router.replace(`?${params.toString()}`)
+    }, 400)
+    return () => clearTimeout(handler)
+  }, [authorInput])
+
+  // Update URL params on filter change
+  const updateParams = (key: string, value: string | undefined) => {
+    const params = new URLSearchParams(searchParams)
+    if (value) params.set(key, value)
+    else params.delete(key)
+    params.set("page", "1")
+    router.replace(`?${params.toString()}`)
+  }
+
+  return (
+    <aside className="h-fit w-96 p-4 max-lg:mr-4 lg:w-[160px] lg:border-r lg:border-r-gray-200 xl:w-64">
+      {hasTypes && (
+        <>
+          <div className="mb-6">
+            <div className="mb-2 font-bold">قسم :</div>
+            {types.map((type) => (
+              <div key={type.value} className="mb-2 flex items-center">
+                <Checkbox
+                  checked={selectedType === type.value}
+                  onCheckedChange={() => {
+                    setSelectedType(type.value)
+                    updateParams("type", type.value)
+                  }}
+                />
+                <span className="mr-2">{type.label}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mb-4 border border-gray-200" />
+        </>
+      )}
+      <div className="mb-6">
+        <div className="mb-2 font-bold">تاريخ :</div>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              className="w-full justify-between font-normal"
+            >
+              {selectedDate
+                ? `${String(selectedDate.getDate()).padStart(2, "0")}/${String(selectedDate.getMonth() + 1).padStart(2, "0")}/${selectedDate.getFullYear()}`
+                : "اختر التاريخ"}
+              <CalendarIcon className="ml-2 h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={selectedDate}
+              onSelect={(date) => {
+                setSelectedDate(date)
+                updateParams("date", date ? formatDateToLocal(date) : undefined)
+              }}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+      </div>
+      {isBlog && (
+        <>
+          <div className="mb-4 border border-gray-200" />
+          <div>
+            <div className="mb-2 font-bold">كاتب :</div>
+            <Input
+              type="text"
+              placeholder="اسم الكاتب"
+              value={authorInput}
+              onChange={(e) => setAuthorInput(e.target.value)}
+            />
+          </div>
+        </>
+      )}
+    </aside>
+  )
+}

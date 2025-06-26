@@ -26,7 +26,7 @@ const BlogCard = ({
             منشورات
           </div>
         </div>
-        <h2 className="text-primary pr-2 font-bold">{blog.title}</h2>
+        <h2 className="text-primary truncate pr-2 font-bold">{blog.title}</h2>
         <div
           className="prose prose-slate line-clamp-3 max-w-none pr-2 text-sm leading-relaxed text-gray-500"
           dangerouslySetInnerHTML={{ __html: blog.content }}

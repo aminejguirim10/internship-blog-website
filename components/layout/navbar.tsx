@@ -80,7 +80,7 @@ export default function Navbar() {
         </div>
       </div>
       <div className="bg-primary h-16">
-        <div className="hidden h-full justify-center md:flex md:gap-6 lg:gap-12">
+        <div className="hidden h-full justify-center md:flex md:gap-4 lg:gap-10">
           {navigationItems.map((item, index) => (
             <Link
               key={index}

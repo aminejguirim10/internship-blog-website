@@ -55,7 +55,7 @@ export default function HomePage() {
         <HomeLatestBlogs path="recherches" size={6} type="RECHERCHE" />
       </Suspense>
       <Write />
-      <div>
+      <div className="py-8">
         <div className="flex justify-center">
           <div className="bg-primary rounded-t-2xl px-6 py-1 font-semibold text-white">
             أخر تقارير

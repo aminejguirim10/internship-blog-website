@@ -5,6 +5,7 @@ export const navigationItems = [
   { label: "أبحاث", href: "/recherches" },
   { label: "مقالات", href: "/articles" },
   { label: "تقارير", href: "/rapports" },
+  { label: "بحث متقدم", href: "/search" },
   { label: "اكتب معنا", href: "/write-with-us" },
   { label: "من نحن", href: "/about-us" },
   { label: "فعاليات", href: "/events" },
@@ -132,14 +133,9 @@ export const profileNavigationItems = [
     icon: Icons.user,
   },
   {
-    href: "/favorites",
-    label: "قائمة المفضلة",
-    icon: Icons.heart,
-  },
-  {
-    href: "/settings",
-    label: "إعدادات",
-    icon: Icons.settings,
+    href: "/my-blogs",
+    label: "قائمة مدوناتي",
+    icon: Icons.notbook,
   },
 ]
 
@@ -215,4 +211,10 @@ export const faqItems = [
     answer:
       "نعم، نحن نحرص على الرد السريع على جميع الاستفسارات والمساعدة في أقرب وقت ممكن.",
   },
+]
+
+export const types = [
+  { label: "مقالات", value: "ARTICLE" },
+  { label: "أبحاث", value: "RECHERCHE" },
+  { label: "تقارير", value: "RAPPORT" },
 ]

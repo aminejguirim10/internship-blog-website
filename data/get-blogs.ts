@@ -273,12 +273,12 @@ export async function getBlogChartData(type: BlogType) {
 }
 
 export const filterBlogs = async (
-  title: string,
-  type: "RAPPORT" | "RECHERCHE" | "ARTICLE",
+  title: string | null,
+  type: "RAPPORT" | "RECHERCHE" | "ARTICLE" | null,
   page = 1,
   pageSize = 10,
-  date: Date | null = null,
-  authorName: string | null = null
+  date: Date | null,
+  authorName: string | null
 ) => {
   const where: any = {
     type,
@@ -313,6 +313,9 @@ export const filterBlogs = async (
       },
     }
   }
+
+  const totalCount = await prisma.blog.count({ where })
+
   const blogs = await prisma.blog.findMany({
     where,
     skip: (page - 1) * pageSize,
@@ -327,5 +330,51 @@ export const filterBlogs = async (
     },
   })
 
-  return blogs
+  return { blogs, totalCount }
+}
+
+export const getBlogsByAuthor = async (
+  authorId: string,
+  page = 1,
+  pageSize = 6,
+  type?: BlogType
+) => {
+  const user = await checkUser()
+  if (!user) {
+    redirect("/sign-in")
+  }
+
+  const where: any = {
+    authorId,
+    status: "ACCEPTED",
+  }
+
+  if (type) {
+    where.type = type
+  }
+
+  const totalCount = await prisma.blog.count({ where })
+
+  const blogs = await prisma.blog.findMany({
+    where,
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  })
+
+  return {
+    blogs,
+    totalCount,
+    hasMore: page * pageSize < totalCount,
+    nextPage: page * pageSize < totalCount ? page + 1 : null,
+  }
 }

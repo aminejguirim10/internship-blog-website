@@ -22,6 +22,7 @@ import {
   LayoutDashboard,
   Eye,
   Pencil,
+  Notebook,
 } from "lucide-react"
 
 import { FaUser, FaPhoneAlt } from "react-icons/fa"
@@ -87,4 +88,5 @@ export const Icons = {
   iconLogout: IconLogout,
   eye: Eye,
   pencil: Pencil,
+  notbook: Notebook,
 }
