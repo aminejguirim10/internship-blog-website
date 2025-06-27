@@ -16,7 +16,6 @@ interface BlogMetrics {
   newBlogsThisMonth: number
   acceptedBlogs: number
   pendingBlogs: number
-  rejectedBlogs: number
   totalViews: number
   monthlyGrowth: number
   acceptanceRate: number

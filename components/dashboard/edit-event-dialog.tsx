@@ -430,14 +430,14 @@ export function EditEventDialog({
                 variant="outline"
                 onClick={() => setOpen(false)}
                 disabled={fieldsDisabled}
-                className="flex-1"
+                className="flex-1 hover:cursor-pointer"
               >
                 إلغاء
               </Button>
               <Button
                 type="submit"
                 disabled={fieldsDisabled}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:cursor-pointer hover:from-blue-700 hover:to-blue-800"
               >
                 {isSubmitting ? (
                   <>

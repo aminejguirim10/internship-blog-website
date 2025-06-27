@@ -424,7 +424,7 @@ const columns: ColumnDef<Event>[] = [
                   trigger={
                     <Button
                       variant="outline"
-                      className="w-full border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 transition-all duration-200 hover:scale-[1.02] hover:from-blue-100 hover:to-blue-200 hover:shadow-md sm:w-auto"
+                      className="w-full border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100 text-blue-700 transition-all duration-200 hover:scale-[1.02] hover:cursor-pointer hover:from-blue-100 hover:to-blue-200 hover:shadow-md sm:w-auto"
                     >
                       <Edit className="mr-2 h-4 w-4" />
                       تعديل الحدث
@@ -436,7 +436,7 @@ const columns: ColumnDef<Event>[] = [
                   <AlertDialogTrigger asChild>
                     <Button
                       variant="outline"
-                      className="w-full border-red-200 bg-gradient-to-r from-red-50 to-red-100 text-red-700 transition-all duration-200 hover:scale-[1.02] hover:from-red-100 hover:to-red-200 hover:shadow-md sm:w-auto"
+                      className="w-full border-red-200 bg-gradient-to-r from-red-50 to-red-100 text-red-700 transition-all duration-200 hover:scale-[1.02] hover:cursor-pointer hover:from-red-100 hover:to-red-200 hover:shadow-md sm:w-auto"
                       disabled={isDeleting}
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
@@ -464,10 +464,12 @@ const columns: ColumnDef<Event>[] = [
                       </div>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                      <AlertDialogCancel className="hover:cursor-pointer">
+                        إلغاء
+                      </AlertDialogCancel>
                       <AlertDialogAction
                         onClick={handleDelete}
-                        className="bg-red-600 hover:bg-red-700"
+                        className="bg-red-600 hover:cursor-pointer hover:bg-red-700"
                         disabled={isDeleting}
                       >
                         {isDeleting ? (

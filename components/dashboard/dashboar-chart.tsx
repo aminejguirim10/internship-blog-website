@@ -24,63 +24,39 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import type { BlogType } from "@prisma/client"
 
 const chartConfig = {
   blogs: {
-    label: "محتوى جديد",
-    color: "var(--primary)",
+    label: "المحتوى",
+    color: "hsl(221, 83%, 53%)", // Blue
+  },
+  events: {
+    label: "الأحداث",
+    color: "hsl(142, 76%, 36%)", // Green
+  },
+  applications: {
+    label: "الطلبات",
+    color: "hsl(25, 95%, 53%)", // Orange
+  },
+  users: {
+    label: "المستخدمون",
+    color: "hsl(271, 81%, 56%)", // Purple
   },
 } satisfies ChartConfig
 
-interface BlogChartProps {
+interface DashboardChartProps {
   data: Array<{
     date: string
     blogs: number
+    events: number
+    applications: number
+    users: number
   }>
-  type: BlogType
 }
 
-const getTypeLabel = (type: BlogType) => {
-  switch (type) {
-    case "ARTICLE":
-      return "المقالات"
-    case "RAPPORT":
-      return "التقارير"
-    case "RECHERCHE":
-      return "البحوث"
-    default:
-      return "المحتوى"
-  }
-}
-
-// Remplir les jours manquants avec des valeurs 0
-function fillMissingDates(
-  data: BlogChartProps["data"],
-  startDate: Date,
-  endDate: Date
-): BlogChartProps["data"] {
-  const filledData: BlogChartProps["data"] = []
-  const map = new Map(data.map((item) => [item.date, item]))
-
-  const current = new Date(startDate)
-  while (current <= endDate) {
-    const dateStr = current.toISOString().split("T")[0]
-    if (map.has(dateStr)) {
-      filledData.push(map.get(dateStr)!)
-    } else {
-      filledData.push({ date: dateStr, blogs: 0 })
-    }
-    current.setDate(current.getDate() + 1)
-  }
-
-  return filledData
-}
-
-export function BlogChart({ data, type }: BlogChartProps) {
+export function DashboardChart({ data }: DashboardChartProps) {
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("30d")
-  const typeLabel = getTypeLabel(type)
 
   React.useEffect(() => {
     if (isMobile) {
@@ -88,38 +64,29 @@ export function BlogChart({ data, type }: BlogChartProps) {
     }
   }, [isMobile])
 
-  const referenceDate = new Date()
-  let daysToSubtract = 30
-  if (timeRange === "90d") {
-    daysToSubtract = 90
-  } else if (timeRange === "7d") {
-    daysToSubtract = 7
-  }
-  const startDate = new Date(referenceDate)
-  startDate.setDate(startDate.getDate() - daysToSubtract)
-
-  const filteredRawData = data.filter((item) => {
+  const filteredData = data.filter((item) => {
     const date = new Date(item.date)
+    const referenceDate = new Date()
+    let daysToSubtract = 30
+    if (timeRange === "90d") {
+      daysToSubtract = 90
+    } else if (timeRange === "7d") {
+      daysToSubtract = 7
+    }
+    const startDate = new Date(referenceDate)
+    startDate.setDate(startDate.getDate() - daysToSubtract)
     return date >= startDate
   })
-
-  const filteredData = fillMissingDates(
-    filteredRawData,
-    startDate,
-    referenceDate
-  )
 
   return (
     <Card className="@container/card" dir="rtl">
       <CardHeader>
-        <CardTitle>نظرة عامة على {typeLabel}</CardTitle>
+        <CardTitle>نظرة عامة على النشاط</CardTitle>
         <CardDescription>
           <span className="hidden @[540px]/card:block">
-            {typeLabel} المنشورة عبر الوقت
+            إحصائيات شاملة لجميع أقسام النظام عبر الوقت
           </span>
-          <span className="@[540px]/card:hidden">
-            الجدول الزمني لـ{typeLabel}
-          </span>
+          <span className="@[540px]/card:hidden">نشاط النظام العام</span>
         </CardDescription>
         <div className="flex items-center gap-2">
           <ToggleGroup
@@ -166,11 +133,47 @@ export function BlogChart({ data, type }: BlogChartProps) {
                 <stop
                   offset="5%"
                   stopColor="var(--color-blogs)"
-                  stopOpacity={1.0}
+                  stopOpacity={0.8}
                 />
                 <stop
                   offset="95%"
                   stopColor="var(--color-blogs)"
+                  stopOpacity={0.1}
+                />
+              </linearGradient>
+              <linearGradient id="fillEvents" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor="var(--color-events)"
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="var(--color-events)"
+                  stopOpacity={0.1}
+                />
+              </linearGradient>
+              <linearGradient id="fillApplications" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor="var(--color-applications)"
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="var(--color-applications)"
+                  stopOpacity={0.1}
+                />
+              </linearGradient>
+              <linearGradient id="fillUsers" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor="var(--color-users)"
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="var(--color-users)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
@@ -207,11 +210,35 @@ export function BlogChart({ data, type }: BlogChartProps) {
             />
             <Area
               dataKey="blogs"
-              type="monotone"
+              type="natural"
               fill="url(#fillBlogs)"
               stroke="var(--color-blogs)"
+              strokeWidth={2}
               stackId="a"
-              connectNulls={true}
+            />
+            <Area
+              dataKey="events"
+              type="natural"
+              fill="url(#fillEvents)"
+              stroke="var(--color-events)"
+              strokeWidth={2}
+              stackId="b"
+            />
+            <Area
+              dataKey="applications"
+              type="natural"
+              fill="url(#fillApplications)"
+              stroke="var(--color-applications)"
+              strokeWidth={2}
+              stackId="c"
+            />
+            <Area
+              dataKey="users"
+              type="natural"
+              fill="url(#fillUsers)"
+              stroke="var(--color-users)"
+              strokeWidth={2}
+              stackId="d"
             />
           </AreaChart>
         </ChartContainer>

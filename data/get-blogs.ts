@@ -187,10 +187,6 @@ export async function getBlogMetrics(type: BlogType) {
     where: { type, status: "PENDING" },
   })
 
-  const rejectedBlogs = await prisma.blog.count({
-    where: { type, status: "REJECTED" },
-  })
-
   // Total views for this type
   const totalViews = await prisma.blogView.count({
     where: {
@@ -207,7 +203,6 @@ export async function getBlogMetrics(type: BlogType) {
     newBlogsThisMonth,
     acceptedBlogs,
     pendingBlogs,
-    rejectedBlogs,
     totalViews,
     monthlyGrowth: Math.round(monthlyGrowth * 100) / 100,
     acceptanceRate,
@@ -242,7 +237,7 @@ export async function getBlogChartData(type: BlogType) {
 
   // Grouper les blogs par date
   const chartData: {
-    [key: string]: { blogs: number; accepted: number }
+    [key: string]: { blogs: number }
   } = {}
 
   // Initialiser les 90 derniers jours avec des valeurs 0
@@ -250,7 +245,7 @@ export async function getBlogChartData(type: BlogType) {
     const date = new Date()
     date.setDate(date.getDate() - i)
     const dateKey = date.toISOString().split("T")[0]
-    chartData[dateKey] = { blogs: 0, accepted: 0 }
+    chartData[dateKey] = { blogs: 0 }
   }
 
   // Compter les blogs par jour
@@ -258,9 +253,6 @@ export async function getBlogChartData(type: BlogType) {
     const dateKey = blog.createdAt.toISOString().split("T")[0]
     if (chartData[dateKey]) {
       chartData[dateKey].blogs++
-      if (blog.status === "ACCEPTED") {
-        chartData[dateKey].accepted++
-      }
     }
   })
 
@@ -268,7 +260,6 @@ export async function getBlogChartData(type: BlogType) {
   return Object.entries(chartData).map(([date, data]) => ({
     date,
     blogs: data.blogs,
-    accepted: data.accepted,
   }))
 }
 

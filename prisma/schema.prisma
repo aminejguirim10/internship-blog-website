@@ -53,7 +53,7 @@ model Blog {
 model Tag {
   id     String  @id @default(cuid())
   name   String
-  Blog   Blog?   @relation(fields: [blogId], references: [id])
+  Blog   Blog?   @relation(fields: [blogId], references: [id], onDelete: Cascade)
   blogId String?
 
   @@map("tags")
@@ -61,9 +61,9 @@ model Tag {
 
 model BlogView {
   id        String   @id @default(cuid())
-  blog      Blog     @relation(fields: [blogId], references: [id])
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
   blogId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   createdAt DateTime @default(now())
 

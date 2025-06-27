@@ -155,7 +155,7 @@ export async function getUsersChartData() {
 
   // Grouper les users par date
   const chartData: {
-    [key: string]: { users: number; active: number }
+    [key: string]: { users: number }
   } = {}
 
   // Initialiser les 90 derniers jours avec des valeurs 0
@@ -163,7 +163,7 @@ export async function getUsersChartData() {
     const date = new Date()
     date.setDate(date.getDate() - i)
     const dateKey = date.toISOString().split("T")[0]
-    chartData[dateKey] = { users: 0, active: 0 }
+    chartData[dateKey] = { users: 0 }
   }
 
   // Compter les users par jour
@@ -171,10 +171,6 @@ export async function getUsersChartData() {
     const dateKey = user.createdAt.toISOString().split("T")[0]
     if (chartData[dateKey]) {
       chartData[dateKey].users++
-      // Simuler l'activité (les admins et éditeurs sont considérés comme actifs)
-      if (user.role === "ADMIN" || user.role === "EDITOR") {
-        chartData[dateKey].active++
-      }
     }
   })
 
@@ -182,6 +178,5 @@ export async function getUsersChartData() {
   return Object.entries(chartData).map(([date, data]) => ({
     date,
     users: data.users,
-    active: data.active,
   }))
 }

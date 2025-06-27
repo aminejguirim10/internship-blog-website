@@ -36,7 +36,6 @@ interface UsersChartProps {
   data: Array<{
     date: string
     users: number
-    active: number
   }>
 }
 

@@ -158,7 +158,7 @@ export async function getApplicationsMetrics() {
     recentApplications,
     oldApplications,
     monthlyGrowth: Math.round(monthlyGrowth * 100) / 100,
-    averageAge: averageAge > 0 ? `${averageAge} days` : "< 1 day",
+    averageAge: averageAge > 0 ? `${averageAge} أيام` : "< يوم واحد",
     processingRate: Math.round(processingRate * 100) / 100,
   }
 }
@@ -189,7 +189,7 @@ export async function getApplicationsChartData() {
 
   // Grouper les applications par date
   const chartData: {
-    [key: string]: { applications: number; pending: number }
+    [key: string]: { applications: number }
   } = {}
 
   // Initialiser les 90 derniers jours avec des valeurs 0
@@ -197,7 +197,7 @@ export async function getApplicationsChartData() {
     const date = new Date()
     date.setDate(date.getDate() - i)
     const dateKey = date.toISOString().split("T")[0]
-    chartData[dateKey] = { applications: 0, pending: 0 }
+    chartData[dateKey] = { applications: 0 }
   }
 
   // Compter les applications par jour
@@ -205,7 +205,6 @@ export async function getApplicationsChartData() {
     const dateKey = app.createdAt.toISOString().split("T")[0]
     if (chartData[dateKey]) {
       chartData[dateKey].applications++
-      chartData[dateKey].pending++ // Toutes sont en attente
     }
   })
 
@@ -213,6 +212,5 @@ export async function getApplicationsChartData() {
   return Object.entries(chartData).map(([date, data]) => ({
     date,
     applications: data.applications,
-    pending: data.pending,
   }))
 }

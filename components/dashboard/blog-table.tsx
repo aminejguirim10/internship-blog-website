@@ -352,7 +352,7 @@ export function BlogTable({ data, type }: BlogTableProps) {
               toast.success("✅ تم حذف المحتوى بنجاح")
               router.refresh()
             } else {
-              toast.error("❌ فشل في حذف المحتوى")
+              toast.error("❌ فشل في حذف المحتوى" + response.message)
             }
           } catch (error) {
             toast.error("❌ حدث خطأ")
@@ -419,10 +419,12 @@ export function BlogTable({ data, type }: BlogTableProps) {
                     </div>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                    <AlertDialogCancel className="hover:cursor-pointer">
+                      إلغاء
+                    </AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleDelete}
-                      className="bg-red-600 hover:bg-red-700"
+                      className="bg-red-600 hover:cursor-pointer hover:bg-red-700"
                       disabled={isDeleting}
                     >
                       {isDeleting ? (

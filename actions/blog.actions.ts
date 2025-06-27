@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db"
 import { checkAdmin, checkEditor } from "@/lib/auth"
 
 import { BlogType } from "@prisma/client"
+import { revalidatePath } from "next/cache"
 
 export const createBlog = async (
   title: string,
@@ -47,6 +48,7 @@ export const deleteBlog = async (blogId: string) => {
         id: blogId,
       },
     })
+    revalidatePath("/dashboard")
     return { message: "Blog deleted successfully", status: 200 }
   } catch (error: any) {
     return { message: "Error deleting blog", status: 500 }

@@ -67,7 +67,7 @@ export const deleteUser = async (userId: string) => {
         id: userId,
       },
     })
-    revalidatePath("/dashboard/users")
+    revalidatePath("/dashboard")
     return { message: "User deleted successfully", status: 200 }
   } catch (error: any) {
     return { message: "Error deleting user", status: 500 }

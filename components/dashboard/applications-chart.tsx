@@ -29,17 +29,12 @@ const chartConfig = {
     label: "طلبات جديدة",
     color: "var(--primary)",
   },
-  pending: {
-    label: "قيد المراجعة",
-    color: "var(--primary)",
-  },
 } satisfies ChartConfig
 
 interface ApplicationsChartProps {
   data: Array<{
     date: string
     applications: number
-    pending: number
   }>
 }
 
@@ -55,9 +50,7 @@ function fillMissingDates(
   const current = new Date(startDate)
   while (current <= endDate) {
     const dateStr = current.toISOString().split("T")[0]
-    filledData.push(
-      dataMap.get(dateStr) ?? { date: dateStr, applications: 0, pending: 0 }
-    )
+    filledData.push(dataMap.get(dateStr) ?? { date: dateStr, applications: 0 })
     current.setDate(current.getDate() + 1)
   }
 

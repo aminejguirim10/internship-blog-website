@@ -41,7 +41,7 @@ export function ApplicationsMetrics({ metrics }: ApplicationMetricsProps) {
         <div className="absolute top-0 right-0 h-20 w-20 translate-x-10 -translate-y-10 rounded-full bg-gradient-to-br from-blue-500/10 to-purple-500/10"></div>
         <CardHeader className="relative pb-3">
           <CardDescription className="text-xs font-medium tracking-wide text-blue-600/70 uppercase">
-            Total Pending
+            المجموع الكلي للطلبات المعلقة
           </CardDescription>
           <CardTitle className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-3xl font-bold text-transparent tabular-nums sm:text-4xl">
             {metrics.totalApplications.toLocaleString()}
@@ -64,12 +64,10 @@ export function ApplicationsMetrics({ metrics }: ApplicationMetricsProps) {
         <CardFooter className="pt-0">
           <div className="flex flex-col gap-1 text-xs">
             <div className="flex items-center gap-1 font-medium text-gray-700">
-              {growthIsPositive
-                ? "📈 Growing this month"
-                : "📉 Declining this month"}
+              {growthIsPositive ? "📈 تزايد هذا الشهر" : "📉 انخفاض هذا الشهر"}
             </div>
             <div className="text-muted-foreground">
-              Applications awaiting review
+              الطلبات في انتظار المراجعة
             </div>
           </div>
         </CardFooter>
@@ -79,7 +77,7 @@ export function ApplicationsMetrics({ metrics }: ApplicationMetricsProps) {
         <div className="absolute top-0 right-0 h-20 w-20 translate-x-10 -translate-y-10 rounded-full bg-gradient-to-br from-green-500/10 to-emerald-500/10"></div>
         <CardHeader className="relative pb-3">
           <CardDescription className="text-xs font-medium tracking-wide text-green-600/70 uppercase">
-            New This Month
+            جديد هذا الشهر
           </CardDescription>
           <CardTitle className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-3xl font-bold text-transparent tabular-nums sm:text-4xl">
             {metrics.newApplicationsThisMonth}
@@ -90,17 +88,17 @@ export function ApplicationsMetrics({ metrics }: ApplicationMetricsProps) {
               className="flex items-center gap-1 border-green-200 bg-green-50 text-xs text-green-700"
             >
               <Users className="h-3 w-3" />
-              Fresh
+              جديد
             </Badge>
           </div>
         </CardHeader>
         <CardFooter className="pt-0">
           <div className="flex flex-col gap-1 text-xs">
             <div className="flex items-center gap-1 font-medium text-gray-700">
-              ✨ Fresh applications received
+              ✨ طلبات جديدة تم استقبالها
             </div>
             <div className="text-muted-foreground">
-              Average age: {metrics.averageAge}
+              متوسط العمر: {metrics.averageAge}
             </div>
           </div>
         </CardFooter>
@@ -110,7 +108,7 @@ export function ApplicationsMetrics({ metrics }: ApplicationMetricsProps) {
         <div className="absolute top-0 right-0 h-20 w-20 translate-x-10 -translate-y-10 rounded-full bg-gradient-to-br from-orange-500/10 to-yellow-500/10"></div>
         <CardHeader className="relative pb-3">
           <CardDescription className="text-xs font-medium tracking-wide text-orange-600/70 uppercase">
-            Recent Activity
+            النشاط الأخير
           </CardDescription>
           <CardTitle className="bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-3xl font-bold text-transparent tabular-nums sm:text-4xl">
             {metrics.recentApplications}
@@ -121,24 +119,23 @@ export function ApplicationsMetrics({ metrics }: ApplicationMetricsProps) {
               className="flex items-center gap-1 border-orange-200 bg-orange-50 text-xs text-orange-700"
             >
               <Clock className="h-3 w-3" />
-              Last 7 days
+              آخر 7 أيام
             </Badge>
           </div>
         </CardHeader>
         <CardFooter className="pt-0">
           <div className="flex flex-col gap-1 text-xs">
             <div className="flex items-center gap-1 font-medium text-gray-700">
-              🕒 Recent submissions
+              🕒 الطلبات المقدمة مؤخراً
             </div>
             <div className="text-muted-foreground">
               {metrics.oldApplications > 0 && (
                 <span className="flex items-center gap-1 font-medium text-orange-600">
                   <AlertTriangle className="h-3 w-3" />
-                  {metrics.oldApplications} need attention
+                  {metrics.oldApplications} بحاجة إلى الانتباه
                 </span>
               )}
-              {metrics.oldApplications === 0 &&
-                "✅ All applications are recent"}
+              {metrics.oldApplications === 0 && "✅ جميع الطلبات حديثة"}
             </div>
           </div>
         </CardFooter>
@@ -148,7 +145,7 @@ export function ApplicationsMetrics({ metrics }: ApplicationMetricsProps) {
         <div className="absolute top-0 right-0 h-20 w-20 translate-x-10 -translate-y-10 rounded-full bg-gradient-to-br from-purple-500/10 to-pink-500/10"></div>
         <CardHeader className="relative pb-3">
           <CardDescription className="text-xs font-medium tracking-wide text-purple-600/70 uppercase">
-            Processing Rate
+            معدل المعالجة
           </CardDescription>
           <CardTitle className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-3xl font-bold text-transparent tabular-nums sm:text-4xl">
             {metrics.processingRate}%
@@ -159,19 +156,19 @@ export function ApplicationsMetrics({ metrics }: ApplicationMetricsProps) {
               className={`flex items-center gap-1 text-xs ${processingRateGood ? "border-green-200 bg-green-50 text-green-700" : "border-red-200 bg-red-50 text-red-700"}`}
             >
               <TrendingUp className="h-3 w-3" />
-              {processingRateGood ? "Excellent" : "Needs Attention"}
+              {processingRateGood ? "ممتاز" : "بحاجة للانتباه"}
             </Badge>
           </div>
         </CardHeader>
         <CardFooter className="pt-0">
           <div className="flex flex-col gap-1 text-xs">
             <div className="flex items-center gap-1 font-medium text-gray-700">
-              ⚡ Response efficiency
+              ⚡ كفاءة الاستجابة
             </div>
             <div className="text-muted-foreground">
               {metrics.oldApplications === 0
-                ? "🎯 Excellent response time"
-                : "⏰ Some applications need review"}
+                ? "🎯 وقت استجابة ممتاز"
+                : "⏰ بعض الطلبات بحاجة للمراجعة"}
             </div>
           </div>
         </CardFooter>

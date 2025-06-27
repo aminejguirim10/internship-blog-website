@@ -27,7 +27,7 @@ export const createEvent = async (
         hour,
       },
     })
-    revalidatePath("/dashboard/events")
+    revalidatePath("/dashboard")
     return { message: "Event created successfully", status: 201 }
   } catch (error: any) {
     return { message: "Error creating event ", status: 500 }
@@ -45,7 +45,7 @@ export const deleteEvent = async (eventId: string) => {
         id: eventId,
       },
     })
-    revalidatePath("/dashboard/events")
+    revalidatePath("/dashboard")
     return { message: "Event deleted successfully", status: 200 }
   } catch (error: any) {
     return { message: "Error deleting event ", status: 500 }

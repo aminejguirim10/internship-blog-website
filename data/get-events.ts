@@ -1,4 +1,4 @@
-import { checkUser } from "@/lib/auth"
+import { checkAdmin, checkUser } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { redirect } from "next/navigation"
 
@@ -13,8 +13,8 @@ export async function getEvents(pageSize = 4) {
 }
 
 export async function getAllEvents() {
-  const user = await checkUser()
-  if (!user) {
+  const admin = await checkAdmin()
+  if (!admin) {
     redirect("/sign-in")
   }
 
@@ -41,8 +41,8 @@ export async function getEvent(id: string) {
 }
 
 export async function getEventsMetrics() {
-  const user = await checkUser()
-  if (!user) {
+  const admin = await checkAdmin()
+  if (!admin) {
     redirect("/sign-in")
   }
 
@@ -160,23 +160,23 @@ export async function getEventsMetrics() {
     totalEvents > 0 ? Math.round((pastEvents / totalEvents) * 100) : 0
 
   return {
-    totalEvents,
-    newEventsThisMonth,
-    upcomingEvents,
-    pastEvents,
-    thisWeekEvents,
+    totalEvents: totalEvents,
+    newEventsThisMonth: newEventsThisMonth,
+    upcomingEvents: upcomingEvents,
+    pastEvents: pastEvents,
+    thisWeekEvents: thisWeekEvents,
     monthlyGrowth: Math.round(monthlyGrowth * 100) / 100,
     averageDaysUntilEvent:
       averageDaysUntilEvent > 0
-        ? `${averageDaysUntilEvent} days`
-        : "No upcoming events",
-    completionRate,
+        ? `${averageDaysUntilEvent} أيام`
+        : "لا توجد فعاليات قادمة",
+    completionRate: completionRate,
   }
 }
 
 export async function getEventsChartData() {
-  const user = await checkUser()
-  if (!user) {
+  const admin = await checkAdmin()
+  if (!admin) {
     redirect("/sign-in")
   }
 
@@ -201,7 +201,7 @@ export async function getEventsChartData() {
 
   // Grouper les events par date de création
   const chartData: {
-    [key: string]: { events: number; upcoming: number }
+    [key: string]: { events: number }
   } = {}
 
   // Initialiser les 90 derniers jours avec des valeurs 0
@@ -209,7 +209,7 @@ export async function getEventsChartData() {
     const date = new Date()
     date.setDate(date.getDate() - i)
     const dateKey = date.toISOString().split("T")[0]
-    chartData[dateKey] = { events: 0, upcoming: 0 }
+    chartData[dateKey] = { events: 0 }
   }
 
   const now = new Date()
@@ -219,10 +219,6 @@ export async function getEventsChartData() {
     const dateKey = event.createdAt.toISOString().split("T")[0]
     if (chartData[dateKey]) {
       chartData[dateKey].events++
-      // Si l'event est dans le futur, c'est un upcoming event
-      if (event.date >= now) {
-        chartData[dateKey].upcoming++
-      }
     }
   })
 
@@ -230,7 +226,6 @@ export async function getEventsChartData() {
   return Object.entries(chartData).map(([date, data]) => ({
     date,
     events: data.events,
-    upcoming: data.upcoming,
   }))
 }
 

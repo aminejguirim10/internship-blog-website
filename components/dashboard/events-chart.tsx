@@ -30,17 +30,12 @@ const chartConfig = {
     label: "أحداث جديدة",
     color: "var(--primary)",
   },
-  upcoming: {
-    label: "أحداث قادمة",
-    color: "var(--primary)",
-  },
 } satisfies ChartConfig
 
 interface EventsChartProps {
   data: Array<{
     date: string
     events: number
-    upcoming: number
   }>
 }
 
@@ -56,7 +51,7 @@ function fillMissingDates(
 
   while (current <= endDate) {
     const dateStr = current.toISOString().split("T")[0]
-    result.push(map.get(dateStr) ?? { date: dateStr, events: 0, upcoming: 0 })
+    result.push(map.get(dateStr) ?? { date: dateStr, events: 0 })
     current.setDate(current.getDate() + 1)
   }
 

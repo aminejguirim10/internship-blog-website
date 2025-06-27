@@ -1,4 +1,4 @@
-import { LoadMoreBlogs } from "@/components/load-more-blogs"
+import { LoadMoreBlogs } from "@/components/app/load-more-blogs"
 import { checkUser } from "@/lib/auth"
 import { redirect } from "next/navigation"
 
