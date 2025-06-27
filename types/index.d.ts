@@ -6,7 +6,7 @@ export type Blog = {
   content: string
   type: BlogType
   status: string
-  image: string | null
+  image: string
   createdAt: Date
   tags: { id: string; name: string }[]
   author: { name: string }

@@ -9,7 +9,7 @@ const EventCard = ({ event }: { event: Event }) => {
       <div className="rounded-full shadow-2xl">
         <div className="relative h-[180px] w-full md:h-[250px]">
           <Image
-            src={event.image || "/assets/write-with-us.jpg"} //Todo default image
+            src={event.image}
             alt="image"
             width={2664}
             height={2000}

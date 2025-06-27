@@ -12,7 +12,7 @@ const LatestBlogs = async ({
   path: "rapports" | "articles" | "recherches"
 }) => {
   const latestBlogs = await getLatestBlogs(size, type)
-  //Todo:more customize the flex box for another usability
+
   return (
     <div className="flex flex-col gap-6">
       {latestBlogs.map((blog) => (

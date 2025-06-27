@@ -152,7 +152,7 @@ export default function CreateBlog({ authorId }: { authorId: string }) {
         data.title,
         data.content,
         data.type,
-        data.imageUrl || "", //TODO: default image
+        data.imageUrl || "/assets/blog.png",
         data.tags,
         authorId
       )

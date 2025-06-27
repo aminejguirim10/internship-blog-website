@@ -360,7 +360,7 @@ export function EditEventDialog({
                         <div className="space-y-4">
                           <div className="relative inline-block">
                             <img
-                              src={imagePreview || "/placeholder.svg"} //Todo:event image placeholder
+                              src={imagePreview || "/assets/event.png"}
                               alt="معاينة"
                               className="mx-auto max-h-32 rounded-lg object-cover"
                             />

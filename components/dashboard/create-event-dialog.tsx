@@ -128,7 +128,7 @@ export function CreateEventDialog() {
       const response = await createEvent(
         data.title,
         data.description,
-        data.imageUrl || "",
+        data.imageUrl || "/assets/event.png",
         eventDate,
         data.link,
         data.hour
@@ -325,7 +325,7 @@ export function CreateEventDialog() {
                         <div className="space-y-4">
                           <div className="relative inline-block">
                             <img
-                              src={imagePreview || "/placeholder.svg"} //Todo:event image placeholder
+                              src={imagePreview || "/assets/event.png"}
                               alt="معاينة"
                               className="mx-auto max-h-32 rounded-lg object-cover"
                             />

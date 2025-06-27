@@ -5,7 +5,6 @@ import { Event } from "@prisma/client"
 import { getEvent } from "@/data/get-events"
 import { notFound } from "next/navigation"
 
-//Todo Fixe the type of event
 const EventSection = async ({ id }: { id: string }) => {
   const event = (await getEvent(id)) as Event | null
   if (!event) {
@@ -15,7 +14,7 @@ const EventSection = async ({ id }: { id: string }) => {
     <div className="relative flex flex-col gap-4 md:w-3/5 lg:w-[70%] xl:w-[75%]">
       <div className="relative h-[250px] w-full md:h-[350px]">
         <Image
-          src={event.image || "/assets/write-with-us.jpg"} //Todo: image default
+          src={event.image}
           alt="image"
           width={2664}
           height={2000}

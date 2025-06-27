@@ -38,7 +38,7 @@ model Blog {
   content   String
   type      BlogType
   status    BlogStatus @default(PENDING)
-  image     String?
+  image     String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   author    User?      @relation(fields: [authorId], references: [id])
@@ -77,7 +77,7 @@ model Event {
   date        DateTime
   title       String
   description String
-  image       String?
+  image       String
   link        String
   hour        String
   createdAt   DateTime @default(now())

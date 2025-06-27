@@ -281,6 +281,12 @@ const columns: ColumnDef<Application>[] = [
           if (result.status === 200) {
             toast.success("✅ تم معالجة الطلب بنجاح")
             setIsDialogOpen(false)
+          } else if (result.status === 404) {
+            toast.error("❌ الطلب غير موجود")
+            setIsDialogOpen(false)
+          } else if (result.status === 422) {
+            toast.error("❌ المستخدم محرر بالفعل")
+            setIsDialogOpen(false)
           } else {
             toast.error("❌ فشل في معالجة الطلب")
           }

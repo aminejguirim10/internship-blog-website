@@ -14,7 +14,7 @@ const BlogSection = async ({ id, type }: { id: string; type: BlogType }) => {
     <div className="flex flex-col gap-6 md:w-3/5 lg:w-[70%] xl:w-[75%]">
       <div className="h-[250px] w-full md:h-[350px]">
         <Image
-          src={blog?.image || "/assets/write-with-us.jpg"} //Todo: image default
+          src={blog.image}
           alt="image"
           width={2664}
           height={2000}

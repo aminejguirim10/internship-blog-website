@@ -16,7 +16,7 @@ const BlogCard = ({
       <div className="flex flex-col gap-2 rounded-lg border border-gray-200 px-2 pt-1 pb-3 shadow-sm transition-shadow duration-200 hover:shadow-md">
         <div className="relative">
           <Image
-            src={blog?.image || "/assets/write-with-us.jpg"} //Todo: image default
+            src={blog.image}
             alt="image"
             width={2664}
             height={2000}

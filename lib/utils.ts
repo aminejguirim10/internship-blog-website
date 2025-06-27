@@ -20,3 +20,7 @@ export function getFallback(username: string | null | undefined) {
 
   return fallback
 }
+
+export const generateTempPassword = () => {
+  return Math.random().toString(36).slice(-8)
+}
