@@ -2,6 +2,12 @@ import EventsBlogsCardGrid from "@/components/app/events-card-grid"
 import SearchBar from "@/components/app/search-bar"
 import SidebarFilters from "@/components/app/side-bar-filters"
 import { filterEvents } from "@/data/get-events"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "الأحداث",
+  description: "استكشف الأحداث القادمة والفعاليات في مختلف المجالات.",
+}
 
 const EventsPage = async ({
   searchParams,

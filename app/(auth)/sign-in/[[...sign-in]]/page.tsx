@@ -2,6 +2,12 @@ import { Button } from "@/components/ui/button"
 import { SignIn } from "@clerk/nextjs"
 import Link from "next/link"
 
+import { Metadata } from "next"
+export const metadata: Metadata = {
+  title: "تسجيل الدخول",
+  description: "تسجيل الدخول إلى حسابك للاستفادة من خدماتنا.",
+}
+
 export default function SignInPage() {
   return (
     <div className="mx-auto -my-6 flex min-h-screen items-center justify-center px-8">

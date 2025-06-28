@@ -2,6 +2,12 @@ import { ChartSuspense } from "@/components/suspense/chart-suspense"
 import { DashboardChartAsync } from "@/components/suspense/dashboard-chart-async"
 import { DashboardMetricsAsync } from "@/components/suspense/dashboard-metrcis-async"
 import { MetricsSuspense } from "@/components/suspense/metrics-suspense"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "لوحة التحكم",
+  description: "نظرة شاملة على جميع أنشطة النظام والإحصائيات.",
+}
 
 export default function DashboardPage() {
   return (

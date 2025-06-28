@@ -4,6 +4,13 @@ import { TableSuspense } from "@/components/suspense/table-suspense"
 import { ApplicationsTableAsync } from "@/components/suspense/applications-table-async"
 import { MetricsSuspense } from "@/components/suspense/metrics-suspense"
 import { ApplicationsMetricsAsync } from "@/components/suspense/applications-metrics-async"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "لوحة تحكم الطلبات",
+  description: "إدارة ومراجعة طلبات التوظيف من المتقدمين",
+}
+
 export default function ApplicationsPage() {
   return (
     <div className="flex flex-1 flex-col">

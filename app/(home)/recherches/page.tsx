@@ -2,6 +2,12 @@ import SidebarFilters from "@/components/app/side-bar-filters"
 import SearchBar from "@/components/app/search-bar"
 import BlogsCardGrid from "@/components/app/blogs-card-grid"
 import { filterBlogs } from "@/data/get-blogs"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "البحوث",
+  description: "استكشف بحوثنا المتنوعة في مختلف المجالات.",
+}
 
 export default async function RecherchesPage({
   searchParams,

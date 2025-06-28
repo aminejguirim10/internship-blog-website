@@ -3,6 +3,12 @@ import { Icons } from "@/components/shared/icons"
 import { Button } from "@/components/ui/button"
 import { navigationsIconsItems } from "@/constants"
 import Link from "next/link"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "اتصل بنا",
+  description: "لديك استفسار؟ نحن هنا للمساعدة. تواصل معنا الآن.",
+}
 
 const ContactUsPage = () => {
   return (

@@ -4,6 +4,13 @@ import { BlogsTableAsync } from "@/components/suspense/articles-table-async"
 import { ChartSuspense } from "@/components/suspense/chart-suspense"
 import { MetricsSuspense } from "@/components/suspense/metrics-suspense"
 import { TableSuspense } from "@/components/suspense/table-suspense"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "لوحة تحكم البحوث",
+  description: "إدارة ومراجعة البحوث المنشورة",
+}
+
 export default function RecherchesPage() {
   return (
     <div className="flex flex-1 flex-col">

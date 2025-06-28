@@ -4,8 +4,30 @@ import EventCardSkeleton from "@/components/skeleton/event-card-skeleton"
 import EventSectionSkeleton from "@/components/skeleton/event-section-skeleton"
 
 import { navigationsIconsItems } from "@/constants"
+import { prisma } from "@/lib/db"
 import Link from "next/link"
 import { Suspense } from "react"
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const event = await prisma.event.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      title: true,
+      description: true,
+    },
+  })
+  return {
+    title: `الفعالية ${event?.title}`,
+    description: `${event?.description}`,
+  }
+}
 
 const EventPage = async ({
   params,

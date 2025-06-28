@@ -1,5 +1,11 @@
 import ImageWithDescription from "@/components/shared/image-with-description"
 import { ImageWithDescriptionItems } from "@/constants"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "من نحن",
+  description: "تعرف على مهمتنا ورؤيتنا وقيمنا في تقديم محتوى متميز.",
+}
 
 const { alt, description, image, title } = ImageWithDescriptionItems[0]
 const AboutUsPage = () => {

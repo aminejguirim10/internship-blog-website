@@ -5,6 +5,12 @@ import { EventsTableAsync } from "@/components/suspense/events-table-async"
 import { ChartSuspense } from "@/components/suspense/chart-suspense"
 import { MetricsSuspense } from "@/components/suspense/metrics-suspense"
 import { TableSuspense } from "@/components/suspense/table-suspense"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "لوحة تحكم الأحداث",
+  description: "إدارة ومراجعة الأحداث والفعاليات المجدولة",
+}
 
 export default function EventsPage() {
   return (

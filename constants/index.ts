@@ -140,11 +140,6 @@ export const profileNavigationItems = [
 ]
 
 export const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
       title: "لوحة القيادة",
@@ -217,4 +212,43 @@ export const types = [
   { label: "مقالات", value: "ARTICLE" },
   { label: "أبحاث", value: "RECHERCHE" },
   { label: "تقارير", value: "RAPPORT" },
+]
+
+export const notFoundLinks = [
+  {
+    name: "أبحاث",
+    href: "/recherches",
+    description: "اكتشف أحدث أبحاثنا ونتائجنا.",
+    icon: Icons.microscope,
+  },
+  {
+    name: "مقالات",
+    href: "/articles",
+    description: "اقرأ آخر الأخبار والمقالات لدينا.",
+    icon: Icons.newspaper,
+  },
+  {
+    name: "تقارير",
+    href: "/rapports",
+    description: "تعرف على تقاريرنا الشاملة.",
+    icon: Icons.iconReport,
+  },
+  {
+    name: "فعاليات",
+    href: "/events",
+    description: "تابع أحدث فعالياتنا القادمة.",
+    icon: Icons.calendar2,
+  },
+  {
+    name: "اكتب معنا",
+    href: "/write-with-us",
+    description: "ساهم بمقالاتك وأفكارك معنا.",
+    icon: Icons.pencil,
+  },
+  {
+    name: "تواصل معنا",
+    href: "/contact-us",
+    description: "تواصل معنا لأي استفسار.",
+    icon: Icons.iconUsers,
+  },
 ]

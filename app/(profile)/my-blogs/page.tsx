@@ -1,6 +1,12 @@
 import { LoadMoreBlogs } from "@/components/app/load-more-blogs"
 import { checkUser } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "مدوناتي",
+  description: "استعرض مقالاتك وأعمالك في مكان واحد.",
+}
 
 const AuthorBlogs = async () => {
   const user = await checkUser()

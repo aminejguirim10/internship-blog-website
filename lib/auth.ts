@@ -50,7 +50,7 @@ export const checkEditor = cache(async () => {
   }
   const editor = await prisma.user.findFirst({
     where: {
-      role: "EDITOR",
+      role: { in: ["EDITOR", "ADMIN"] },
       clerkId: user.clerkId,
     },
   })

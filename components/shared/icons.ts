@@ -46,6 +46,7 @@ import {
   IconDotsVertical,
   IconLogout,
 } from "@tabler/icons-react"
+import { ChevronLeftIcon } from "@heroicons/react/20/solid"
 
 export const Icons = {
   account: FaUser,
@@ -89,4 +90,5 @@ export const Icons = {
   eye: Eye,
   pencil: Pencil,
   notbook: Notebook,
+  chevronLeftIcon: ChevronLeftIcon,
 }

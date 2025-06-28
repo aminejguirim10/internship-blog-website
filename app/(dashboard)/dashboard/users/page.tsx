@@ -4,6 +4,13 @@ import { UsersTableAsync } from "@/components/suspense/users-table-async"
 import { ChartSuspense } from "@/components/suspense/chart-suspense"
 import { MetricsSuspense } from "@/components/suspense/metrics-suspense"
 import { TableSuspense } from "@/components/suspense/table-suspense"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "لوحة تحكم المستخدمين",
+  description: "إدارة ومراجعة المستخدمين المسجلين",
+}
+
 export default function UsersPage() {
   return (
     <div className="flex flex-1 flex-col">

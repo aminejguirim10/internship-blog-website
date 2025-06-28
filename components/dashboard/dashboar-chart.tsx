@@ -1,7 +1,15 @@
 "use client"
 
 import * as React from "react"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  XAxis,
+  Line,
+  LineChart,
+  ComposedChart,
+} from "recharts"
 import { useIsMobile } from "@/hooks/use-mobile"
 import {
   Card,
@@ -133,48 +141,48 @@ export function DashboardChart({ data }: DashboardChartProps) {
                 <stop
                   offset="5%"
                   stopColor="var(--color-blogs)"
-                  stopOpacity={0.8}
+                  stopOpacity={0.3}
                 />
                 <stop
                   offset="95%"
                   stopColor="var(--color-blogs)"
-                  stopOpacity={0.1}
+                  stopOpacity={0.05}
                 />
               </linearGradient>
               <linearGradient id="fillEvents" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
                   stopColor="var(--color-events)"
-                  stopOpacity={0.8}
+                  stopOpacity={0.3}
                 />
                 <stop
                   offset="95%"
                   stopColor="var(--color-events)"
-                  stopOpacity={0.1}
+                  stopOpacity={0.05}
                 />
               </linearGradient>
               <linearGradient id="fillApplications" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
                   stopColor="var(--color-applications)"
-                  stopOpacity={0.8}
+                  stopOpacity={0.3}
                 />
                 <stop
                   offset="95%"
                   stopColor="var(--color-applications)"
-                  stopOpacity={0.1}
+                  stopOpacity={0.05}
                 />
               </linearGradient>
               <linearGradient id="fillUsers" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
                   stopColor="var(--color-users)"
-                  stopOpacity={0.8}
+                  stopOpacity={0.3}
                 />
                 <stop
                   offset="95%"
                   stopColor="var(--color-users)"
-                  stopOpacity={0.1}
+                  stopOpacity={0.05}
                 />
               </linearGradient>
             </defs>
@@ -210,35 +218,35 @@ export function DashboardChart({ data }: DashboardChartProps) {
             />
             <Area
               dataKey="blogs"
-              type="natural"
+              type="monotone"
               fill="url(#fillBlogs)"
               stroke="var(--color-blogs)"
               strokeWidth={2}
-              stackId="a"
+              fillOpacity={0.4}
             />
             <Area
               dataKey="events"
-              type="natural"
+              type="monotone"
               fill="url(#fillEvents)"
               stroke="var(--color-events)"
               strokeWidth={2}
-              stackId="b"
+              fillOpacity={0.4}
             />
             <Area
               dataKey="applications"
-              type="natural"
+              type="monotone"
               fill="url(#fillApplications)"
               stroke="var(--color-applications)"
               strokeWidth={2}
-              stackId="c"
+              fillOpacity={0.4}
             />
             <Area
               dataKey="users"
-              type="natural"
+              type="monotone"
               fill="url(#fillUsers)"
               stroke="var(--color-users)"
               strokeWidth={2}
-              stackId="d"
+              fillOpacity={0.4}
             />
           </AreaChart>
         </ChartContainer>

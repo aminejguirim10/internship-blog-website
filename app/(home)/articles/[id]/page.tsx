@@ -6,6 +6,30 @@ import BlogSectionSkeleton from "@/components/skeleton/blog-section-skeleton"
 import { navigationsIconsItems } from "@/constants"
 import Link from "next/link"
 import { Suspense } from "react"
+import { prisma } from "@/lib/db"
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const blog = await prisma.blog.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      title: true,
+      content: true,
+      tags: true,
+    },
+  })
+
+  return {
+    title: `${blog?.title}`,
+    description: ` المحتوى: ${blog?.content.slice(0, 150)}... |  العلامات: ${blog?.tags.map((tag) => tag.name).join(" - ")}`,
+  }
+}
 
 const ArticlePage = async ({
   params,

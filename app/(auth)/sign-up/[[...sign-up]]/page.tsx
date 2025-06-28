@@ -1,6 +1,12 @@
 import { Button } from "@/components/ui/button"
 import { SignUp } from "@clerk/nextjs"
 import Link from "next/link"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "إنشاء حساب",
+  description: "إنشاء حساب جديد للاستفادة من خدماتنا.",
+}
 
 export default function SignUpPage() {
   return (
