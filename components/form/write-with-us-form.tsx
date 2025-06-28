@@ -170,7 +170,11 @@ const WriteWithUsForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full" disabled={loading}>
+        <Button
+          type="submit"
+          className="w-full hover:cursor-pointer"
+          disabled={loading}
+        >
           {loading ? "جاري الإرسال..." : "إرسال"}
           {loading && (
             <svg

@@ -27,7 +27,7 @@ const EventPage = async ({
             فعاليات أخرى
           </h2>
           <Suspense fallback={<EventCardSkeleton />}>
-            <OtherEvents size={3} />
+            <OtherEvents size={3} eventId={id} />
           </Suspense>
         </div>
       </div>

@@ -2,8 +2,16 @@ import { checkAdmin, checkUser } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { redirect } from "next/navigation"
 
-export async function getEvents(pageSize = 4) {
+export async function getEvents(pageSize = 4, eventId?: string) {
+  const where = eventId
+    ? {
+        id: {
+          not: eventId,
+        },
+      }
+    : undefined
   const events = await prisma.event.findMany({
+    where,
     orderBy: {
       date: "desc",
     },

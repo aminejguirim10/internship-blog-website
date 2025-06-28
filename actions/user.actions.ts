@@ -2,6 +2,7 @@
 
 import { checkAdmin, checkUser } from "@/lib/auth"
 import { prisma } from "@/lib/db"
+import { contactAdminTemplate } from "@/lib/email"
 import { revalidatePath } from "next/cache"
 import nodemailer from "nodemailer"
 
@@ -90,11 +91,12 @@ export const contactAdmin = async (
         pass: process.env.NODE_MAILER_SECRET!,
       },
     })
+
     const mailOptions = {
       from: process.env.NODE_MAILER_AUTHOR_MAIL!,
       to: process.env.NODE_MAILER_AUTHOR_MAIL!,
       subject: `${subject}`,
-      html: "hello", // TODO: add email template
+      html: contactAdminTemplate(name, email, message),
     }
 
     await transporter.sendMail(mailOptions)

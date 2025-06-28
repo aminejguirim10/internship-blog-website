@@ -4,6 +4,7 @@ import { BlogType } from "@prisma/client"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useCallback } from "react"
 import Pagination from "../shared/pagination"
+import { Icons } from "../shared/icons"
 
 type BlogsCardGridProps = {
   type?: BlogType
@@ -34,13 +35,22 @@ export default function BlogsCardGrid({
   return (
     <>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {blogs.map((blog) => {
-          let path: "articles" | "rapports" | "recherches" = "articles"
-          if (blog.type === "ARTICLE") path = "articles"
-          else if (blog.type === "RAPPORT") path = "rapports"
-          else if (blog.type === "RECHERCHE") path = "recherches"
-          return <BlogCard key={blog.id} blog={blog as any} path={path} />
-        })}
+        {blogs && blogs.length > 0 ? (
+          blogs.map((blog) => {
+            let path: "articles" | "rapports" | "recherches" = "articles"
+            if (blog.type === "ARTICLE") path = "articles"
+            else if (blog.type === "RAPPORT") path = "rapports"
+            else if (blog.type === "RECHERCHE") path = "recherches"
+            return <BlogCard key={blog.id} blog={blog as any} path={path} />
+          })
+        ) : (
+          <div className="col-span-3 flex flex-col items-center justify-center py-16 text-gray-600">
+            <Icons.notbook className="size-8" />
+            <div className="text-lg font-semibold">
+              لم يتم العثور على أي مدونة
+            </div>
+          </div>
+        )}
       </div>
       <Pagination
         page={page}

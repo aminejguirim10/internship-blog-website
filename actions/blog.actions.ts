@@ -2,9 +2,10 @@
 
 import { prisma } from "@/lib/db"
 import { checkAdmin, checkEditor } from "@/lib/auth"
-
 import { BlogType } from "@prisma/client"
 import { revalidatePath } from "next/cache"
+import nodemailer from "nodemailer"
+import { responseBlogTemplate } from "@/lib/email"
 
 export const createBlog = async (
   title: string,
@@ -63,20 +64,50 @@ export const responseBlog = async (
   if (!admin) {
     return { message: "Admin not authenticated", status: 401 }
   }
-
+  const blog = await prisma.blog.findUnique({
+    where: { id: idBlog },
+    select: {
+      author: { select: { email: true, name: true } },
+      title: true,
+    },
+  })
+  if (!blog) {
+    return { message: "Blog not found", status: 404 }
+  }
   try {
     if (response === "REJECTED") {
       await prisma.blog.delete({
         where: { id: idBlog },
       })
-      return { message: "Blog rejected and deleted successfully", status: 200 }
     } else if (response === "ACCEPTED") {
       await prisma.blog.update({
         where: { id: idBlog },
         data: { status: "ACCEPTED" },
       })
-      return { message: "Blog accepted successfully", status: 200 }
     }
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.NODE_MAILER_AUTHOR_MAIL!,
+        pass: process.env.NODE_MAILER_SECRET!,
+      },
+    })
+
+    const mailOptions = {
+      from: process.env.NODE_MAILER_AUTHOR_MAIL!,
+      to: blog.author?.email,
+      subject: `${response === "ACCEPTED" ? "🎉 تم نشر مقالك!" : "📝 نتيجة مراجعة مقالك"} - ${blog.title}`,
+      html: responseBlogTemplate(
+        blog.author?.name || "الكاتب",
+        response,
+        blog.title
+      ),
+    }
+
+    await transporter.sendMail(mailOptions)
+    revalidatePath("/dashboard")
     return { message: "Blog response updated successfully", status: 200 }
   } catch (error: any) {
     return { message: "Error responding to blog", status: 500 }

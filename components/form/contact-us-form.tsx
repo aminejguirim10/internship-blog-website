@@ -147,7 +147,7 @@ const ContactUsForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full hover:cursor-pointer">
           {loading ? "جاري الإرسال..." : "إرسال"}
           {loading && (
             <svg

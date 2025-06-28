@@ -6,6 +6,10 @@ import { revalidatePath } from "next/cache"
 import nodemailer from "nodemailer"
 import { createClerkClient } from "@clerk/nextjs/server"
 import { generateTempPassword } from "@/lib/utils"
+import {
+  createApplicationTemplate,
+  responseApplicationTemplate,
+} from "@/lib/email"
 
 const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY })
 
@@ -67,8 +71,8 @@ export const createApplication = async (
     const mailOptions = {
       from: process.env.NODE_MAILER_AUTHOR_MAIL!,
       to: process.env.NODE_MAILER_AUTHOR_MAIL!,
-      subject: `New application request from ${name}`,
-      html: "hello", // TODO: add email template
+      subject: `طلب تقديم جديد من ${name}`,
+      html: createApplicationTemplate(name, email, subject, bio, exemple),
     }
 
     await transporter.sendMail(mailOptions)
@@ -92,7 +96,6 @@ export const responseApplication = async (
   try {
     const admin = await checkAdmin()
     if (!admin) {
-      console.error("Admin not authenticated")
       return { message: "Admin not authenticated", status: 401 }
     }
 
@@ -172,17 +175,11 @@ export const responseApplication = async (
       },
     })
 
-    //TODO: add email template
     const mailOptions = {
       from: process.env.NODE_MAILER_AUTHOR_MAIL!,
       to: application.email,
-      subject: `Application ${response === "ACCEPTED" ? "Accepted" : "Rejected"}`,
-      html: `
-        <p>Dear ${application.name},</p>
-        <p>Your application has been ${response.toLowerCase()}.</p>
-        ${response === "ACCEPTED" ? `<p>Your account has been created successfully.</p>` : ""}
-        <p>Thank you for your interest.</p>
-      `,
+      subject: `${response === "ACCEPTED" ? "🎉 مبروك! تم قبول طلبك كمحرر" : "📝 نتيجة مراجعة طلبك للانضمام"}`,
+      html: responseApplicationTemplate(application.name, response),
     }
 
     await transporter.sendMail(mailOptions)

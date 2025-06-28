@@ -1,0 +1,789 @@
+export const contactAdminTemplate = (
+  name: string,
+  email: string,
+  message: string
+) => {
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="rtl" lang="en">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta name="x-apple-disable-message-reformatting" />
+  </head>
+  <div
+    style="
+      display: none;
+      overflow: hidden;
+      line-height: 1px;
+      opacity: 0;
+      max-height: 0;
+      max-width: 0;
+    "
+  >
+    رسالة من مستخدم
+    <div>
+       ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿
+    </div>
+  </div>
+
+  <body
+    dir="rtl"
+    style="
+      background-color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+    "
+  >
+    <table
+      align="center"
+      width="100%"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      role="presentation"
+      style="max-width: 37.5em; margin: 0 auto; padding: 20px 0 48px"
+    >
+      <tbody>
+        <tr style="width: 100%">
+          <td>
+            <img
+              alt="معهدي"
+              height="50"
+              src="${process.env.NEXT_URL}/assets/logo.png"
+              style="
+                display: block;
+                outline: none;
+                border: none;
+                text-decoration: none;
+                margin: 0 auto;
+              "
+              width="170"
+            />
+            
+            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; border-right: 4px solid #28a745;">
+              <h2 style="color: #28a745; margin: 0 0 16px 0; font-size: 20px; font-weight: 600;">
+                رسالة جديدة من الموقع
+              </h2>
+              <p style="font-size: 14px; color: #6c757d; margin: 0;">
+                تم استلام رسالة جديدة من أحد زوار الموقع
+              </p>
+            </div>
+
+            <div style="margin: 24px 0;">
+              <h3 style="color: #343a40; font-size: 18px; margin: 0 0 12px 0; font-weight: 600;">
+                معلومات المرسل
+              </h3>
+              
+              <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+                <tr>
+                  <td style="padding: 8px 12px; background-color: #f8f9fa; border: 1px solid #e9ecef; font-weight: 600; color: #495057; width: 30%;">
+                    الاسم
+                  </td>
+                  <td style="padding: 8px 12px; border: 1px solid #e9ecef; color: #343a40;">
+                    ${name}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 12px; background-color: #f8f9fa; border: 1px solid #e9ecef; font-weight: 600; color: #495057;">
+                    البريد الإلكتروني
+                  </td>
+                  <td style="padding: 8px 12px; border: 1px solid #e9ecef; color: #343a40;">
+                    <a href="mailto:${email}" style="color: #007bff; text-decoration: none;">
+                      ${email}
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div style="margin: 24px 0;">
+              <h3 style="color: #343a40; font-size: 18px; margin: 0 0 12px 0; font-weight: 600;">
+                محتوى الرسالة
+              </h3>
+              <div style="background-color: #fff; padding: 20px; border-radius: 8px; border: 1px solid #e9ecef; border-right: 4px solid #17a2b8;">
+                <p style="font-size: 16px; line-height: 26px; margin: 0; color: #343a40; white-space: pre-wrap;">
+                  ${message}
+                </p>
+              </div>
+            </div>
+
+            <div style="background-color: #e8f5e8; padding: 16px; border-radius: 8px; margin: 24px 0; text-align: center;">
+              <p style="color: #155724; font-size: 14px; margin: 0 0 8px 0; font-weight: 500;">
+                للرد على هذه الرسالة
+              </p>
+              <a href="mailto:${email}" style="display: inline-block; background-color: #28a745; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: 500;">
+                الرد على ${name}
+              </a>
+            </div>
+
+            <hr
+              style="
+                width: 100%;
+                border: none;
+                border-top: 1px solid #eaeaea;
+                border-color: #dfe1e4;
+                margin: 32px 0 16px 0;
+              "
+            />
+            <p
+              style="
+                font-size: 12px;
+                line-height: 24px;
+                color: #8898aa;
+                text-decoration-line: none;
+                text-align: center;
+              "
+            >
+              معهدي - تركيا / اسطنبول<br/>
+              <span style="font-size: 10px;">
+                تم إرسال هذا البريد الإلكتروني تلقائياً من نموذج الاتصال في الموقع
+              </span>
+            </p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
+`
+}
+
+export const createApplicationTemplate = (
+  name: string,
+  email: string,
+  subject: string,
+  bio: string,
+  exemple: string
+) => {
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="rtl" lang="en">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta name="x-apple-disable-message-reformatting" />
+  </head>
+  <div
+    style="
+      display: none;
+      overflow: hidden;
+      line-height: 1px;
+      opacity: 0;
+      max-height: 0;
+      max-width: 0;
+    "
+  >
+    طلب انضمام جديد
+    <div>
+       ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿
+    </div>
+  </div>
+
+  <body
+    dir="rtl"
+    style="
+      background-color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+    "
+  >
+    <table
+      align="center"
+      width="100%"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      role="presentation"
+      style="max-width: 37.5em; margin: 0 auto; padding: 20px 0 48px"
+    >
+      <tbody>
+        <tr style="width: 100%">
+          <td>
+            <img
+              alt="معهدي"
+              height="50"
+              src="${process.env.NEXT_URL}/assets/logo.png"
+              style="
+                display: block;
+                outline: none;
+                border: none;
+                text-decoration: none;
+                margin: 0 auto;
+              "
+              width="170"
+            />
+            
+            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; border-right: 4px solid #007bff;">
+              <h2 style="color: #007bff; margin: 0 0 16px 0; font-size: 20px; font-weight: 600;">
+                طلب انضمام جديد
+              </h2>
+              <p style="font-size: 14px; color: #6c757d; margin: 0;">
+                تم استلام طلب انضمام جديد للمعهد
+              </p>
+            </div>
+
+            <div style="margin: 24px 0;">
+              <h3 style="color: #343a40; font-size: 18px; margin: 0 0 12px 0; font-weight: 600;">
+                معلومات المتقدم
+              </h3>
+              
+              <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+                <tr>
+                  <td style="padding: 8px 12px; background-color: #f8f9fa; border: 1px solid #e9ecef; font-weight: 600; color: #495057; width: 30%;">
+                    الاسم الكامل
+                  </td>
+                  <td style="padding: 8px 12px; border: 1px solid #e9ecef; color: #343a40;">
+                    ${name}
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 12px; background-color: #f8f9fa; border: 1px solid #e9ecef; font-weight: 600; color: #495057;">
+                    البريد الإلكتروني
+                  </td>
+                  <td style="padding: 8px 12px; border: 1px solid #e9ecef; color: #343a40;">
+                    <a href="mailto:${email}" style="color: #007bff; text-decoration: none;">
+                      ${email}
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 12px; background-color: #f8f9fa; border: 1px solid #e9ecef; font-weight: 600; color: #495057;">
+                    الموضوع
+                  </td>
+                  <td style="padding: 8px 12px; border: 1px solid #e9ecef; color: #343a40;">
+                    ${subject}
+                  </td>
+                </tr>
+              </table>
+            </div>
+
+            <div style="margin: 24px 0;">
+              <h3 style="color: #343a40; font-size: 18px; margin: 0 0 12px 0; font-weight: 600;">
+                السيرة الذاتية
+              </h3>
+              <div style="background-color: #f8f9fa; padding: 16px; border-radius: 8px; border-right: 3px solid #28a745;">
+                <p style="font-size: 16px; line-height: 26px; margin: 0; color: #343a40; white-space: pre-wrap;">
+                  ${bio}
+                </p>
+              </div>
+            </div>
+
+            <div style="margin: 24px 0;">
+              <h3 style="color: #343a40; font-size: 18px; margin: 0 0 12px 0; font-weight: 600;">
+                مثال على الأعمال السابقة
+              </h3>
+              <div style="background-color: #f8f9fa; padding: 16px; border-radius: 8px; border-right: 3px solid #ffc107;">
+                <p style="font-size: 16px; line-height: 26px; margin: 0; color: #343a40; white-space: pre-wrap;">
+                  ${exemple}
+                </p>
+              </div>
+            </div>
+
+            <div style="background-color: #e3f2fd; padding: 16px; border-radius: 8px; margin: 24px 0; text-align: center;">
+              <p style="color: #1976d2; font-size: 14px; margin: 0; font-weight: 500;">
+                يرجى مراجعة الطلب في لوحة التحكم والرد في أقرب وقت ممكن
+              </p>
+            </div>
+
+            <hr
+              style="
+                width: 100%;
+                border: none;
+                border-top: 1px solid #eaeaea;
+                border-color: #dfe1e4;
+                margin: 32px 0 16px 0;
+              "
+            />
+            <p
+              style="
+                font-size: 12px;
+                line-height: 24px;
+                color: #8898aa;
+                text-decoration-line: none;
+                text-align: center;
+              "
+            >
+              معهدي - تركيا / اسطنبول<br/>
+              <span style="font-size: 10px;">
+                تم إرسال هذا البريد الإلكتروني تلقائياً، يرجى عدم الرد على هذا البريد
+              </span>
+            </p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
+`
+}
+
+export const responseApplicationTemplate = (
+  name: string,
+  response: "ACCEPTED" | "REJECTED"
+) => {
+  const isAccepted = response === "ACCEPTED"
+  const statusColor = isAccepted ? "#28a745" : "#dc3545"
+  const statusBgColor = isAccepted ? "#d4edda" : "#f8d7da"
+  const statusIcon = isAccepted ? "✓" : "✗"
+  const statusTitle = isAccepted ? "مبروك! تم قبول طلبك" : "تم مراجعة طلبك"
+
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="rtl" lang="en">
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta name="x-apple-disable-message-reformatting" />
+</head>
+<div
+    style="
+        display: none;
+        overflow: hidden;
+        line-height: 1px;
+        opacity: 0;
+        max-height: 0;
+        max-width: 0;
+    "
+>
+    ${isAccepted ? "تهانينا! تم قبولك كمحرر" : "نعتذر، لم يتم قبول طلبك"}
+    <div>
+         ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿
+    </div>
+</div>
+
+<body
+    dir="rtl"
+    style="
+        background-color: #f8f9fa;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+            Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+    "
+>
+    <table
+        align="center"
+        width="100%"
+        border="0"
+        cellpadding="0"
+        cellspacing="0"
+        role="presentation"
+        style="max-width: 37.5em; margin: 0 auto; padding: 20px 0 48px"
+    >
+        <tbody>
+            <tr style="width: 100%">
+                <td>
+                    <div style="background-color: #ffffff; border-radius: 12px; padding: 32px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                        <img
+                            alt="معهدي"
+                            height="60"
+                            src="${process.env.NEXT_URL}/assets/logo.png"
+                            style="
+                                display: block;
+                                outline: none;
+                                border: none;
+                                text-decoration: none;
+                                margin: 0 auto 32px auto;
+                            "
+                            width="180"
+                        />
+                        
+                        <!-- Status Header -->
+                        <div style="background: linear-gradient(135deg, ${statusColor}, ${statusColor}dd); padding: 24px; border-radius: 12px; margin: 0 0 32px 0; text-align: center;">
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
+                                <tr>
+                                    <td align="center" valign="middle">
+                                        <div style="background-color: rgba(255,255,255,0.2); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                            <span style="font-size: 40px; color: white; font-weight: bold; display: inline-block; line-height: 80px; text-align: center; width: 80px; height: 80px;">${statusIcon}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 700;">
+                                ${statusTitle}
+                            </h1>
+                        </div>
+
+                        <!-- Personal Greeting -->
+                        <div style="text-align: center; margin: 32px 0;">
+                            <h2 style="color: #343a40; font-size: 20px; margin: 0 0 8px 0; font-weight: 600;">
+                                عزيزي/عزيزتي ${name}
+                            </h2>
+                            <p style="color: #6c757d; font-size: 16px; margin: 0;">
+                                ${isAccepted ? "نرحب بك في فريق المحررين!" : "شكراً لاهتمامك بالانضمام إلينا"}
+                            </p>
+                        </div>
+
+                        ${
+                          isAccepted
+                            ? `
+                        <!-- Acceptance Content -->
+                        <div style="background-color: #e8f5e8; padding: 24px; border-radius: 8px; margin: 24px 0; border-right: 4px solid #28a745;">
+                            <h3 style="color: #155724; margin: 0 0 16px 0; font-size: 18px; font-weight: 600;">
+                                🎉 تم قبولك كمحرر في معهدي!
+                            </h3>
+                            <p style="color: #155724; font-size: 16px; line-height: 24px; margin: 0 0 16px 0;">
+                                تهانينا! لقد تم قبول طلبك بنجاح. أنت الآن جزء من فريق المحررين المتميز في معهدنا.
+                            </p>
+                            <p style="color: #155724; font-size: 16px; line-height: 24px; margin: 0;">
+                                يمكنك الآن البدء في كتابة ونشر المقالات ومشاركة خبراتك مع مجتمعنا الأكاديمي.
+                            </p>
+                        </div>
+
+                        <!-- Next Steps -->
+                        <div style="margin: 32px 0;">
+                            <h3 style="color: #343a40; font-size: 18px; margin: 0 0 16px 0; font-weight: 600;">
+                                الخطوات التالية:
+                            </h3>
+                            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
+                                <ul style="margin: 0; padding-right: 20px; color: #495057;">
+                                    <li style="margin-bottom: 12px; font-size: 15px; line-height: 22px;">
+                                        <strong>تسجيل الدخول:</strong> استخدم بريدك الإلكتروني للدخول إلى النظام
+                                    </li>
+                                    <li style="margin-bottom: 12px; font-size: 15px; line-height: 22px;">
+                                        <strong>إنشاء مقالك الأول:</strong> ابدأ بكتابة مقالك الأول من لوحة التحكم
+                                    </li>
+                                    <li style="margin-bottom: 12px; font-size: 15px; line-height: 22px;">
+                                        <strong>استكشاف الأدوات:</strong> تعرف على جميع الأدوات المتاحة للمحررين
+                                    </li>
+                                    <li style="font-size: 15px; line-height: 22px;">
+                                        <strong>التواصل:</strong> لا تتردد في التواصل معنا للحصول على المساعدة
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Call to Action -->
+                        <div style="text-align: center; margin: 32px 0;">
+                            <a href="${process.env.NEXT_URL}/sign-in" 
+                                 style="display: inline-block; background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);">
+                                🚀 ابدأ الكتابة الآن
+                            </a>
+                        </div>
+                        `
+                            : `
+                        <!-- Rejection Content -->
+                        <div style="background-color: #f8d7da; padding: 24px; border-radius: 8px; margin: 24px 0; border-right: 4px solid #dc3545;">
+                            <h3 style="color: #721c24; margin: 0 0 16px 0; font-size: 18px; font-weight: 600;">
+                                📝 نتيجة مراجعة طلبك
+                            </h3>
+                            <p style="color: #721c24; font-size: 16px; line-height: 24px; margin: 0 0 16px 0;">
+                                نشكرك على اهتمامك بالانضمام إلى فريق المحررين في معهدنا. بعد مراجعة دقيقة لطلبك، نأسف لإبلاغك أنه لم يتم قبوله في الوقت الحالي.
+                            </p>
+                            <p style="color: #721c24; font-size: 16px; line-height: 24px; margin: 0;">
+                                هذا لا يعني نهاية الطريق! نشجعك على مراجعة متطلباتنا وتحسين طلبك.
+                            </p>
+                        </div>
+
+                        <!-- Improvement Tips -->
+                        <div style="margin: 32px 0;">
+                            <h3 style="color: #343a40; font-size: 18px; margin: 0 0 16px 0; font-weight: 600;">
+                                💡 نصائح لتحسين طلبك القادم:
+                            </h3>
+                            <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; border-right: 4px solid #ffc107;">
+                                <ul style="margin: 0; padding-right: 20px; color: #856404;">
+                                    <li style="margin-bottom: 12px; font-size: 15px; line-height: 22px;">
+                                        <strong>السيرة الذاتية:</strong> أضف المزيد من التفاصيل حول خبراتك الأكاديمية والمهنية
+                                    </li>
+                                    <li style="margin-bottom: 12px; font-size: 15px; line-height: 22px;">
+                                        <strong>عينات الكتابة:</strong> قدم أمثلة أقوى من أعمالك السابقة
+                                    </li>
+                                    <li style="margin-bottom: 12px; font-size: 15px; line-height: 22px;">
+                                        <strong>التخصص:</strong> وضح مجال تخصصك وكيف يمكن أن يفيد مجتمعنا
+                                    </li>
+                                    <li style="font-size: 15px; line-height: 22px;">
+                                        <strong>الالتزام:</strong> أظهر استعدادك للمشاركة الفعالة في المعهد
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Encouragement -->
+                        <div style="background-color: #cce7ff; padding: 20px; border-radius: 8px; text-align: center; margin: 32px 0;">
+                            <p style="color: #004085; font-size: 16px; margin: 0 0 16px 0; font-weight: 500;">
+                                🌟 لا تيأس! العديد من محررينا الحاليين تم قبولهم في المحاولة الثانية
+                            </p>
+                            <a href="${process.env.NEXT_URL}/write-with-us" 
+                                 style="display: inline-block; background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 500;">
+                                📝 قدم طلباً جديداً
+                            </a>
+                        </div>
+                        `
+                        }
+
+                        <!-- Contact Support -->
+                        <div style="background-color: #e3f2fd; padding: 20px; border-radius: 8px; text-align: center; margin: 32px 0;">
+                            <p style="color: #1976d2; font-size: 14px; margin: 0 0 12px 0; font-weight: 500;">
+                                💬 هل لديك أسئلة؟ نحن هنا للمساعدة
+                            </p>
+                            <a href="mailto:${process.env.NODE_MAILER_AUTHOR_MAIL}" 
+                                 style="color: #1976d2; text-decoration: none; font-weight: 500;">
+                                تواصل معنا
+                            </a>
+                        </div>
+
+                        <hr style="width: 100%; border: none; border-top: 1px solid #e9ecef; margin: 32px 0;" />
+                        
+                        <!-- Footer -->
+                        <div style="text-align: center;">
+                            <p style="font-size: 12px; line-height: 20px; color: #8898aa; margin: 0 0 8px 0;">
+                                معهدي - تركيا / اسطنبول
+                            </p>
+                            <p style="font-size: 10px; color: #adb5bd; margin: 0;">
+                                تم إرسال هذا البريد الإلكتروني تلقائياً، يرجى عدم الرد على هذا البريد
+                            </p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
+`
+}
+
+export const responseBlogTemplate = (
+  authorName: string,
+  response: "ACCEPTED" | "REJECTED",
+  blogTitle: string
+) => {
+  const isAccepted = response === "ACCEPTED"
+  const statusColor = isAccepted ? "#28a745" : "#dc3545"
+  const statusIcon = isAccepted ? "✓" : "✗"
+  const statusTitle = isAccepted ? "تم نشر مدونتك!" : "تم مراجعة مدونتك"
+
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="rtl" lang="en">
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+        <meta name="x-apple-disable-message-reformatting" />
+    </head>
+    <div
+        style="
+            display: none;
+            overflow: hidden;
+            line-height: 1px;
+            opacity: 0;
+            max-height: 0;
+            max-width: 0;
+        "
+    >
+        ${isAccepted ? "🎉 تهانينا! تم نشر مدونتك بنجاح" : "📝 نتيجة مراجعة مدونتك"}
+        <div>
+             ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿ ‌​‍‎‏﻿
+        </div>
+    </div>
+
+    <body
+        dir="rtl"
+        style="
+            background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+                Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+        "
+    >
+        <table
+            align="center"
+            width="100%"
+            border="0"
+            cellpadding="0"
+            cellspacing="0"
+            role="presentation"
+            style="max-width: 37.5em; margin: 0 auto; padding: 20px 0 48px"
+        >
+            <tbody>
+                <tr style="width: 100%">
+                    <td>
+                        <div style="background-color: #ffffff; border-radius: 12px; padding: 32px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                            <img
+                                alt="معهدي"
+                                height="60"
+                                src="${process.env.NEXT_URL}/assets/logo.png"
+                                style="
+                                    display: block;
+                                    outline: none;
+                                    border: none;
+                                    text-decoration: none;
+                                    margin: 0 auto 32px auto;
+                                "
+                                width="180"
+                            />
+                            
+                            <!-- Status Header -->
+                            <div style="background: linear-gradient(135deg, ${statusColor}, ${statusColor}dd); padding: 24px; border-radius: 12px; margin: 0 0 32px 0; text-align: center;">
+                                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
+                                    <tr>
+                                        <td align="center" valign="middle">
+                                            <div style="background-color: rgba(255,255,255,0.2); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                                <span style="font-size: 40px; color: white; font-weight: bold; display: inline-block; line-height: 80px; text-align: center; width: 80px; height: 80px;">${statusIcon}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <h1 style="color: white; margin: 16px 0 0 0; font-size: 24px; font-weight: 700;">
+                                    ${statusTitle}
+                                </h1>
+                            </div>
+
+                            <!-- Personal Greeting -->
+                            <div style="text-align: center; margin: 32px 0;">
+                                <h2 style="color: #343a40; font-size: 20px; margin: 0 0 8px 0; font-weight: 600;">
+                                    عزيزي/عزيزتي ${authorName}
+                                </h2>
+                                <p style="color: #6c757d; font-size: 16px; margin: 0;">
+                                    ${isAccepted ? "مبروك! تم نشر مدونتك بنجاح" : "تم مراجعة مدونتك من قبل فريق المراجعة"}
+                                </p>
+                            </div>
+
+                            <!-- Blog Title -->
+                            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 24px 0; border-right: 4px solid #007bff;">
+                                <h3 style="color: #007bff; margin: 0 0 8px 0; font-size: 16px; font-weight: 600;">
+                                    📝 عنوان المدونة
+                                </h3>
+                                <p style="color: #343a40; font-size: 18px; font-weight: 500; margin: 0; line-height: 26px;">
+                                    "${blogTitle}"
+                                </p>
+                            </div>
+
+                            ${
+                              isAccepted
+                                ? `
+                            <!-- Acceptance Content -->
+                            <div style="background-color: #e8f5e8; padding: 24px; border-radius: 8px; margin: 24px 0; border-right: 4px solid #28a745;">
+                                <h3 style="color: #155724; margin: 0 0 16px 0; font-size: 18px; font-weight: 600;">
+                                    🎉 تهانينا! تم نشر مدونتك
+                                </h3>
+                                <p style="color: #155724; font-size: 16px; line-height: 24px; margin: 0 0 16px 0;">
+                                    تم قبول مدونتك ونشرها بنجاح على موقع المعهد. مدونتك متاحة الآن لجميع القراء والباحثين.
+                                </p>
+                                <p style="color: #155724; font-size: 16px; line-height: 24px; margin: 0;">
+                                    شكراً لك على مساهمتك القيمة في إثراء المحتوى الأكاديمي لمجتمعنا.
+                                </p>
+                            </div>
+
+                            <!-- Statistics & Impact -->
+                            <div style="margin: 32px 0;">
+                                <h3 style="color: #343a40; font-size: 18px; margin: 0 0 16px 0; font-weight: 600;">
+                                    📊 ما يمكنك توقعه:
+                                </h3>
+                                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <tr>
+                                            <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                                                <span style="color: #28a745; font-weight: 600;">✓</span>
+                                                <span style="color: #495057; font-size: 15px; margin-right: 8px;">ظهور المدونة في نتائج البحث</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                                                <span style="color: #28a745; font-weight: 600;">✓</span>
+                                                <span style="color: #495057; font-size: 15px; margin-right: 8px;">مشاركة المدونة على وسائل التواصل</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px 0; border-bottom: 1px solid #e9ecef;">
+                                                <span style="color: #28a745; font-weight: 600;">✓</span>
+                                                <span style="color: #495057; font-size: 15px; margin-right: 8px;">إحصائيات القراءة والتفاعل</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px 0;">
+                                                <span style="color: #28a745; font-weight: 600;">✓</span>
+                                                <span style="color: #495057; font-size: 15px; margin-right: 8px;">إشعارات عند التعليقات الجديدة</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Next Steps -->
+                            <div style="background-color: #e3f2fd; padding: 20px; border-radius: 8px; text-align: center; margin: 24px 0;">
+                                <p style="color: #1976d2; font-size: 16px; margin: 0 0 12px 0; font-weight: 500;">
+                                    💡 اكتب مدونتك التالية!
+                                </p>
+                                <p style="color: #1976d2; font-size: 14px; margin: 0;">
+                                    استمر في مشاركة خبراتك ومعرفتك مع مجتمعنا الأكاديمي
+                                </p>
+                            </div>
+                            `
+                                : `
+                            <!-- Rejection Content -->
+                            <div style="background-color: #f8d7da; padding: 24px; border-radius: 8px; margin: 24px 0; border-right: 4px solid #dc3545;">
+                                <h3 style="color: #721c24; margin: 0 0 16px 0; font-size: 18px; font-weight: 600;">
+                                    📝 نتيجة مراجعة المدونة
+                                </h3>
+                                <p style="color: #721c24; font-size: 16px; line-height: 24px; margin: 0 0 16px 0;">
+                                    نشكرك على مجهودك في كتابة هذه المدونة. بعد مراجعة دقيقة من فريق المراجعة، نأسف لإبلاغك أن المدونة لم يتم قبولها للنشر في الوقت الحالي.
+                                </p>
+                                <p style="color: #721c24; font-size: 16px; line-height: 24px; margin: 0;">
+                                    هذا لا يقلل من قيمة عملك! نشجعك على مراجعة المدونة وتحسينها ثم إعادة إرسالها.
+                                </p>
+                            </div>
+
+                            <!-- Improvement Guidelines -->
+                            <div style="margin: 32px 0;">
+                                <h3 style="color: #343a40; font-size: 18px; margin: 0 0 16px 0; font-weight: 600;">
+                                    💡 إرشادات لتحسين المدونة:
+                                </h3>
+                                <div style="background-color: #fff3cd; padding: 20px; border-radius: 8px; border-right: 4px solid #ffc107;">
+                                    <ul style="margin: 0; padding-right: 20px; color: #856404;">
+                                        <li style="margin-bottom: 12px; font-size: 15px; line-height: 22px;">
+                                            <strong>المحتوى:</strong> تأكد من أن المحتوى أصلي ومفيد ومناسب لجمهورنا
+                                        </li>
+                                        <li style="margin-bottom: 12px; font-size: 15px; line-height: 22px;">
+                                            <strong>التنسيق:</strong> استخدم العناوين والفقرات بشكل صحيح لتحسين القراءة
+                                        </li>
+                                        <li style="margin-bottom: 12px; font-size: 15px; line-height: 22px;">
+                                            <strong>المراجع:</strong> أضف مراجع موثوقة لدعم النقاط المطروحة
+                                        </li>
+                                        <li style="margin-bottom: 12px; font-size: 15px; line-height: 22px;">
+                                            <strong>اللغة:</strong> راجع الأخطاء الإملائية والنحوية
+                                        </li>
+                                        <li style="font-size: 15px; line-height: 22px;">
+                                            <strong>الطول:</strong> تأكد من أن المدونة تحتوي على محتوى كافٍ ومفصل
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Writing Tips -->
+                            <div style="background-color: #e8f4fd; padding: 20px; border-radius: 8px; margin: 24px 0;">
+                                <h3 style="color: #0c5460; margin: 0 0 12px 0; font-size: 16px; font-weight: 600;">
+                                    ✍️ نصائح للكتابة الفعالة:
+                                </h3>
+                                <p style="color: #0c5460; font-size: 14px; line-height: 22px; margin: 0;">
+                                    ابدأ بمقدمة قوية، استخدم أمثلة واقعية، اكتب خاتمة مفيدة، واجعل المحتوى سهل القراءة والفهم.
+                                </p>
+                            </div>
+
+                            `
+                            }
+
+                            <!-- Support Section -->
+                            <div style="background-color: #e3f2fd; padding: 20px; border-radius: 8px; text-align: center; margin: 32px 0;">
+                                <p style="color: #1976d2; font-size: 14px; margin: 0 0 12px 0; font-weight: 500;">
+                                    💬 تحتاج مساعدة في الكتابة؟
+                                </p>
+                                <p style="color: #1976d2; font-size: 13px; margin: 0 0 12px 0;">
+                                    فريقنا جاهز لمساعدتك في تحسين مهاراتك في الكتابة
+                                </p>
+                                <a href="mailto:${process.env.NODE_MAILER_AUTHOR_MAIL}" 
+                                     style="color: #1976d2; text-decoration: none; font-weight: 500;">
+                                    تواصل معنا للحصول على إرشادات
+                                </a>
+                            </div>
+
+                            <hr style="width: 100%; border: none; border-top: 1px solid #e9ecef; margin: 32px 0;" />
+                            
+                            <!-- Footer -->
+                            <div style="text-align: center;">
+                                <p style="font-size: 12px; line-height: 20px; color: #8898aa; margin: 0 0 8px 0;">
+                                    معهدي - تركيا / اسطنبول
+                                </p>
+                                <p style="font-size: 10px; color: #adb5bd; margin: 0;">
+                                    تم إرسال هذا البريد الإلكتروني تلقائياً، يرجى عدم الرد على هذا البريد
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
+`
+}

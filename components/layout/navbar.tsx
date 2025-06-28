@@ -5,10 +5,12 @@ import { useUser } from "@clerk/nextjs"
 import { useEffect, useState } from "react"
 import { Icons } from "@/components/shared/icons"
 import { navigationItems, navigationsIconsItems } from "@/constants"
+import { useAdminCheck } from "@/hooks/use-admin-check"
 import NavbarSheet from "@/components/layout/navbar-sheet"
 
 export default function Navbar() {
   const { isSignedIn, user, isLoaded } = useUser()
+  const { isAdmin } = useAdminCheck()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -81,6 +83,15 @@ export default function Navbar() {
       </div>
       <div className="bg-primary h-16">
         <div className="hidden h-full justify-center md:flex md:gap-4 lg:gap-10">
+          {isAdmin && (
+            <Link
+              href="/dashboard"
+              className="hover:text-secondary flex items-center justify-center px-4 font-semibold text-white transition-colors duration-200 hover:underline hover:underline-offset-8 max-lg:text-sm"
+            >
+              لوحة التحكم
+            </Link>
+          )}
+
           {navigationItems.map((item, index) => (
             <Link
               key={index}

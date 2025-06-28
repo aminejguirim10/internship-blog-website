@@ -31,7 +31,7 @@ const RapportPage = async ({
             آخر التقارير
           </h2>
           <Suspense fallback={<BlogCardSkeleton />}>
-            <LatestBlogs size={3} path="rapports" type="RAPPORT" />
+            <LatestBlogs size={3} path="rapports" type="RAPPORT" blogId={id} />
           </Suspense>
         </div>
       </div>

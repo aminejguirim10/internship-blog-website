@@ -3,12 +3,22 @@ import { prisma } from "@/lib/db"
 import { redirect } from "next/navigation"
 import type { BlogType } from "@prisma/client"
 
-export async function getLatestBlogs(pageSize = 6, type: BlogType) {
+export async function getLatestBlogs(
+  pageSize = 6,
+  type: BlogType,
+  blogId?: string
+) {
+  const where: any = {
+    type,
+    status: "ACCEPTED",
+  }
+
+  if (blogId) {
+    where.id = { not: blogId }
+  }
+
   const blogs = await prisma.blog.findMany({
-    where: {
-      type,
-      status: "ACCEPTED",
-    },
+    where,
     orderBy: {
       createdAt: "desc",
     },

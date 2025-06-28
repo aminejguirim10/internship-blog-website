@@ -32,7 +32,12 @@ const RecherchePage = async ({
             آخر البحوث
           </h2>
           <Suspense fallback={<BlogCardSkeleton />}>
-            <LatestBlogs size={3} path="recherches" type="RECHERCHE" />
+            <LatestBlogs
+              size={3}
+              path="recherches"
+              type="RECHERCHE"
+              blogId={id}
+            />
           </Suspense>
         </div>
       </div>
