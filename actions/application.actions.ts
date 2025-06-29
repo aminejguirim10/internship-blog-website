@@ -4,14 +4,12 @@ import { checkAdmin } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { revalidatePath } from "next/cache"
 import nodemailer from "nodemailer"
-import { createClerkClient } from "@clerk/nextjs/server"
 import { generateTempPassword } from "@/lib/utils"
 import {
   createApplicationTemplate,
   responseApplicationTemplate,
 } from "@/lib/email"
-
-const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY })
+import { clerk } from "@/lib/clerk"
 
 export const createApplication = async (
   name: string,

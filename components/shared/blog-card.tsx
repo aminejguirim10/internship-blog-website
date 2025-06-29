@@ -32,7 +32,7 @@ const BlogCard = ({
           dangerouslySetInnerHTML={{ __html: blog.content }}
         />
         <div className="text-primary flex gap-2 pr-6 text-sm font-semibold">
-          <div className="flex items-center gap-1">
+          <div className="flex shrink-0 items-center gap-1">
             <Icons.calendar className="size-3" />
             {new Date(blog.createdAt)
               .toLocaleDateString("fr-FR", {
@@ -42,9 +42,9 @@ const BlogCard = ({
               })
               .replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$3/$2/$1")}
           </div>
-          <div className="flex items-center gap-1">
-            <Icons.pencil className="size-3" />
-            {blog.author.name}
+          <div className="flex min-w-0 flex-1 items-center gap-1">
+            <Icons.pencil className="size-3 shrink-0" />
+            <span className="truncate">{blog.author.name}</span>
           </div>
         </div>
       </div>

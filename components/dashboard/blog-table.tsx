@@ -169,8 +169,7 @@ export function BlogTable({ data, type }: BlogTableProps) {
   const [globalFilter, setGlobalFilter] = React.useState("")
   const router = useRouter()
 
-  const [isDeleting, setIsDeleting] = React.useState(false)
-  const [isResponding, setIsResponding] = React.useState(false)
+  // Remove global dialog states as they will be managed per row
 
   const columns: ColumnDef<Blog>[] = [
     {
@@ -344,12 +343,21 @@ export function BlogTable({ data, type }: BlogTableProps) {
       cell: ({ row }) => {
         const blog = row.original
 
+        // Individual states for each row
+        const [isDeleting, setIsDeleting] = React.useState(false)
+        const [isResponding, setIsResponding] = React.useState(false)
+        const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
+        const [acceptDialogOpen, setAcceptDialogOpen] = React.useState(false)
+        const [rejectDialogOpen, setRejectDialogOpen] = React.useState(false)
+        const [reviewDialogOpen, setReviewDialogOpen] = React.useState(false)
+
         const handleDelete = async () => {
           setIsDeleting(true)
           try {
             const response = await deleteBlog(blog.id)
             if (response.status === 200) {
               toast.success("✅ تم حذف المحتوى بنجاح")
+              setDeleteDialogOpen(false)
               router.refresh()
             } else {
               toast.error("❌ فشل في حذف المحتوى" + response.message)
@@ -371,6 +379,13 @@ export function BlogTable({ data, type }: BlogTableProps) {
                   ? "✅ تم قبول المحتوى"
                   : "✅ تم رفض المحتوى"
               )
+              if (response === "ACCEPTED") {
+                setAcceptDialogOpen(false)
+              } else {
+                setRejectDialogOpen(false)
+              }
+              // Close the main review dialog
+              setReviewDialogOpen(false)
               router.refresh()
             } else {
               toast.error("❌ فشل في تحديث حالة المحتوى")
@@ -386,7 +401,10 @@ export function BlogTable({ data, type }: BlogTableProps) {
         if (blog.status === "ACCEPTED") {
           return (
             <div className="flex items-center gap-1">
-              <AlertDialog>
+              <AlertDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+              >
                 <AlertDialogTrigger asChild>
                   <Button
                     variant="ghost"
@@ -447,7 +465,10 @@ export function BlogTable({ data, type }: BlogTableProps) {
         if (blog.status === "PENDING") {
           return (
             <div className="flex items-center gap-1">
-              <Dialog>
+              <Dialog
+                open={reviewDialogOpen}
+                onOpenChange={setReviewDialogOpen}
+              >
                 <DialogTrigger asChild>
                   <Button
                     variant="ghost"
@@ -607,7 +628,10 @@ export function BlogTable({ data, type }: BlogTableProps) {
                   </div>
 
                   <DialogFooter className="flex-col gap-3 border-t pt-6 sm:flex-row">
-                    <AlertDialog>
+                    <AlertDialog
+                      open={acceptDialogOpen}
+                      onOpenChange={setAcceptDialogOpen}
+                    >
                       <AlertDialogTrigger asChild>
                         <Button
                           className="w-full hover:cursor-pointer sm:w-auto"
@@ -621,7 +645,7 @@ export function BlogTable({ data, type }: BlogTableProps) {
                         <AlertDialogHeader>
                           <AlertDialogTitle className="flex items-center gap-2 text-xl">
                             <div className="rounded-full bg-green-100 p-2">
-                              <CheckCircle className="text-primary/60 h-5 w-5" />
+                              <CheckCircle className="h-5 w-5 text-green-600" />
                             </div>
                             قبول المحتوى
                           </AlertDialogTitle>
@@ -660,7 +684,10 @@ export function BlogTable({ data, type }: BlogTableProps) {
                       </AlertDialogContent>
                     </AlertDialog>
 
-                    <AlertDialog>
+                    <AlertDialog
+                      open={rejectDialogOpen}
+                      onOpenChange={setRejectDialogOpen}
+                    >
                       <AlertDialogTrigger asChild>
                         <Button
                           variant="outline"

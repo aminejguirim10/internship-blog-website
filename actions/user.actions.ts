@@ -1,6 +1,7 @@
 "use server"
 
 import { checkAdmin, checkUser } from "@/lib/auth"
+import { clerk } from "@/lib/clerk"
 import { prisma } from "@/lib/db"
 import { contactAdminTemplate } from "@/lib/email"
 import { revalidatePath } from "next/cache"
@@ -63,11 +64,13 @@ export const deleteUser = async (userId: string) => {
     return { message: "Admin not authenticated", status: 401 }
   }
   try {
-    await prisma.user.delete({
+    const user = await prisma.user.delete({
       where: {
         id: userId,
       },
     })
+
+    await clerk.users.deleteUser(user.clerkId)
     revalidatePath("/dashboard")
     return { message: "User deleted successfully", status: 200 }
   } catch (error: any) {

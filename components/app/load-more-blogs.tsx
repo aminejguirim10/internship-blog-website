@@ -17,32 +17,48 @@ export function LoadMoreBlogs({ authorId, pageSize = 6 }: LoadMoreBlogsProps) {
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
   const [hasBlogs, setHasBlogs] = useState(true)
-  const { ref, inView } = useInView()
+  const [isLoading, setIsLoading] = useState(false)
+  const { ref, inView } = useInView({
+    threshold: 0,
+  })
 
   const loadMore = async () => {
-    const res = await fetch(
-      `/api/blogs-by-author?authorId=${authorId}&page=${page}&pageSize=${pageSize}`
-    )
+    if (isLoading || !hasMore) return // Prevent multiple simultaneous requests
+    setIsLoading(true)
+    try {
+      const res = await fetch(
+        `/api/blogs-by-author?authorId=${authorId}&page=${page}&pageSize=${pageSize}`
+      )
 
-    const data = await res.json()
+      const data = await res.json()
 
-    if (!data || data.blogs.length === 0) {
-      setHasMore(false)
+      if (!data || !Array.isArray(data.blogs) || data.blogs.length === 0) {
+        setHasMore(false)
+        if (blogs.length === 0) {
+          setHasBlogs(false)
+        }
+        setIsLoading(false)
+        return
+      }
+
+      setBlogs((prev) => [...prev, ...data.blogs])
+      setPage((prev) => prev + 1)
+      setHasMore(data.blogs.length === pageSize)
+    } catch (error) {
+      setHasMore(false) // Stop loading on error
       if (blogs.length === 0) {
         setHasBlogs(false)
       }
-      return
+    } finally {
+      setIsLoading(false)
     }
-
-    setBlogs((prev) => [...prev, ...data.blogs])
-    setPage((prev) => prev + 1)
   }
 
   useEffect(() => {
-    if (inView && hasMore) {
+    if (inView && hasMore && !isLoading) {
       loadMore()
     }
-  }, [inView])
+  }, [inView, hasMore, isLoading])
   if (!hasBlogs) {
     return (
       <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">

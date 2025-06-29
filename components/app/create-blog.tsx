@@ -301,7 +301,7 @@ export default function CreateBlog({ authorId }: { authorId: string }) {
                           }
                         >
                           <TagManager
-                            key={`tags-${resetKey}`} // Ajout de la clé pour forcer le reset
+                            key={`tags-${resetKey}`}
                             selectedTags={field.value || []}
                             onTagsChange={handleTagsChange}
                           />
@@ -330,9 +330,12 @@ export default function CreateBlog({ authorId }: { authorId: string }) {
                               : isUploading
                                 ? "border-primary/40 bg-primary/5"
                                 : "hover:border-primary/80 border-slate-300"
-                          } ${isUploading ? "cursor-not-allowed" : "cursor-pointer"}`}
+                          } ${isUploading || fieldsDisabled ? "pointer-events-none cursor-not-allowed opacity-50" : "cursor-pointer"}`}
                         >
-                          <input {...getInputProps()} />
+                          <input
+                            {...getInputProps()}
+                            disabled={fieldsDisabled}
+                          />
 
                           {imagePreview ? (
                             <div className="space-y-4">
@@ -349,7 +352,7 @@ export default function CreateBlog({ authorId }: { authorId: string }) {
                                     </div>
                                   </div>
                                 )}
-                                {!isUploading && (
+                                {!isUploading && !fieldsDisabled && (
                                   <Button
                                     type="button"
                                     variant="destructive"

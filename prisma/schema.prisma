@@ -20,7 +20,6 @@ model User {
   email         String     @unique
   name          String?
   image         String?
-  password      String?
   role          Role       @default(USER)
   phoneNumber   String?
   dateNaissance String?
@@ -41,7 +40,7 @@ model Blog {
   image     String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  author    User?      @relation(fields: [authorId], references: [id])
+  author    User?      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String?
 
   blogViews BlogView[]
