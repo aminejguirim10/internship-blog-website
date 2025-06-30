@@ -195,7 +195,9 @@ const columns: ColumnDef<Event>[] = [
               <Calendar className="h-5 w-5" />
             </div>
             <div className="min-w-0">
-              <div className="font-semibold text-slate-900">{event.title}</div>
+              <div className="line-clamp-1 max-w-xs truncate font-semibold text-slate-900">
+                {event.title}
+              </div>
               <div className="max-w-xs truncate text-sm text-slate-500">
                 {event.description}
               </div>

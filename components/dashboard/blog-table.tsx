@@ -237,7 +237,7 @@ export function BlogTable({ data, type }: BlogTableProps) {
                 )}
               </div>
               <div className="min-w-0">
-                <div className="line-clamp-1 font-semibold text-slate-900">
+                <div className="line-clamp-1 max-w-xs truncate font-semibold text-slate-900">
                   {blog.title}
                 </div>
                 <div className="line-clamp-2 max-w-xs truncate text-sm text-slate-500">

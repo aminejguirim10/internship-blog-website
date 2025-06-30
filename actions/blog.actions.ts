@@ -5,7 +5,7 @@ import { checkAdmin, checkEditor } from "@/lib/auth"
 import { BlogType } from "@prisma/client"
 import { revalidatePath } from "next/cache"
 import nodemailer from "nodemailer"
-import { responseBlogTemplate } from "@/lib/email"
+import { responseBlogTemplate, createBlogTemplate } from "@/lib/email"
 
 export const createBlog = async (
   title: string,
@@ -30,7 +30,40 @@ export const createBlog = async (
         status: "PENDING",
         tags: { create: tags.map((tag) => ({ name: tag })) },
       },
+      include: {
+        author: {
+          select: {
+            name: true,
+            email: true,
+          },
+        },
+      },
     })
+
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.NODE_MAILER_AUTHOR_MAIL!,
+        pass: process.env.NODE_MAILER_SECRET!,
+      },
+    })
+
+    const mailOptions = {
+      from: process.env.NODE_MAILER_AUTHOR_MAIL!,
+      to: process.env.NODE_MAILER_AUTHOR_MAIL!,
+      subject: `📝 مدونة جديدة في انتظار المراجعة - ${title}`,
+      html: createBlogTemplate(
+        blog.author?.name!,
+        blog.author?.email!,
+        title,
+        type,
+        tags
+      ),
+    }
+    await transporter.sendMail(mailOptions)
+
     return { message: "Blog created successfully", status: 201 }
   } catch (error: any) {
     return { message: "Error creating blog", status: 500 }
@@ -49,7 +82,7 @@ export const deleteBlog = async (blogId: string) => {
         id: blogId,
       },
     })
-    revalidatePath("/dashboard")
+    revalidatePath("/")
     return { message: "Blog deleted successfully", status: 200 }
   } catch (error: any) {
     return { message: "Error deleting blog", status: 500 }
@@ -99,15 +132,11 @@ export const responseBlog = async (
       from: process.env.NODE_MAILER_AUTHOR_MAIL!,
       to: blog.author?.email,
       subject: `${response === "ACCEPTED" ? "🎉 تم نشر مقالك!" : "📝 نتيجة مراجعة مقالك"} - ${blog.title}`,
-      html: responseBlogTemplate(
-        blog.author?.name || "الكاتب",
-        response,
-        blog.title
-      ),
+      html: responseBlogTemplate(blog.author?.name!, response, blog.title),
     }
 
     await transporter.sendMail(mailOptions)
-    revalidatePath("/dashboard")
+    revalidatePath("/")
     return { message: "Blog response updated successfully", status: 200 }
   } catch (error: any) {
     return { message: "Error responding to blog", status: 500 }
