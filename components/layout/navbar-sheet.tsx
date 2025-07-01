@@ -9,12 +9,9 @@ import {
 
 import { Icons } from "@/components/shared/icons"
 import { navigationItems, navigationsIconsItems } from "@/constants"
-import { useAdminCheck } from "@/hooks/use-admin-check"
 import Link from "next/link"
 
 const NavbarSheet = () => {
-  const { isAdmin, isLoading } = useAdminCheck()
-
   return (
     <Sheet>
       <div className="flex h-full items-center justify-between rounded-full px-4 sm:px-6 md:hidden lg:px-8">
@@ -31,15 +28,6 @@ const NavbarSheet = () => {
         </SheetHeader>
 
         <nav className="space-y-2">
-          {!isLoading && isAdmin && (
-            <Link
-              href="/dashboard"
-              className="block rounded-lg px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-teal-50 hover:text-teal-700"
-            >
-              لوحة التحكم
-            </Link>
-          )}
-
           {navigationItems.map((item, index) => (
             <Link
               key={index}

@@ -45,7 +45,7 @@ export function AppSidebar({ admin, ...props }: AppSidebarProps) {
                     className="size-8"
                   />
                 </div>
-                <span className="text-lg font-semibold">معهدي</span>
+                <span className="text-lg font-semibold text-white">معهدي</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

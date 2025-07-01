@@ -4,17 +4,16 @@ const isPublicRoute = createRouteMatcher([
   "/",
   "/search",
   "/events",
-  "/articles",
-  "/rapports",
+  "/articles(.*)",
+  "/rapports(.*)",
   "/contact-us",
   "/about-us",
-  "/recherches",
+  "/recherches(.*)",
   "/write-with-us",
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/uploadthing", // Public API route for Uploadthing for not causing the callback error
 ])
-
 export default clerkMiddleware(async (auth, req) => {
   if (!isPublicRoute(req)) {
     await auth.protect()

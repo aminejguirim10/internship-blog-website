@@ -21,7 +21,7 @@ export function NavMain({
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarMenu>
         {items.map((item) => (
-          <SidebarMenuItem key={item.title}>
+          <SidebarMenuItem key={item.title} className="text-white">
             <SidebarMenuButton asChild>
               <Link href={item.url}>
                 <item.icon />

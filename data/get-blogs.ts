@@ -2,6 +2,7 @@ import { checkUser, checkAdmin } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { redirect } from "next/navigation"
 import type { BlogType } from "@prisma/client"
+import { headers } from "next/headers"
 
 export async function getLatestBlogs(
   pageSize = 6,
@@ -68,10 +69,12 @@ export async function getAllBlogsByType(type: BlogType) {
 }
 
 export async function getBlog(id: string, type: BlogType) {
-  const user = await checkUser()
-  if (!user) {
-    redirect("/sign-in")
-  }
+  const headersList = await headers()
+
+  const ipAddress =
+    headersList.get("x-forwarded-for")?.split(",")[0] ||
+    headersList.get("x-real-ip") ||
+    "unknown"
 
   const blog = await prisma.blog.findUnique({
     where: {
@@ -91,15 +94,15 @@ export async function getBlog(id: string, type: BlogType) {
 
   await prisma.blogView.upsert({
     where: {
-      blogId_userId: {
+      blogId_ipAddress: {
         blogId: id,
-        userId: user.id,
+        ipAddress,
       },
     },
     update: {},
     create: {
       blogId: id,
-      userId: user.id,
+      ipAddress,
     },
   })
 

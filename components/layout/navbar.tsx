@@ -5,12 +5,10 @@ import { useUser } from "@clerk/nextjs"
 import { useEffect, useState } from "react"
 import { Icons } from "@/components/shared/icons"
 import { navigationItems, navigationsIconsItems } from "@/constants"
-import { useAdminCheck } from "@/hooks/use-admin-check"
 import NavbarSheet from "@/components/layout/navbar-sheet"
 
 export default function Navbar() {
   const { isSignedIn, user, isLoaded } = useUser()
-  const { isAdmin } = useAdminCheck()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -20,10 +18,19 @@ export default function Navbar() {
   const renderUserSection = () => {
     if (!mounted || !isLoaded) {
       return (
-        <div className="flex items-center gap-2">
-          <Icons.account className="text-primary size-6" />
+        <div className="text-primary flex items-center gap-2">
+          <div className="animate-pulse">
+            <div className="bg-primary/50 h-6 w-6 rounded"></div>
+          </div>
           <div className="animate-pulse">
             <div className="bg-primary/50 h-4 w-20 rounded"></div>
+          </div>
+          |
+          <div className="animate-pulse">
+            <div className="bg-primary/50 h-6 w-6 rounded"></div>
+          </div>
+          <div className="animate-pulse">
+            <div className="bg-primary/50 h-4 w-16 rounded"></div>
           </div>
         </div>
       )
@@ -32,7 +39,11 @@ export default function Navbar() {
     if (isSignedIn) {
       return (
         <div className="text-primary flex items-center gap-2">
-          <Icons.account className="size-6" />
+          <Icons.layoutDashboard className="size-6" />
+          <span className="hover:text-secondary transition-colors duration-200 hover:underline hover:underline-offset-8">
+            <Link href={"/dashboard"}> لوحة التحكم</Link>
+          </span>
+          | <Icons.account className="size-6" />
           <span className="hover:text-secondary transition-colors duration-200 hover:underline hover:underline-offset-8">
             <Link href={"/profile"}>حسابي</Link>
           </span>
@@ -83,15 +94,6 @@ export default function Navbar() {
       </div>
       <div className="bg-primary h-16">
         <div className="hidden h-full justify-center md:flex md:gap-4 lg:gap-10">
-          {isAdmin && (
-            <Link
-              href="/dashboard"
-              className="hover:text-secondary flex items-center justify-center px-4 font-semibold text-white transition-colors duration-200 hover:underline hover:underline-offset-8 max-lg:text-sm"
-            >
-              لوحة التحكم
-            </Link>
-          )}
-
           {navigationItems.map((item, index) => (
             <Link
               key={index}
