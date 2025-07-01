@@ -15,17 +15,18 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(cuid())
-  clerkId       String   @unique
-  email         String   @unique
+  id            String    @id @default(cuid())
+  clerkId       String    @unique
+  email         String    @unique
   name          String?
   image         String?
-  role          Role     @default(USER)
+  role          Role      @default(USER)
   phoneNumber   String?
   dateNaissance String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   blogs         Blog[]
+  comments       Comment[]
 
   @@map("users")
 }
@@ -44,6 +45,7 @@ model Blog {
 
   blogViews BlogView[]
   tags      Tag[]
+  comments   Comment[]
 
   @@map("blogs")
 }
@@ -94,6 +96,23 @@ model Application {
   updatedAt DateTime @updatedAt
 
   @@map("applications")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blog   Blog   @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId String
+
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId String
+
+  @@index([blogId])
+  @@index([authorId])
+  @@map("comments")
 }
 
 enum Role {

@@ -13,6 +13,7 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/uploadthing", // Public API route for Uploadthing for not causing the callback error
+  "/api/comments", // Public API route for comments
 ])
 export default clerkMiddleware(async (auth, req) => {
   if (!isPublicRoute(req)) {

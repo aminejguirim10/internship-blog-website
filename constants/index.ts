@@ -5,7 +5,6 @@ export const navigationItems = [
   { label: "أبحاث", href: "/recherches" },
   { label: "مقالات", href: "/articles" },
   { label: "تقارير", href: "/rapports" },
-  { label: "بحث متقدم", href: "/search" },
   { label: "اكتب معنا", href: "/write-with-us" },
   { label: "من نحن", href: "/about-us" },
   { label: "فعاليات", href: "/events" },

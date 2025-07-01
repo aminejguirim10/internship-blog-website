@@ -42,7 +42,7 @@ export default async function RecherchesPage({
           pageSize={pageSize}
         />
       </div>
-      <SidebarFilters hasTypes={false} isBlog={true} />
+      <SidebarFilters hasTypes={true} isBlog={true} />
     </div>
   )
 }

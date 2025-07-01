@@ -37,6 +37,20 @@ const RapportsLoadingPage = () => {
 
       {/* Sidebar Filters Skeleton */}
       <aside className="h-fit w-96 p-4 max-lg:mr-4 lg:w-[160px] lg:border-r lg:border-r-gray-200 xl:w-64">
+        {/* Types Filter Section */}
+        <div className="mb-6">
+          <Skeleton className="mb-2 h-5 w-12" />
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="mb-2 flex items-center">
+              <Skeleton className="h-4 w-4" />
+              <Skeleton className="mr-2 h-4 w-16" />
+            </div>
+          ))}
+        </div>
+
+        {/* Separator */}
+        <div className="mb-4 border border-gray-200" />
+
         {/* Date Filter Section */}
         <div className="mb-6">
           <Skeleton className="mb-2 h-5 w-16" />
