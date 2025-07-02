@@ -141,11 +141,6 @@ export const profileNavigationItems = [
 export const data = {
   navMain: [
     {
-      title: "لوحة القيادة",
-      url: "/dashboard",
-      icon: Icons.layoutDashboard,
-    },
-    {
       title: "المستخدمين",
       url: "/dashboard/users",
       icon: Icons.iconUsers,

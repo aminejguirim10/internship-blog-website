@@ -82,7 +82,7 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 
-// Blog type based on your Prisma model
+// Blog type based
 interface Blog {
   id: string
   title: string
@@ -360,7 +360,7 @@ export function BlogTable({ data, type }: BlogTableProps) {
               setDeleteDialogOpen(false)
               router.refresh()
             } else {
-              toast.error("❌ فشل في حذف المحتوى" + response.message)
+              toast.error("❌ فشل في حذف المحتوى")
             }
           } catch (error) {
             toast.error("❌ حدث خطأ")

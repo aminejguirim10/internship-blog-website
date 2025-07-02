@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react"
 import { useInView } from "react-intersection-observer"
 import { Blog } from "@/types"
-import BlogCard from "../shared/blog-card"
-import { Icons } from "../shared/icons"
+import BlogCard from "@/components/shared/blog-card"
+import { Icons } from "@/components/shared/icons"
 import Link from "next/link"
 
 interface LoadMoreBlogsProps {

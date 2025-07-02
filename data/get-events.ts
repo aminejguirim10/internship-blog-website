@@ -36,10 +36,6 @@ export async function getAllEvents() {
 }
 
 export async function getEvent(id: string) {
-  const user = await checkUser()
-  if (!user) {
-    redirect("/sign-in")
-  }
   const event = await prisma.event.findUnique({
     where: {
       id,

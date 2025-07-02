@@ -2,9 +2,9 @@
 
 import { useRouter, useSearchParams } from "next/navigation"
 import { useCallback } from "react"
-import Pagination from "../shared/pagination"
-import EventCard from "../shared/event-card"
-import { Icons } from "../shared/icons"
+import Pagination from "@/components/shared/pagination"
+import EventCard from "@/components/shared/event-card"
+import { Icons } from "@/components/shared/icons"
 
 type EventsBlogsCardGridProps = {
   page?: number

@@ -1,4 +1,4 @@
-import { checkUser, checkAdmin } from "@/lib/auth"
+import { checkUser, checkAdmin, checkEditor } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { redirect } from "next/navigation"
 import type { BlogType } from "@prisma/client"
@@ -45,6 +45,42 @@ export async function getAllBlogsByType(type: BlogType) {
   const blogs = await prisma.blog.findMany({
     where: {
       type,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+          image: true,
+        },
+      },
+      tags: true,
+      _count: {
+        select: {
+          blogViews: true,
+        },
+      },
+    },
+  })
+
+  return blogs
+}
+
+export async function getEditorAllBlogsByType(
+  type: BlogType,
+  authorId: string
+) {
+  const editor = await checkEditor()
+  if (!editor) {
+    redirect("/sign-in")
+  }
+
+  const blogs = await prisma.blog.findMany({
+    where: {
+      type,
+      authorId,
     },
     orderBy: {
       createdAt: "desc",
@@ -222,6 +258,81 @@ export async function getBlogMetrics(type: BlogType) {
   }
 }
 
+export async function getEditorBlogMetrics(type: BlogType, authorId: string) {
+  const editor = await checkEditor()
+  if (!editor) {
+    redirect("/sign-in")
+  }
+
+  // Date du début du mois actuel
+  const startOfMonth = new Date()
+  startOfMonth.setDate(1)
+  startOfMonth.setHours(0, 0, 0, 0)
+
+  // Total blogs ce mois-ci pour cet éditeur et ce type
+  const totalBlogsThisMonth = await prisma.blog.count({
+    where: {
+      type,
+      authorId,
+      createdAt: {
+        gte: startOfMonth,
+      },
+    },
+  })
+
+  // Blogs acceptés pour cet éditeur et ce type
+  const blogsAccepted = await prisma.blog.count({
+    where: {
+      type,
+      authorId,
+      status: "ACCEPTED",
+    },
+  })
+
+  // Blogs en attente pour cet éditeur et ce type
+  const blogsPending = await prisma.blog.count({
+    where: {
+      type,
+      authorId,
+      status: "PENDING",
+    },
+  })
+
+  // Vues ce mois-ci pour tous les blogs de cet éditeur de ce type
+  const viewsThisMonth = await prisma.blogView.count({
+    where: {
+      blog: {
+        type,
+        authorId,
+      },
+      createdAt: {
+        gte: startOfMonth,
+      },
+    },
+  })
+
+  // Total de tous les blogs de cet éditeur pour ce type (pour calculer des pourcentages si nécessaire)
+  const totalBlogs = await prisma.blog.count({
+    where: {
+      type,
+      authorId,
+    },
+  })
+
+  // Taux d'acceptation pour cet éditeur
+  const acceptanceRate =
+    totalBlogs > 0 ? Math.round((blogsAccepted / totalBlogs) * 100) : 0
+
+  return {
+    totalBlogsThisMonth,
+    blogsAccepted,
+    blogsPending,
+    viewsThisMonth,
+    totalBlogs,
+    acceptanceRate,
+  }
+}
+
 export async function getBlogChartData(type: BlogType) {
   const admin = await checkAdmin()
   if (!admin) {
@@ -235,6 +346,61 @@ export async function getBlogChartData(type: BlogType) {
   const blogs = await prisma.blog.findMany({
     where: {
       type,
+      createdAt: {
+        gte: ninetyDaysAgo,
+      },
+    },
+    select: {
+      createdAt: true,
+      status: true,
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  })
+
+  // Grouper les blogs par date
+  const chartData: {
+    [key: string]: { blogs: number }
+  } = {}
+
+  // Initialiser les 90 derniers jours avec des valeurs 0
+  for (let i = 89; i >= 0; i--) {
+    const date = new Date()
+    date.setDate(date.getDate() - i)
+    const dateKey = date.toISOString().split("T")[0]
+    chartData[dateKey] = { blogs: 0 }
+  }
+
+  // Compter les blogs par jour
+  blogs.forEach((blog) => {
+    const dateKey = blog.createdAt.toISOString().split("T")[0]
+    if (chartData[dateKey]) {
+      chartData[dateKey].blogs++
+    }
+  })
+
+  // Convertir en format tableau pour le graphique
+  return Object.entries(chartData).map(([date, data]) => ({
+    date,
+    blogs: data.blogs,
+  }))
+}
+
+export async function getEditorBlogChartData(type: BlogType, authorId: string) {
+  const editor = await checkEditor()
+  if (!editor) {
+    redirect("/sign-in")
+  }
+
+  // Récupérer les blogs de cet éditeur des 90 derniers jours
+  const ninetyDaysAgo = new Date()
+  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90)
+
+  const blogs = await prisma.blog.findMany({
+    where: {
+      type,
+      authorId,
       createdAt: {
         gte: ninetyDaysAgo,
       },

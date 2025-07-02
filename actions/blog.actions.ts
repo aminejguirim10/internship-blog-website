@@ -15,7 +15,7 @@ export const createBlog = async (
   tags: string[],
   authorId: string
 ) => {
-  const editor = checkEditor()
+  const editor = await checkEditor()
   if (!editor) {
     return { message: "Editor not authenticated", status: 401 }
   }
@@ -72,9 +72,9 @@ export const createBlog = async (
 
 export const deleteBlog = async (blogId: string) => {
   try {
-    const admin = checkAdmin()
-    if (!admin) {
-      return { message: "Admin not authenticated", status: 401 }
+    const editor = await checkEditor()
+    if (!editor) {
+      return { message: "Editor not authenticated", status: 401 }
     }
 
     await prisma.blog.delete({

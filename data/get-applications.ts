@@ -1,9 +1,9 @@
-import { checkUser } from "@/lib/auth"
+import { checkAdmin } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { redirect } from "next/navigation"
 
 export async function getApplications(pageSize = 10) {
-  const user = await checkUser()
+  const user = await checkAdmin()
   if (!user) {
     redirect("/sign-in")
   }
@@ -19,7 +19,7 @@ export async function getApplications(pageSize = 10) {
 }
 
 export async function getAllApplications() {
-  const user = await checkUser()
+  const user = await checkAdmin()
   if (!user) {
     redirect("/sign-in")
   }
@@ -34,7 +34,7 @@ export async function getAllApplications() {
 }
 
 export async function getApplication(id: string) {
-  const user = await checkUser()
+  const user = await checkAdmin()
   if (!user) {
     redirect("/sign-in")
   }
@@ -51,7 +51,7 @@ export async function getApplication(id: string) {
 }
 
 export async function getApplicationsMetrics() {
-  const user = await checkUser()
+  const user = await checkAdmin()
   if (!user) {
     redirect("/sign-in")
   }
@@ -164,7 +164,7 @@ export async function getApplicationsMetrics() {
 }
 
 export async function getApplicationsChartData() {
-  const user = await checkUser()
+  const user = await checkAdmin()
   if (!user) {
     redirect("/sign-in")
   }

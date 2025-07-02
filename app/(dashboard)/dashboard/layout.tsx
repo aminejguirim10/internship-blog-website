@@ -1,17 +1,18 @@
 import { AppSidebar } from "@/components/layout/app-sidebar"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { checkAdmin } from "@/lib/auth"
+import { checkEditor } from "@/lib/auth"
 import { redirect } from "next/navigation"
 export default async function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const admin = await checkAdmin()
-  if (!admin) {
+  const editor = await checkEditor()
+  if (!editor) {
     redirect("/sign-in")
   }
+
   return (
     <SidebarProvider
       style={
@@ -21,7 +22,7 @@ export default async function DashboardLayout({
         } as React.CSSProperties
       }
     >
-      <AppSidebar variant="inset" admin={admin} />
+      <AppSidebar variant="inset" editor={editor} />
       <SidebarInset>
         <SiteHeader />
         {children}

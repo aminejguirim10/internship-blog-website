@@ -1,6 +1,6 @@
 import { getEvents } from "@/data/get-events"
-import EventCard from "../shared/event-card"
-import { Icons } from "../shared/icons"
+import EventCard from "@/components/shared/event-card"
+import { Icons } from "@/components/shared/icons"
 
 const OtherEvents = async ({
   size,

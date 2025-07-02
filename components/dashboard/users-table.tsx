@@ -68,7 +68,7 @@ import Image from "next/image"
 import { deleteUser } from "@/actions/user.actions"
 import { useRouter } from "next/navigation"
 
-// User type based on your Prisma model
+// User type based
 interface PrismaUser {
   id: string
   clerkId: string

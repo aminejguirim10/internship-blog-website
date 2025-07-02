@@ -1,6 +1,6 @@
 import { getEvents } from "@/data/get-events"
 import React from "react"
-import EventCard from "../shared/event-card"
+import EventCard from "@/components/shared/event-card"
 
 const HomeEvents = async ({ size }: { size: number }) => {
   const events = await getEvents(size)

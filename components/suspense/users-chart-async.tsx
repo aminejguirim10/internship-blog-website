@@ -1,4 +1,4 @@
-import { UsersChart } from "../dashboard/users-chart"
+import { UsersChart } from "@/components/dashboard/users-chart"
 import { getUsersChartData } from "@/data/get-users"
 
 export async function UsersChartAsync() {

@@ -77,7 +77,7 @@ import {
 import { responseApplication } from "@/actions/application.actions"
 import { toast } from "sonner"
 
-// Application type based on your Prisma model
+// Application type
 interface Application {
   id: string
   name: string

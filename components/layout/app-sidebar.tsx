@@ -10,6 +10,7 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -19,12 +20,13 @@ import Link from "next/link"
 import Image from "next/image"
 import { data } from "@/constants"
 import { User } from "@prisma/client"
+import { Icons } from "@/components/shared/icons"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  admin: User
+  editor: User
 }
 
-export function AppSidebar({ admin, ...props }: AppSidebarProps) {
+export function AppSidebar({ editor, ...props }: AppSidebarProps) {
   //TODO: Hope to fixe the sidebar bug
   return (
     <Sidebar collapsible="offcanvas" {...props} className="bg-sidebar">
@@ -52,11 +54,23 @@ export function AppSidebar({ admin, ...props }: AppSidebarProps) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+          <SidebarMenu>
+            <SidebarMenuItem className="text-white">
+              <SidebarMenuButton asChild>
+                <Link href={"/dashboard"}>
+                  <Icons.layoutDashboard />
+                  <span>لوحة القيادة</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+        {editor.role === "ADMIN" && <NavMain items={data.navMain} />}
         <NavDocuments items={data.documents} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={admin as any} />
+        <NavUser user={editor as any} />
       </SidebarFooter>
     </Sidebar>
   )

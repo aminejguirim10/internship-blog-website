@@ -1,4 +1,4 @@
-import { EventsTable } from "../dashboard/events-table"
+import { EventsTable } from "@/components/dashboard/events-table"
 import { getAllEvents } from "@/data/get-events"
 
 export async function EventsTableAsync() {

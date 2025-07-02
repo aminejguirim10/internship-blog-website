@@ -6,7 +6,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { profileNavigationItems } from "@/constants"
-import { Icons } from "./icons"
+import { Icons } from "@/components/shared/icons"
 
 export default function ProfileSideBar() {
   const pathname = usePathname()

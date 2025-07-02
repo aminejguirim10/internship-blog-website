@@ -1,7 +1,7 @@
 import { getLatestBlogs } from "@/data/get-blogs"
-import BlogCard from "../shared/blog-card"
+import BlogCard from "@/components/shared/blog-card"
 import { BlogType } from "@prisma/client"
-import { Icons } from "../shared/icons"
+import { Icons } from "@/components/shared/icons"
 
 const LatestBlogs = async ({
   size,

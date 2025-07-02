@@ -80,7 +80,7 @@ import { EditEventDialog } from "@/components/dashboard/edit-event-dialog"
 import { deleteEvent } from "@/actions/event.actions"
 import { useRouter } from "next/navigation"
 
-// Event type based on your Prisma model
+// Event type based
 interface Event {
   id: string
   date: Date

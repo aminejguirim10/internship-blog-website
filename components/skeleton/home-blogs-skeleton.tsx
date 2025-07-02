@@ -1,4 +1,4 @@
-import BlogCardSkeleton from "./blog-card-skeleton"
+import BlogCardSkeleton from "@/components/skeleton/blog-card-skeleton"
 
 const HomeBlogsSkeleton = () => {
   return (

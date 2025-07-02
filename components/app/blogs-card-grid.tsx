@@ -3,8 +3,8 @@ import BlogCard from "@/components/shared/blog-card"
 import { BlogType } from "@prisma/client"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useCallback } from "react"
-import Pagination from "../shared/pagination"
-import { Icons } from "../shared/icons"
+import Pagination from "@/components/shared/pagination"
+import { Icons } from "@/components/shared/icons"
 
 type BlogsCardGridProps = {
   type?: BlogType

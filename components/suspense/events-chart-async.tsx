@@ -1,4 +1,4 @@
-import { EventsChart } from "../dashboard/events-chart"
+import { EventsChart } from "@/components/dashboard/events-chart"
 import { getEventsChartData } from "@/data/get-events"
 
 export async function EventsChartAsync() {

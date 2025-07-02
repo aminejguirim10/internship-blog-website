@@ -1,4 +1,4 @@
-import { EventsMetrics } from "../dashboard/events-metrics"
+import { EventsMetrics } from "@/components/dashboard/events-metrics"
 import { getEventsMetrics } from "@/data/get-events"
 
 export async function EventsMetricsAsync() {

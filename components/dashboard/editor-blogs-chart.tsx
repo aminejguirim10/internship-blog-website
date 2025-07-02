@@ -1,15 +1,7 @@
 "use client"
 
 import * as React from "react"
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  XAxis,
-  Line,
-  LineChart,
-  ComposedChart,
-} from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import { useIsMobile } from "@/hooks/use-mobile"
 import {
   Card,
@@ -32,39 +24,63 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import type { BlogType } from "@prisma/client"
 
 const chartConfig = {
   blogs: {
-    label: "المحتوى",
-    color: "hsl(221, 83%, 53%)", // Blue
-  },
-  events: {
-    label: "الأحداث",
-    color: "hsl(142, 76%, 36%)", // Green
-  },
-  applications: {
-    label: "الطلبات",
-    color: "hsl(25, 95%, 53%)", // Orange
-  },
-  users: {
-    label: "المستخدمون",
-    color: "hsl(271, 81%, 56%)", // Purple
+    label: "محتوى جديد",
+    color: "var(--primary)",
   },
 } satisfies ChartConfig
 
-interface DashboardChartProps {
+interface EditorBlogChartProps {
   data: Array<{
     date: string
     blogs: number
-    events: number
-    applications: number
-    users: number
   }>
+  type: BlogType
 }
 
-export function DashboardChart({ data }: DashboardChartProps) {
+const getTypeLabel = (type: BlogType) => {
+  switch (type) {
+    case "ARTICLE":
+      return "المقالات"
+    case "RAPPORT":
+      return "التقارير"
+    case "RECHERCHE":
+      return "البحوث"
+    default:
+      return "المحتوى"
+  }
+}
+
+// Remplir les jours manquants avec des valeurs 0
+function fillMissingDates(
+  data: EditorBlogChartProps["data"],
+  startDate: Date,
+  endDate: Date
+): EditorBlogChartProps["data"] {
+  const filledData: EditorBlogChartProps["data"] = []
+  const map = new Map(data.map((item) => [item.date, item]))
+
+  const current = new Date(startDate)
+  while (current <= endDate) {
+    const dateStr = current.toISOString().split("T")[0]
+    if (map.has(dateStr)) {
+      filledData.push(map.get(dateStr)!)
+    } else {
+      filledData.push({ date: dateStr, blogs: 0 })
+    }
+    current.setDate(current.getDate() + 1)
+  }
+
+  return filledData
+}
+
+export function EditorBlogChart({ data, type }: EditorBlogChartProps) {
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("30d")
+  const typeLabel = getTypeLabel(type)
 
   React.useEffect(() => {
     if (isMobile) {
@@ -72,29 +88,36 @@ export function DashboardChart({ data }: DashboardChartProps) {
     }
   }, [isMobile])
 
-  const filteredData = data.filter((item) => {
+  const referenceDate = new Date()
+  let daysToSubtract = 30
+  if (timeRange === "90d") {
+    daysToSubtract = 90
+  } else if (timeRange === "7d") {
+    daysToSubtract = 7
+  }
+  const startDate = new Date(referenceDate)
+  startDate.setDate(startDate.getDate() - daysToSubtract)
+
+  const filteredRawData = data.filter((item) => {
     const date = new Date(item.date)
-    const referenceDate = new Date()
-    let daysToSubtract = 30
-    if (timeRange === "90d") {
-      daysToSubtract = 90
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7
-    }
-    const startDate = new Date(referenceDate)
-    startDate.setDate(startDate.getDate() - daysToSubtract)
     return date >= startDate
   })
+
+  const filteredData = fillMissingDates(
+    filteredRawData,
+    startDate,
+    referenceDate
+  )
 
   return (
     <Card className="@container/card" dir="rtl">
       <CardHeader>
-        <CardTitle>نظرة عامة على النشاط</CardTitle>
+        <CardTitle>إحصائياتي - {typeLabel}</CardTitle>
         <CardDescription>
           <span className="hidden @[540px]/card:block">
-            إحصائيات شاملة لجميع أقسام النظام عبر الوقت
+            {typeLabel} التي نشرتها عبر الوقت
           </span>
-          <span className="@[540px]/card:hidden">نشاط النظام العام</span>
+          <span className="@[540px]/card:hidden">{typeLabel} الخاصة بي</span>
         </CardDescription>
         <div className="flex items-center gap-2">
           <ToggleGroup
@@ -137,52 +160,16 @@ export function DashboardChart({ data }: DashboardChartProps) {
         >
           <AreaChart data={filteredData}>
             <defs>
-              <linearGradient id="fillBlogs" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillEditorBlogs" x1="0" y1="0" x2="0" y2="1">
                 <stop
                   offset="5%"
                   stopColor="var(--color-blogs)"
-                  stopOpacity={0.3}
+                  stopOpacity={1.0}
                 />
                 <stop
                   offset="95%"
                   stopColor="var(--color-blogs)"
-                  stopOpacity={0.05}
-                />
-              </linearGradient>
-              <linearGradient id="fillEvents" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-events)"
-                  stopOpacity={0.3}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-events)"
-                  stopOpacity={0.05}
-                />
-              </linearGradient>
-              <linearGradient id="fillApplications" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-applications)"
-                  stopOpacity={0.3}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-applications)"
-                  stopOpacity={0.05}
-                />
-              </linearGradient>
-              <linearGradient id="fillUsers" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-users)"
-                  stopOpacity={0.3}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-users)"
-                  stopOpacity={0.05}
+                  stopOpacity={0.1}
                 />
               </linearGradient>
             </defs>
@@ -219,34 +206,10 @@ export function DashboardChart({ data }: DashboardChartProps) {
             <Area
               dataKey="blogs"
               type="monotone"
-              fill="url(#fillBlogs)"
+              fill="url(#fillEditorBlogs)"
               stroke="var(--color-blogs)"
-              strokeWidth={2}
-              fillOpacity={0.4}
-            />
-            <Area
-              dataKey="events"
-              type="monotone"
-              fill="url(#fillEvents)"
-              stroke="var(--color-events)"
-              strokeWidth={2}
-              fillOpacity={0.4}
-            />
-            <Area
-              dataKey="applications"
-              type="monotone"
-              fill="url(#fillApplications)"
-              stroke="var(--color-applications)"
-              strokeWidth={2}
-              fillOpacity={0.4}
-            />
-            <Area
-              dataKey="users"
-              type="monotone"
-              fill="url(#fillUsers)"
-              stroke="var(--color-users)"
-              strokeWidth={2}
-              fillOpacity={0.4}
+              stackId="a"
+              connectNulls={true}
             />
           </AreaChart>
         </ChartContainer>

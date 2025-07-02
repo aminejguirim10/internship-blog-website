@@ -1,6 +1,6 @@
 import Image from "next/image"
 import React from "react"
-import { Icons } from "./icons"
+import { Icons } from "@/components/shared/icons"
 import Link from "next/link"
 import { Blog } from "@/types"
 
