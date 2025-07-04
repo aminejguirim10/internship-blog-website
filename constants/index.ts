@@ -1,10 +1,7 @@
 import { Icons } from "@/components/shared/icons"
 
 export const navigationItems = [
-  { label: "الرئيسية", href: "/" },
-  { label: "أبحاث", href: "/recherches" },
-  { label: "مقالات", href: "/articles" },
-  { label: "تقارير", href: "/rapports" },
+  { label: "مدونات", href: "/blogs" },
   { label: "اكتب معنا", href: "/write-with-us" },
   { label: "من نحن", href: "/about-us" },
   { label: "فعاليات", href: "/events" },
@@ -155,6 +152,11 @@ export const data = {
       url: "/dashboard/events",
       icon: Icons.calendar2,
     },
+    {
+      title: "فئات",
+      url: "/dashboard/categories",
+      icon: Icons.tag,
+    },
   ],
 
   documents: [
@@ -202,30 +204,18 @@ export const faqItems = [
   },
 ]
 
-export const types = [
-  { label: "مقالات", value: "ARTICLE" },
-  { label: "أبحاث", value: "RECHERCHE" },
-  { label: "تقارير", value: "RAPPORT" },
-]
+// Interface pour les catégories dynamiques
+export interface CategoryType {
+  id: string
+  name: string
+}
 
 export const notFoundLinks = [
   {
-    name: "أبحاث",
-    href: "/recherches",
-    description: "اكتشف أحدث أبحاثنا ونتائجنا.",
-    icon: Icons.microscope,
-  },
-  {
-    name: "مقالات",
-    href: "/articles",
-    description: "اقرأ آخر الأخبار والمقالات لدينا.",
+    name: "مدونات",
+    href: "/blogs",
+    description: "اكتشف مدوناتنا المتنوعة.",
     icon: Icons.newspaper,
-  },
-  {
-    name: "تقارير",
-    href: "/rapports",
-    description: "تعرف على تقاريرنا الشاملة.",
-    icon: Icons.iconReport,
   },
   {
     name: "فعاليات",

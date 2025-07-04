@@ -7,6 +7,7 @@ import { navigationsIconsItems } from "@/constants"
 import Link from "next/link"
 import { Suspense } from "react"
 import { prisma } from "@/lib/db"
+import { notFound } from "next/navigation"
 
 export async function generateMetadata({
   params,
@@ -25,13 +26,17 @@ export async function generateMetadata({
     },
   })
 
+  if (!blog) {
+    notFound()
+  }
+
   return {
     title: `${blog?.title}`,
     description: ` المحتوى: ${blog?.content.slice(0, 150)}... |  العلامات: ${blog?.tags.map((tag) => tag.name).join(" - ")}`,
   }
 }
 
-const RecherchePage = async ({
+const BlogPage = async ({
   params,
 }: {
   params: Promise<{
@@ -39,29 +44,36 @@ const RecherchePage = async ({
   }>
 }) => {
   const { id } = await params
+  const blog = await prisma.blog.findUnique({
+    where: { id },
+    select: {
+      categoryId: true,
+      category: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  })
+
   return (
     <section className="flex flex-col gap-8 px-4 py-8 sm:px-6 md:py-10 lg:px-8">
       <div className="flex flex-col gap-4 md:flex-row md:gap-12">
         <Suspense fallback={<BlogSectionSkeleton />}>
-          <BlogSection id={id} type="RECHERCHE" />
+          <BlogSection id={id} />
         </Suspense>
         <div className="flex flex-col space-y-6 md:w-2/5 lg:w-[30%] xl:w-[25%]">
           <h2 className="text-primary text-xl font-semibold md:text-2xl">
             الأكثر مشاهدة
           </h2>
           <Suspense fallback={<BlogCardSkeleton />}>
-            <MostViewedBlogs size={3} path="recherches" type="RECHERCHE" />
+            <MostViewedBlogs size={3} categoryId={blog?.categoryId!} />
           </Suspense>
           <h2 className="text-primary text-xl font-semibold md:mt-8 md:text-2xl">
-            آخر البحوث
+            آخر {blog?.category?.name!}
           </h2>
           <Suspense fallback={<BlogCardSkeleton />}>
-            <LatestBlogs
-              size={3}
-              path="recherches"
-              type="RECHERCHE"
-              blogId={id}
-            />
+            <LatestBlogs size={3} categoryId={blog?.categoryId!} blogId={id} />
           </Suspense>
         </div>
       </div>
@@ -78,4 +90,4 @@ const RecherchePage = async ({
   )
 }
 
-export default RecherchePage
+export default BlogPage

@@ -1,10 +1,8 @@
-import { BlogType } from "@prisma/client"
-
 export type Blog = {
   id: string
   title: string
   content: string
-  type: BlogType
+  categoryId: string
   status: string
   image: string
   createdAt: Date

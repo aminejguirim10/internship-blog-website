@@ -1,11 +1,10 @@
 import { BlogChart } from "@/components/dashboard/blog-chart"
 import { getBlogChartData, getEditorBlogChartData } from "@/data/get-blogs"
 import { checkEditor } from "@/lib/auth"
-import type { BlogType } from "@prisma/client"
 import { redirect } from "next/navigation"
 import { EditorBlogChart } from "@/components/dashboard/editor-blogs-chart"
 
-export async function BlogsChartAsync({ type }: { type: BlogType }) {
+export async function BlogsChartAsync({ type }: { type: string }) {
   const editor = await checkEditor()
   if (!editor) {
     redirect("/sign-in")

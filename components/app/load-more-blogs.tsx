@@ -78,11 +78,7 @@ export function LoadMoreBlogs({ authorId, pageSize = 6 }: LoadMoreBlogsProps) {
   return (
     <>
       {blogs.map((blog) => {
-        let path: "articles" | "rapports" | "recherches" = "articles"
-        if (blog.type === "ARTICLE") path = "articles"
-        else if (blog.type === "RAPPORT") path = "rapports"
-        else if (blog.type === "RECHERCHE") path = "recherches"
-        return <BlogCard key={blog.id} blog={blog} path={path} />
+        return <BlogCard key={blog.id} blog={blog} />
       })}
 
       {hasMore && (

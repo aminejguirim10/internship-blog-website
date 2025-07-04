@@ -9,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import type { BlogType } from "@prisma/client"
 
 interface EditorBlogMetrics {
   totalBlogsThisMonth: number
@@ -22,25 +21,16 @@ interface EditorBlogMetrics {
 
 interface EditorBlogMetricsProps {
   metrics: EditorBlogMetrics
-  type: BlogType
+  type: string
 }
 
-const getTypeLabel = (type: BlogType) => {
-  switch (type) {
-    case "ARTICLE":
-      return "المقالات"
-    case "RAPPORT":
-      return "التقارير"
-    case "RECHERCHE":
-      return "البحوث"
-    default:
-      return "المحتوى"
-  }
+const getTypeLabel = () => {
+  return "المحتوى"
 }
 
 export function EditorBlogMetrics({ metrics, type }: EditorBlogMetricsProps) {
   const acceptanceRateGood = metrics.acceptanceRate >= 70
-  const typeLabel = getTypeLabel(type)
+  const typeLabel = getTypeLabel()
   const hasGoodPerformance =
     metrics.totalBlogsThisMonth > 0 && metrics.acceptanceRate > 60
 

@@ -3,19 +3,21 @@ import SearchBar from "@/components/app/search-bar"
 import BlogsCardGrid from "@/components/app/blogs-card-grid"
 import { filterBlogs } from "@/data/get-blogs"
 import { Metadata } from "next"
+import { getCategories } from "@/data/get-categories"
 
 export const metadata: Metadata = {
-  title: "البحوث",
-  description: "استكشف بحوثنا المتنوعة في مختلف المجالات.",
+  title: "مدوّنات",
+  description: "استكشف مدوّناتنا المتنوعة في مختلف المجالات.",
 }
 
-export default async function RecherchesPage({
+export default async function ArticlesPage({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | undefined }>
 }) {
   const params = await searchParams
   const title = params.title || ""
+  const categoryId = params.categoryId || ""
   //@ts-ignore
   const date = params.date ? new Date(params.date) : null
   const author = params.author || ""
@@ -24,12 +26,13 @@ export default async function RecherchesPage({
 
   const { blogs, totalCount } = await filterBlogs(
     title,
-    "RECHERCHE",
+    categoryId,
     page,
     pageSize,
     date,
     author
   )
+  const categories = await getCategories()
 
   return (
     <div className="flex flex-col-reverse px-2 py-8 lg:flex-row">
@@ -42,7 +45,11 @@ export default async function RecherchesPage({
           pageSize={pageSize}
         />
       </div>
-      <SidebarFilters hasTypes={true} isBlog={true} />
+      <SidebarFilters
+        categories={categories}
+        isBlog={true}
+        hasCategories={true}
+      />
     </div>
   )
 }

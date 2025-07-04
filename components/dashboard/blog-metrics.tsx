@@ -9,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import type { BlogType } from "@prisma/client"
 
 interface BlogMetrics {
   totalBlogs: number
@@ -23,26 +22,17 @@ interface BlogMetrics {
 
 interface BlogMetricsProps {
   metrics: BlogMetrics
-  type: BlogType
+  type: string
 }
 
-const getTypeLabel = (type: BlogType) => {
-  switch (type) {
-    case "ARTICLE":
-      return "المقالات"
-    case "RAPPORT":
-      return "التقارير"
-    case "RECHERCHE":
-      return "البحوث"
-    default:
-      return "المحتوى"
-  }
+const getTypeLabel = () => {
+  return "المحتوى"
 }
 
 export function BlogMetrics({ metrics, type }: BlogMetricsProps) {
   const growthIsPositive = metrics.monthlyGrowth >= 0
   const acceptanceRateGood = metrics.acceptanceRate >= 70
-  const typeLabel = getTypeLabel(type)
+  const typeLabel = getTypeLabel()
 
   return (
     <div className="grid grid-cols-1 gap-6 px-4 sm:grid-cols-2 lg:px-6 xl:grid-cols-4">

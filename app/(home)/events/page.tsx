@@ -34,7 +34,7 @@ const EventsPage = async ({
           pageSize={pageSize}
         />
       </div>
-      <SidebarFilters hasTypes={false} isBlog={false} />
+      <SidebarFilters hasCategories={false} isBlog={false} />
     </div>
   )
 }

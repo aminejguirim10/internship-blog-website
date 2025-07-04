@@ -3,11 +3,10 @@ import { Icons } from "@/components/shared/icons"
 import { getBlog } from "@/data/get-blogs"
 import { notFound } from "next/navigation"
 import { Blog } from "@/types"
-import { BlogType } from "@prisma/client"
 import { LoadMoreComments } from "@/components/app/load-more-comments"
 
-const BlogSection = async ({ id, type }: { id: string; type: BlogType }) => {
-  const blog = (await getBlog(id, type)) as Blog | null
+const BlogSection = async ({ id }: { id: string }) => {
+  const blog = (await getBlog(id)) as Blog | null
   if (!blog) {
     return notFound()
   }

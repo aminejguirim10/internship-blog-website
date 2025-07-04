@@ -6,6 +6,7 @@ import EventSectionSkeleton from "@/components/skeleton/event-section-skeleton"
 import { navigationsIconsItems } from "@/constants"
 import { prisma } from "@/lib/db"
 import Link from "next/link"
+import { notFound } from "next/navigation"
 import { Suspense } from "react"
 
 export async function generateMetadata({
@@ -23,6 +24,11 @@ export async function generateMetadata({
       description: true,
     },
   })
+
+  if (!event) {
+    notFound()
+  }
+
   return {
     title: `الفعالية ${event?.title}`,
     description: `${event?.description}`,

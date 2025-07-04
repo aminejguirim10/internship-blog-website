@@ -9,6 +9,8 @@ import HomeEventsSkeleton from "@/components/skeleton/home-events-skeleton"
 import HomeEvents from "@/components/app/home-events"
 import { OrbitingCirclesSection } from "@/components/app/orbiting-circles-section"
 import HomeFaqs from "@/components/app/home-faqs"
+import HomeLatestBlogsLabel from "@/components/app/home-latest-blogs-label"
+import HomeLabelSkeleton from "@/components/skeleton/home-label-skeleton"
 
 const imgdes1 = ImageWithDescriptionItems[2]
 const imgdes2 = ImageWithDescriptionItems[1]
@@ -22,16 +24,11 @@ export default function HomePage() {
         image={imgdes1.image}
         title={imgdes1.title}
       />
-      <div className="py-8">
-        <div className="flex justify-center">
-          <div className="bg-primary rounded-t-2xl px-6 py-1 font-semibold text-white">
-            أخر مقالات
-          </div>
-        </div>
-        <div className="bg-primary h-[5px] w-full" />
-      </div>
+      <Suspense fallback={<HomeLabelSkeleton />}>
+        <HomeLatestBlogsLabel rank={1} />
+      </Suspense>
       <Suspense fallback={<HomeBlogsSkeleton />}>
-        <HomeLatestBlogs path="articles" size={6} type="ARTICLE" />
+        <HomeLatestBlogs rank={1} pageSize={6} />
       </Suspense>
       <div className="py-8" />
       <ImageWithDescription
@@ -43,28 +40,18 @@ export default function HomePage() {
         link={imgdes2.link}
       />
 
-      <div className="py-8">
-        <div className="flex justify-center">
-          <div className="bg-primary rounded-t-2xl px-6 py-1 font-semibold text-white">
-            أخر أبحاث
-          </div>
-        </div>
-        <div className="bg-primary h-[5px] w-full" />
-      </div>
+      <Suspense fallback={<HomeLabelSkeleton />}>
+        <HomeLatestBlogsLabel rank={2} />
+      </Suspense>
       <Suspense fallback={<HomeBlogsSkeleton />}>
-        <HomeLatestBlogs path="recherches" size={6} type="RECHERCHE" />
+        <HomeLatestBlogs rank={2} pageSize={6} />
       </Suspense>
       <Write />
-      <div className="py-8">
-        <div className="flex justify-center">
-          <div className="bg-primary rounded-t-2xl px-6 py-1 font-semibold text-white">
-            أخر تقارير
-          </div>
-        </div>
-        <div className="bg-primary h-[5px] w-full" />
-      </div>
+      <Suspense fallback={<HomeLabelSkeleton />}>
+        <HomeLatestBlogsLabel rank={3} />
+      </Suspense>
       <Suspense fallback={<HomeBlogsSkeleton />}>
-        <HomeLatestBlogs path="rapports" size={6} type="RAPPORT" />
+        <HomeLatestBlogs rank={3} pageSize={6} />
       </Suspense>
       <div className="py-8" />
       <ImageWithDescription

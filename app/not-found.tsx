@@ -2,10 +2,16 @@ import { Icons } from "@/components/shared/icons"
 import { notFoundLinks } from "@/constants"
 import Image from "next/image"
 import Link from "next/link"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "الصفحة غير موجودة",
+  description: "عذراً، لم نتمكن من العثور على الصفحة التي تبحث عنها.",
+}
 
 export default function NotFoundPage() {
   return (
-    <div className="bg-white">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-white">
       <main className="mx-auto w-full max-w-7xl px-6 pt-10 pb-16 sm:pb-24 lg:px-8">
         <div className="mx-auto w-fit self-center">
           <Link href={"/"}>

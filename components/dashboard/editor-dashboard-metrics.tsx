@@ -32,7 +32,7 @@ export function EditorDashboardMetrics({
         <div className="absolute top-0 right-0 h-20 w-20 translate-x-10 -translate-y-10 rounded-full bg-gradient-to-br from-blue-500/10 to-purple-500/10"></div>
         <CardHeader className="relative pb-3">
           <CardDescription className="text-xs font-medium tracking-wide text-blue-600/70 uppercase">
-            مقالاتي هذا الشهر
+            مدوناتي هذا الشهر
           </CardDescription>
           <CardTitle className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-3xl font-bold text-transparent tabular-nums sm:text-4xl">
             {metrics.totalBlogsThisMonth.toLocaleString()}
@@ -49,7 +49,7 @@ export function EditorDashboardMetrics({
               📝 محتوى منشور هذا الشهر
             </div>
             <div className="text-muted-foreground">
-              {authorName ? `بواسطة ${authorName}` : "إجمالي المقالات"}
+              {authorName ? `بواسطة ${authorName}` : "إجمالي المدونات"}
             </div>
           </div>
         </CardFooter>
@@ -60,7 +60,7 @@ export function EditorDashboardMetrics({
         <div className="absolute top-0 right-0 h-20 w-20 translate-x-10 -translate-y-10 rounded-full bg-gradient-to-br from-green-500/10 to-emerald-500/10"></div>
         <CardHeader className="relative pb-3">
           <CardDescription className="text-xs font-medium tracking-wide text-green-600/70 uppercase">
-            المقالات المقبولة
+            المدونات المقبولة
           </CardDescription>
           <CardTitle className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-3xl font-bold text-transparent tabular-nums sm:text-4xl">
             {metrics.blogsAccepted}
@@ -86,7 +86,7 @@ export function EditorDashboardMetrics({
         <div className="absolute top-0 right-0 h-20 w-20 translate-x-10 -translate-y-10 rounded-full bg-gradient-to-br from-orange-500/10 to-yellow-500/10"></div>
         <CardHeader className="relative pb-3">
           <CardDescription className="text-xs font-medium tracking-wide text-orange-600/70 uppercase">
-            المقالات في الانتظار
+            المدونات في الانتظار
           </CardDescription>
           <CardTitle className="bg-gradient-to-r from-orange-600 to-yellow-600 bg-clip-text text-3xl font-bold text-transparent tabular-nums sm:text-4xl">
             {metrics.blogsPending}
@@ -128,7 +128,7 @@ export function EditorDashboardMetrics({
             <div className="flex items-center gap-1 font-medium text-gray-700">
               👁️ إجمالي المشاهدات
             </div>
-            <div className="text-muted-foreground">لجميع المقالات المنشورة</div>
+            <div className="text-muted-foreground">لجميع المدونات المنشورة</div>
           </div>
         </CardFooter>
       </Card>

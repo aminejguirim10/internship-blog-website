@@ -4,15 +4,9 @@ import { Icons } from "@/components/shared/icons"
 import Link from "next/link"
 import { Blog } from "@/types"
 
-const BlogCard = ({
-  blog,
-  path,
-}: {
-  blog: Blog
-  path: "rapports" | "articles" | "recherches"
-}) => {
+const BlogCard = ({ blog }: { blog: Blog }) => {
   return (
-    <Link href={`/${path}/${blog.id}`}>
+    <Link href={`/blogs/${blog.id}`}>
       <div className="flex flex-col gap-2 rounded-lg border border-gray-200 px-2 pt-1 pb-3 shadow-sm transition-shadow duration-200 hover:shadow-md">
         <div className="relative">
           <Image

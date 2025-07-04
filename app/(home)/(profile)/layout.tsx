@@ -17,13 +17,11 @@ export default async function ProfileLayout({
   }
   return (
     <div>
-      <Navbar />
       <ProfileImage user={user} />
       <section className="mx-auto flex flex-col gap-4 px-4 py-8 md:flex-row">
         <ProfileSideBar />
         {children}
       </section>
-      <Footer />
     </div>
   )
 }

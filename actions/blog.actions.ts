@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/db"
 import { checkAdmin, checkEditor } from "@/lib/auth"
-import { BlogType } from "@prisma/client"
+
 import { revalidatePath } from "next/cache"
 import nodemailer from "nodemailer"
 import { responseBlogTemplate, createBlogTemplate } from "@/lib/email"
@@ -10,7 +10,8 @@ import { responseBlogTemplate, createBlogTemplate } from "@/lib/email"
 export const createBlog = async (
   title: string,
   content: string,
-  type: BlogType,
+  categoryId: string,
+  categoryName: string,
   image: string,
   tags: string[],
   authorId: string
@@ -25,7 +26,7 @@ export const createBlog = async (
         title,
         content,
         image,
-        type,
+        categoryId,
         authorId,
         status: "PENDING",
         tags: { create: tags.map((tag) => ({ name: tag })) },
@@ -58,7 +59,6 @@ export const createBlog = async (
         blog.author?.name!,
         blog.author?.email!,
         title,
-        type,
         tags
       ),
     }

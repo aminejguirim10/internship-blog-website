@@ -12,13 +12,15 @@ import {
 } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
 import { Calendar as CalendarIcon } from "lucide-react"
-import { types } from "@/constants"
+import { Category } from "@prisma/client"
 
 export default function SidebarFilters({
-  hasTypes,
+  hasCategories,
+  categories,
   isBlog,
 }: {
-  hasTypes: boolean
+  hasCategories: boolean
+  categories?: Category[]
   isBlog: boolean
 }) {
   const router = useRouter()
@@ -37,7 +39,9 @@ export default function SidebarFilters({
     return new Date(year, month - 1, day) // month - 1 car les mois commencent à 0
   }
 
-  const [selectedType, setSelectedType] = useState(searchParams.get("type"))
+  const [selectedType, setSelectedType] = useState(
+    searchParams.get("categoryId")
+  )
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     searchParams.get("date")
       ? parseDateFromLocal(searchParams.get("date")!)
@@ -70,26 +74,33 @@ export default function SidebarFilters({
 
   return (
     <aside className="h-fit w-96 p-4 max-lg:mr-4 lg:w-[160px] lg:border-r lg:border-r-gray-200 xl:w-64">
-      {hasTypes && (
+      {hasCategories && (
         <>
           <div className="mb-6">
-            <div className="mb-2 font-bold">قسم :</div>
-            {types.map((type) => (
-              <div key={type.value} className="mb-2 flex items-center">
-                <Checkbox
-                  checked={selectedType === type.value}
-                  onCheckedChange={() => {
-                    setSelectedType(type.value)
-                    updateParams("type", type.value)
-                  }}
-                />
-                <span className="mr-2">{type.label}</span>
+            <div className="mb-2 font-bold">فئة :</div>
+            {categories?.length === 0 ? (
+              <div className="text-muted-foreground text-sm">
+                لا توجد فئات متاحة
               </div>
-            ))}
+            ) : (
+              categories?.map((category) => (
+                <div key={category.id} className="mb-2 flex items-center">
+                  <Checkbox
+                    checked={selectedType === category.id}
+                    onCheckedChange={() => {
+                      setSelectedType(category.id)
+                      updateParams("categoryId", category.id)
+                    }}
+                  />
+                  <span className="mr-2">{category.name}</span>
+                </div>
+              ))
+            )}
           </div>
           <div className="mb-4 border border-gray-200" />
         </>
       )}
+
       <div className="mb-6">
         <div className="mb-2 font-bold">تاريخ :</div>
         <Popover>

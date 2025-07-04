@@ -39,10 +39,17 @@ import RichTextEditor from "@/components/app/rich-text-editor"
 import TagManager from "@/components/app/tag-manager"
 import { createBlog } from "@/actions/blog.actions"
 import { blogSchema } from "@/lib/schema"
+import { Category } from "@prisma/client"
 
 type BlogFormData = z.infer<typeof blogSchema>
 
-export default function CreateBlog({ authorId }: { authorId: string }) {
+export default function CreateBlog({
+  authorId,
+  categories,
+}: {
+  authorId: string
+  categories: Category[]
+}) {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
@@ -54,7 +61,7 @@ export default function CreateBlog({ authorId }: { authorId: string }) {
     defaultValues: {
       title: "",
       content: "",
-      type: undefined,
+      categoryId: "",
       imageUrl: "",
       tags: [],
     },
@@ -67,7 +74,7 @@ export default function CreateBlog({ authorId }: { authorId: string }) {
     reset({
       title: "",
       content: "",
-      type: undefined,
+      categoryId: "",
       imageUrl: "",
       tags: [],
     })
@@ -148,12 +155,19 @@ export default function CreateBlog({ authorId }: { authorId: string }) {
   const onSubmit = async (data: BlogFormData) => {
     setIsSubmitting(true)
     try {
+      // Récupérer le nom de la catégorie sélectionnée
+      const selectedCategory = categories.find(
+        (cat) => cat.id === data.categoryId
+      )
+      const categoryName = selectedCategory?.name || ""
+
       const response = await createBlog(
         data.title,
         data.content,
-        data.type,
+        data.categoryId,
+        categoryName,
         data.imageUrl || "/assets/blog.png",
-        data.tags,
+        data.tags || [],
         authorId
       )
 
@@ -240,45 +254,42 @@ export default function CreateBlog({ authorId }: { authorId: string }) {
                   )}
                 />
 
-                {/* Blog Type Field */}
+                {/* Category Field */}
                 <FormField
                   control={form.control as any}
-                  name="type"
+                  name="categoryId"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-sm font-semibold text-slate-700">
-                        نوع المدونة
+                        فئة المدونة
                       </FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         value={field.value}
                         disabled={fieldsDisabled}
-                        key={`type-${resetKey}`} // Ajout de la clé pour forcer le reset
+                        key={`category-${resetKey}`}
                       >
                         <FormControl>
                           <SelectTrigger className="focus:border-primary h-12 border-slate-200">
-                            <SelectValue placeholder="اختر نوع المدونة" />
+                            <SelectValue placeholder={"اختر فئة المدونة"} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="text-start">
-                          <SelectItem
-                            value="ARTICLE"
-                            className="flex justify-end"
-                          >
-                            مقال 📝
-                          </SelectItem>
-                          <SelectItem
-                            value="RAPPORT"
-                            className="flex justify-end"
-                          >
-                            تقرير 📊
-                          </SelectItem>
-                          <SelectItem
-                            value="RECHERCHE"
-                            className="flex justify-end"
-                          >
-                            بحث 🔬
-                          </SelectItem>
+                          {categories.length === 0 ? (
+                            <div className="text-muted-foreground flex items-center justify-center p-2 text-sm">
+                              لا توجد فئات متاحة
+                            </div>
+                          ) : (
+                            categories.map((category) => (
+                              <SelectItem
+                                key={category.id}
+                                value={category.id}
+                                className="flex justify-end"
+                              >
+                                {category.name}
+                              </SelectItem>
+                            ))
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />

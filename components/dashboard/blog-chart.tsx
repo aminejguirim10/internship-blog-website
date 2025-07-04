@@ -24,7 +24,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import type { BlogType } from "@prisma/client"
 
 const chartConfig = {
   blogs: {
@@ -38,20 +37,11 @@ interface BlogChartProps {
     date: string
     blogs: number
   }>
-  type: BlogType
+  type: string
 }
 
-const getTypeLabel = (type: BlogType) => {
-  switch (type) {
-    case "ARTICLE":
-      return "المقالات"
-    case "RAPPORT":
-      return "التقارير"
-    case "RECHERCHE":
-      return "البحوث"
-    default:
-      return "المحتوى"
-  }
+const getTypeLabel = () => {
+  return "المحتوى"
 }
 
 // Remplir les jours manquants avec des valeurs 0
@@ -80,7 +70,7 @@ function fillMissingDates(
 export function BlogChart({ data, type }: BlogChartProps) {
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("30d")
-  const typeLabel = getTypeLabel(type)
+  const typeLabel = getTypeLabel()
 
   React.useEffect(() => {
     if (isMobile) {

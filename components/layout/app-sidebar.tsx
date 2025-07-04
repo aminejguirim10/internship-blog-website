@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 
 import { NavDocuments } from "@/components/layout/nav-documents"
@@ -21,13 +19,16 @@ import Image from "next/image"
 import { data } from "@/constants"
 import { User } from "@prisma/client"
 import { Icons } from "@/components/shared/icons"
+import { getCategories } from "@/data/get-categories"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   editor: User
 }
 
-export function AppSidebar({ editor, ...props }: AppSidebarProps) {
+export async function AppSidebar({ editor, ...props }: AppSidebarProps) {
   //TODO: Hope to fixe the sidebar bug
+  const categories = await getCategories()
+
   return (
     <Sidebar collapsible="offcanvas" {...props} className="bg-sidebar">
       <SidebarHeader>
@@ -53,7 +54,7 @@ export function AppSidebar({ editor, ...props }: AppSidebarProps) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="flex flex-col overflow-hidden">
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
           <SidebarMenu>
             <SidebarMenuItem className="text-white">
@@ -67,7 +68,8 @@ export function AppSidebar({ editor, ...props }: AppSidebarProps) {
           </SidebarMenu>
         </SidebarGroup>
         {editor.role === "ADMIN" && <NavMain items={data.navMain} />}
-        <NavDocuments items={data.documents} />
+
+        <NavDocuments items={categories} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={editor as any} />

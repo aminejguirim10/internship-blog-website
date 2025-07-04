@@ -6,17 +6,42 @@ import { useEffect, useState } from "react"
 import { Icons } from "@/components/shared/icons"
 import { navigationItems, navigationsIconsItems } from "@/constants"
 import NavbarSheet from "@/components/layout/navbar-sheet"
+import DynamicNavLinks from "@/components/layout/dynamic-nav-links"
+import { useIsEditor } from "@/hooks/use-is-editor"
 
 export default function Navbar() {
   const { isSignedIn, user, isLoaded } = useUser()
+  const { isEditor, isLoading: isEditorLoading } = useIsEditor()
   const [mounted, setMounted] = useState(false)
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>(
+    []
+  )
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true)
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setIsLoadingCategories(true)
+        const response = await fetch("/api/categories")
+        if (response.ok) {
+          const data = await response.json()
+          setCategories(data)
+        }
+      } catch (error) {
+      } finally {
+        setIsLoadingCategories(false)
+      }
+    }
+
+    fetchCategories()
+  }, [])
+
   const renderUserSection = () => {
-    if (!mounted || !isLoaded) {
+    if (!mounted || !isLoaded || isEditorLoading) {
       return (
         <div className="text-primary flex items-center gap-2">
           <div className="animate-pulse">
@@ -39,11 +64,16 @@ export default function Navbar() {
     if (isSignedIn) {
       return (
         <div className="text-primary flex items-center gap-2">
-          <Icons.layoutDashboard className="size-6" />
-          <span className="hover:text-secondary transition-colors duration-200 hover:underline hover:underline-offset-8">
-            <Link href={"/dashboard"}> لوحة التحكم</Link>
-          </span>
-          | <Icons.account className="size-6" />
+          {isEditor && (
+            <>
+              <Icons.layoutDashboard className="size-6" />
+              <span className="hover:text-secondary transition-colors duration-200 hover:underline hover:underline-offset-8">
+                <Link href={"/dashboard"}> لوحة التحكم</Link>
+              </span>
+              |
+            </>
+          )}
+          <Icons.account className="size-6" />
           <span className="hover:text-secondary transition-colors duration-200 hover:underline hover:underline-offset-8">
             <Link href={"/profile"}>حسابي</Link>
           </span>
@@ -94,6 +124,17 @@ export default function Navbar() {
       </div>
       <div className="bg-primary h-16">
         <div className="hidden h-full justify-center md:flex md:gap-4 lg:gap-10">
+          <Link
+            key={"الرئيسية"}
+            href={"/"}
+            className="hover:text-secondary flex items-center justify-center px-4 font-semibold text-white transition-colors duration-200 hover:underline hover:underline-offset-8 max-lg:text-sm"
+          >
+            الرئيسية
+          </Link>
+          <DynamicNavLinks
+            categories={categories}
+            isLoading={isLoadingCategories}
+          />
           {navigationItems.map((item, index) => (
             <Link
               key={index}
@@ -104,7 +145,10 @@ export default function Navbar() {
             </Link>
           ))}
         </div>
-        <NavbarSheet />
+        <NavbarSheet
+          categories={categories}
+          isLoadingCategories={isLoadingCategories}
+        />
       </div>
     </header>
   )

@@ -71,7 +71,7 @@ import { toast } from "sonner"
 import Image from "next/image"
 import { deleteBlog, responseBlog } from "@/actions/blog.actions"
 import { useRouter } from "next/navigation"
-import type { BlogType, BlogStatus } from "@prisma/client"
+import type { BlogStatus } from "@prisma/client"
 import {
   Dialog,
   DialogContent,
@@ -87,7 +87,6 @@ interface Blog {
   id: string
   title: string
   content: string
-  type: BlogType
   status: BlogStatus
   image: string | null
   createdAt: Date
@@ -134,22 +133,13 @@ const getStatusBadge = (status: BlogStatus) => {
   }
 }
 
-const getTypeLabel = (type: BlogType) => {
-  switch (type) {
-    case "ARTICLE":
-      return "مقال"
-    case "RAPPORT":
-      return "تقرير"
-    case "RECHERCHE":
-      return "بحث"
-    default:
-      return "محتوى"
-  }
+const getTypeLabel = () => {
+  return "محتوى"
 }
 
 interface BlogTableProps {
   data: Blog[]
-  type: BlogType
+  type: string
 }
 
 export function BlogTable({ data, type }: BlogTableProps) {
@@ -210,7 +200,7 @@ export function BlogTable({ data, type }: BlogTableProps) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="h-auto p-0 font-semibold text-slate-700 hover:cursor-pointer hover:bg-transparent hover:text-slate-900"
           >
-            {getTypeLabel(type)}
+            {getTypeLabel()}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         </div>
@@ -400,7 +390,7 @@ export function BlogTable({ data, type }: BlogTableProps) {
         // Show different buttons based on status
         if (blog.status === "ACCEPTED") {
           return (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center justify-center gap-1">
               <AlertDialog
                 open={deleteDialogOpen}
                 onOpenChange={setDeleteDialogOpen}
@@ -464,7 +454,7 @@ export function BlogTable({ data, type }: BlogTableProps) {
         // Show verification button for pending blogs
         if (blog.status === "PENDING") {
           return (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center justify-center gap-1">
               <Dialog
                 open={reviewDialogOpen}
                 onOpenChange={setReviewDialogOpen}
@@ -495,7 +485,7 @@ export function BlogTable({ data, type }: BlogTableProps) {
                         <div className="mt-3 flex items-center gap-2">
                           {getStatusBadge(blog.status)}
                           <Badge variant="outline" className="text-xs">
-                            {getTypeLabel(blog.type)}
+                            {getTypeLabel()}
                           </Badge>
                         </div>
                       </div>
@@ -594,7 +584,7 @@ export function BlogTable({ data, type }: BlogTableProps) {
                         <div className="rounded-lg bg-orange-100 p-2">
                           <FileText className="h-5 w-5 text-orange-600" />
                         </div>
-                        محتوى {getTypeLabel(blog.type)}
+                        محتوى {getTypeLabel()}
                       </h3>
                       <div className="max-h-96 overflow-y-auto rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
                         <div
@@ -786,7 +776,7 @@ export function BlogTable({ data, type }: BlogTableProps) {
     },
   })
 
-  const typeLabel = getTypeLabel(type)
+  const typeLabel = getTypeLabel()
 
   return (
     <div

@@ -1,16 +1,15 @@
 import { checkUser, checkAdmin, checkEditor } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { redirect } from "next/navigation"
-import type { BlogType } from "@prisma/client"
 import { headers } from "next/headers"
 
 export async function getLatestBlogs(
   pageSize = 6,
-  type: BlogType,
+  categoryId: string,
   blogId?: string
 ) {
   const where: any = {
-    type,
+    categoryId,
     status: "ACCEPTED",
   }
 
@@ -36,7 +35,47 @@ export async function getLatestBlogs(
   return blogs
 }
 
-export async function getAllBlogsByType(type: BlogType) {
+export async function getHomeLatestBlogs(
+  rank: number = 1,
+  pageSize: number = 6
+) {
+  const categories = await prisma.category.findMany({
+    orderBy: {
+      createdAt: "asc",
+    },
+    select: {
+      id: true,
+    },
+  })
+
+  if (categories.length < rank || rank < 1) {
+    return []
+  }
+
+  const categoryId = categories[rank - 1].id
+
+  const blogs = await prisma.blog.findMany({
+    where: {
+      categoryId,
+      status: "ACCEPTED",
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    take: pageSize,
+  })
+
+  return blogs
+}
+
+export async function getAllBlogsByType(categoryId: string) {
   const admin = await checkAdmin()
   if (!admin) {
     redirect("/sign-in")
@@ -44,7 +83,7 @@ export async function getAllBlogsByType(type: BlogType) {
 
   const blogs = await prisma.blog.findMany({
     where: {
-      type,
+      categoryId,
     },
     orderBy: {
       createdAt: "desc",
@@ -69,7 +108,7 @@ export async function getAllBlogsByType(type: BlogType) {
 }
 
 export async function getEditorAllBlogsByType(
-  type: BlogType,
+  categoryId: string,
   authorId: string
 ) {
   const editor = await checkEditor()
@@ -79,7 +118,7 @@ export async function getEditorAllBlogsByType(
 
   const blogs = await prisma.blog.findMany({
     where: {
-      type,
+      categoryId,
       authorId,
     },
     orderBy: {
@@ -104,7 +143,7 @@ export async function getEditorAllBlogsByType(
   return blogs
 }
 
-export async function getBlog(id: string, type: BlogType) {
+export async function getBlog(id: string) {
   const headersList = await headers()
 
   const ipAddress =
@@ -116,7 +155,6 @@ export async function getBlog(id: string, type: BlogType) {
     where: {
       id,
       status: "ACCEPTED",
-      type,
     },
     include: {
       tags: true,
@@ -151,10 +189,10 @@ export async function getBlog(id: string, type: BlogType) {
   return blog ? { ...blog, viewsCount } : null
 }
 
-export async function getMostViewedBlogs(pageSize = 3, type: BlogType) {
+export async function getMostViewedBlogs(pageSize = 3, categoryId: string) {
   const blogs = await prisma.blog.findMany({
     where: {
-      type,
+      categoryId,
       status: "ACCEPTED",
     },
     orderBy: {
@@ -174,7 +212,7 @@ export async function getMostViewedBlogs(pageSize = 3, type: BlogType) {
   return blogs
 }
 
-export async function getBlogMetrics(type: BlogType) {
+export async function getBlogMetrics(categoryId: string) {
   const admin = await checkAdmin()
   if (!admin) {
     redirect("/sign-in")
@@ -182,7 +220,7 @@ export async function getBlogMetrics(type: BlogType) {
 
   // Total blogs of this type
   const totalBlogs = await prisma.blog.count({
-    where: { type },
+    where: { categoryId },
   })
 
   // Blogs ce mois-ci
@@ -192,7 +230,7 @@ export async function getBlogMetrics(type: BlogType) {
 
   const newBlogsThisMonth = await prisma.blog.count({
     where: {
-      type,
+      categoryId,
       createdAt: {
         gte: startOfMonth,
       },
@@ -211,7 +249,7 @@ export async function getBlogMetrics(type: BlogType) {
 
   const lastMonthBlogs = await prisma.blog.count({
     where: {
-      type,
+      categoryId,
       createdAt: {
         gte: startOfLastMonth,
         lte: endOfLastMonth,
@@ -229,17 +267,17 @@ export async function getBlogMetrics(type: BlogType) {
 
   // Blogs by status
   const acceptedBlogs = await prisma.blog.count({
-    where: { type, status: "ACCEPTED" },
+    where: { categoryId, status: "ACCEPTED" },
   })
 
   const pendingBlogs = await prisma.blog.count({
-    where: { type, status: "PENDING" },
+    where: { categoryId, status: "PENDING" },
   })
 
-  // Total views for this type
+  // Total views for this categoryId
   const totalViews = await prisma.blogView.count({
     where: {
-      blog: { type },
+      blog: { categoryId },
     },
   })
 
@@ -258,7 +296,10 @@ export async function getBlogMetrics(type: BlogType) {
   }
 }
 
-export async function getEditorBlogMetrics(type: BlogType, authorId: string) {
+export async function getEditorBlogMetrics(
+  categoryId: string,
+  authorId: string
+) {
   const editor = await checkEditor()
   if (!editor) {
     redirect("/sign-in")
@@ -272,7 +313,7 @@ export async function getEditorBlogMetrics(type: BlogType, authorId: string) {
   // Total blogs ce mois-ci pour cet éditeur et ce type
   const totalBlogsThisMonth = await prisma.blog.count({
     where: {
-      type,
+      categoryId,
       authorId,
       createdAt: {
         gte: startOfMonth,
@@ -283,7 +324,7 @@ export async function getEditorBlogMetrics(type: BlogType, authorId: string) {
   // Blogs acceptés pour cet éditeur et ce type
   const blogsAccepted = await prisma.blog.count({
     where: {
-      type,
+      categoryId,
       authorId,
       status: "ACCEPTED",
     },
@@ -292,7 +333,7 @@ export async function getEditorBlogMetrics(type: BlogType, authorId: string) {
   // Blogs en attente pour cet éditeur et ce type
   const blogsPending = await prisma.blog.count({
     where: {
-      type,
+      categoryId,
       authorId,
       status: "PENDING",
     },
@@ -302,7 +343,7 @@ export async function getEditorBlogMetrics(type: BlogType, authorId: string) {
   const viewsThisMonth = await prisma.blogView.count({
     where: {
       blog: {
-        type,
+        categoryId,
         authorId,
       },
       createdAt: {
@@ -314,7 +355,7 @@ export async function getEditorBlogMetrics(type: BlogType, authorId: string) {
   // Total de tous les blogs de cet éditeur pour ce type (pour calculer des pourcentages si nécessaire)
   const totalBlogs = await prisma.blog.count({
     where: {
-      type,
+      categoryId,
       authorId,
     },
   })
@@ -333,7 +374,7 @@ export async function getEditorBlogMetrics(type: BlogType, authorId: string) {
   }
 }
 
-export async function getBlogChartData(type: BlogType) {
+export async function getBlogChartData(categoryId: string) {
   const admin = await checkAdmin()
   if (!admin) {
     redirect("/sign-in")
@@ -345,7 +386,7 @@ export async function getBlogChartData(type: BlogType) {
 
   const blogs = await prisma.blog.findMany({
     where: {
-      type,
+      categoryId,
       createdAt: {
         gte: ninetyDaysAgo,
       },
@@ -387,7 +428,10 @@ export async function getBlogChartData(type: BlogType) {
   }))
 }
 
-export async function getEditorBlogChartData(type: BlogType, authorId: string) {
+export async function getEditorBlogChartData(
+  categoryId: string,
+  authorId: string
+) {
   const editor = await checkEditor()
   if (!editor) {
     redirect("/sign-in")
@@ -399,7 +443,7 @@ export async function getEditorBlogChartData(type: BlogType, authorId: string) {
 
   const blogs = await prisma.blog.findMany({
     where: {
-      type,
+      categoryId,
       authorId,
       createdAt: {
         gte: ninetyDaysAgo,
@@ -444,15 +488,19 @@ export async function getEditorBlogChartData(type: BlogType, authorId: string) {
 
 export const filterBlogs = async (
   title: string | null,
-  type: "RAPPORT" | "RECHERCHE" | "ARTICLE" | null,
+  categoryId: string,
   page = 1,
   pageSize = 10,
   date: Date | null,
   authorName: string | null
 ) => {
   const where: any = {
-    type,
     status: "ACCEPTED",
+  }
+
+  // Ajouter le filtre categoryId seulement s'il est fourni
+  if (categoryId) {
+    where.categoryId = categoryId
   }
 
   if (title) {
@@ -506,8 +554,7 @@ export const filterBlogs = async (
 export const getBlogsByAuthor = async (
   authorId: string,
   page = 1,
-  pageSize = 6,
-  type?: BlogType
+  pageSize = 6
 ) => {
   const user = await checkUser()
   if (!user) {
@@ -517,10 +564,6 @@ export const getBlogsByAuthor = async (
   const where: any = {
     authorId,
     status: "ACCEPTED",
-  }
-
-  if (type) {
-    where.type = type
   }
 
   const totalCount = await prisma.blog.count({ where })

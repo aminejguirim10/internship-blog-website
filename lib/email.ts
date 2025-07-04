@@ -540,7 +540,6 @@ export const createBlogTemplate = (
   authorName: string,
   authorEmail: string,
   blogTitle: string,
-  blogType: string,
   tags: string[]
 ) => {
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -630,7 +629,7 @@ export const createBlogTemplate = (
                     عنوان المدونة
                   </h4>
                   <p style="color: #343a40; font-size: 18px; font-weight: 500; margin: 0; line-height: 26px;">
-                    "${blogTitle}"
+                    ${blogTitle}
                   </p>
                 </div>
 
@@ -640,8 +639,8 @@ export const createBlogTemplate = (
                       نوع المدونة
                     </td>
                     <td style="padding: 12px; border: 1px solid #e9ecef; color: #343a40;">
-                      <span style="background-color: ${blogType === "ARTICLE" ? "#e8f5e8" : blogType === "RAPPORT" ? "#e3f2fd" : "#fff3cd"}; color: ${blogType === "ARTICLE" ? "#155724" : blogType === "RAPPORT" ? "#1976d2" : "#856404"}; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">
-                        ${blogType === "ARTICLE" ? "📄 مقال" : blogType === "RAPPORT" ? "📊 تقرير" : "🔬 بحث"}
+                      <span style="background-color:  "#e3f2fd" ; color:  "#1976d2" ; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">
+                      📄 مدونة
                       </span>
                     </td>
                   </tr>

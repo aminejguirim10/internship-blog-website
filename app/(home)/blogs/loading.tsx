@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton"
 
-const RecherchesLoadingPage = () => {
+const BlogsLoadingPage = () => {
   return (
     <div className="flex flex-col-reverse px-2 py-8 lg:flex-row">
       <div className="flex-1 p-8">
@@ -70,4 +70,4 @@ const RecherchesLoadingPage = () => {
   )
 }
 
-export default RecherchesLoadingPage
+export default BlogsLoadingPage

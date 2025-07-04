@@ -58,9 +58,11 @@ export const blogSchema = z.object({
     .min(5, "العنوان يجب أن يكون على الأقل 5 أحرف")
     .max(100, "العنوان لا يجب أن يتجاوز 100 حرف"),
   content: z.string().min(50, "المحتوى يجب أن يكون على الأقل 50 حرف"),
-  type: z.enum(["ARTICLE", "RECHERCHE", "RAPPORT"], {
-    required_error: "يرجى اختيار نوع المدونة",
-  }),
+  categoryId: z
+    .string({
+      required_error: "يرجى اختيار فئة المدونة",
+    })
+    .min(1, "يرجى اختيار فئة المدونة"),
   imageUrl: z.string().optional(),
   tags: z.array(z.string()).optional().default([]),
 })
@@ -72,4 +74,8 @@ export const eventSchema = z.object({
   hour: z.string().min(2, "وقت الحدث مطلوب"),
   link: z.string().url("يجب أن يكون الرابط صحيحاً"),
   imageUrl: z.string().optional(),
+})
+
+export const categorySchema = z.object({
+  name: z.string().min(2, "اسم الفئة مطلوب").max(50, "اسم الفئة طويل جداً"),
 })

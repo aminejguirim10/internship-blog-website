@@ -25,11 +25,8 @@ import {
   XCircle,
   Eye,
   Search,
-  MoreHorizontal,
-  Edit,
   Trash2,
   User,
-  Settings2,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
@@ -38,7 +35,7 @@ import {
   Settings,
   FileText,
 } from "lucide-react"
-import type { BlogType, BlogStatus } from "@prisma/client"
+import type { BlogStatus } from "@prisma/client"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -70,7 +67,6 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -84,7 +80,6 @@ interface Blog {
   id: string
   title: string
   content: string
-  type: BlogType
   status: BlogStatus
   image: string | null
   createdAt: Date
@@ -131,22 +126,13 @@ const getStatusBadge = (status: BlogStatus) => {
   }
 }
 
-const getTypeLabel = (type: BlogType) => {
-  switch (type) {
-    case "ARTICLE":
-      return "مقال"
-    case "RAPPORT":
-      return "تقرير"
-    case "RECHERCHE":
-      return "بحث"
-    default:
-      return "محتوى"
-  }
+const getTypeLabel = () => {
+  return "محتوى"
 }
 
 interface EditorBlogTableProps {
   data: Blog[]
-  type: BlogType
+  type: string
   authorName?: string
 }
 
@@ -210,7 +196,7 @@ export function EditorBlogTable({
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="h-auto p-0 font-semibold text-slate-700 hover:cursor-pointer hover:bg-transparent hover:text-slate-900"
           >
-            {getTypeLabel(type)}
+            محتوى
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         </div>
@@ -453,7 +439,7 @@ export function EditorBlogTable({
     },
   })
 
-  const typeLabel = getTypeLabel(type)
+  const typeLabel = getTypeLabel()
 
   return (
     <div
