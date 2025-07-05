@@ -27,6 +27,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   blogs         Blog[]
   comments      Comment[]
+  signals       Signal[]
 
   @@map("users")
 }
@@ -119,12 +120,24 @@ model Comment {
   blog   Blog   @relation(fields: [blogId], references: [id], onDelete: Cascade)
   blogId String
 
-  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author   User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
+  signals  Signal[]
 
   @@index([blogId])
   @@index([authorId])
   @@map("comments")
+}
+
+model Signal {
+  id        String  @id @default(cuid())
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+
+  @@unique([commentId, userId])
+  @@map("signals")
 }
 
 enum Role {

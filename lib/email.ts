@@ -1001,3 +1001,108 @@ export const responseBlogTemplate = (
 </html>
 `
 }
+
+export const createSignalTemplate = (
+  reporterName: string,
+  reporterEmail: string,
+  commentContent: string,
+  commentAuthorName: string,
+  blogTitle: string,
+  blogPath: string
+) => {
+  return `
+    <!DOCTYPE html>
+    <html lang="ar" dir="rtl">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>⚠️ تقرير تعليق جديد</title>
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Arial', sans-serif; line-height: 1.6; color: #333; background-color: #f8fafc; direction: rtl; }
+        .container { max-width: 600px; margin: 20px auto; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 30px; text-align: center; }
+        .header h1 { font-size: 28px; margin-bottom: 10px; font-weight: bold; }
+        .header p { font-size: 16px; opacity: 0.9; }
+        .content { padding: 30px; }
+        .alert-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 20px; margin-bottom: 25px; border-right: 4px solid #ef4444; }
+        .alert-box h3 { color: #dc2626; margin-bottom: 10px; font-size: 18px; }
+        .info-grid { display: grid; gap: 15px; margin-bottom: 25px; }
+        .info-item { background: #f8fafc; padding: 15px; border-radius: 8px; border-right: 3px solid #3b82f6; }
+        .info-label { font-weight: bold; color: #1f2937; margin-bottom: 5px; }
+        .info-value { color: #4b5563; word-break: break-word; }
+        .comment-box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0; border-right: 4px solid #f59e0b; }
+        .comment-box h4 { color: #92400e; margin-bottom: 10px; }
+        .comment-content { background: white; padding: 15px; border-radius: 6px; border: 1px solid #d1d5db; white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
+        .action-buttons { display: flex; gap: 15px; margin-top: 25px; justify-content: center; }
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; text-decoration: none; display: inline-block; transition: all 0.3s ease; width: 100%; text-align: center; }
+        .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; }
+        .btn-danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
+        .footer { background: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb; }
+        .footer p { color: #6b7280; font-size: 14px; }
+        @media (max-width: 600px) {
+          .container { margin: 10px; border-radius: 0; }
+          .action-buttons { flex-direction: column; }
+          .btn { width: 100%; }
+        }
+      </style>
+    </head>
+    <body dir="rtl">
+      <div class="container">
+        <div class="header">
+          <h1>⚠️ تقرير تعليق جديد</h1>
+          <p>تم الإبلاغ عن تعليق مثير للجدل</p>
+        </div>
+        
+        <div class="content">
+          <div class="alert-box">
+            <h3>🚨 تنبيه هام</h3>
+            <p>تم الإبلاغ عن تعليق من قبل أحد المستخدمين. يرجى مراجعة المحتوى واتخاذ الإجراء المناسب.</p>
+          </div>
+          
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-label">👤 المبلغ:</div>
+              <div class="info-value">${reporterName} (${reporterEmail})</div>
+            </div>
+            
+            <div class="info-item">
+              <div class="info-label">📝 كاتب التعليق:</div>
+              <div class="info-value">${commentAuthorName}</div>
+            </div>
+            
+            <div class="info-item">
+              <div class="info-label">📖 عنوان المدونة:</div>
+              <div class="info-value">${blogTitle}</div>
+            </div>
+            
+            <div class="info-item">
+              <div class="info-label">🔗 رابط المدونة:</div>
+              <div class="info-value">
+                <a href="${blogPath}" style="color: #3b82f6; text-decoration: none;">${blogPath}</a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="comment-box">
+            <h4>💬 محتوى التعليق المبلغ عنه:</h4>
+            <div class="comment-content">${commentContent}</div>
+          </div>
+          
+          <div class="action-buttons">
+            <a href="${blogPath}" class="btn btn-primary">
+              📖 عرض المدونة
+            </a>
+           
+          </div>
+        </div>
+        
+        <div class="footer">
+          <p>تم إرسال هذا التقرير تلقائياً من نظام إدارة المحتوى</p>
+          <p>تاريخ التقرير: ${new Date().toLocaleString("fr-FR", { hour12: false, day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" }).replace(/(\d{2})\/(\d{2})\/(\d{4}), (\d{2}):(\d{2}):(\d{2})/, "$1/$2/$3 $4:$5:$6")}</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `
+}

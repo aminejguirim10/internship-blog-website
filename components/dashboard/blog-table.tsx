@@ -470,7 +470,7 @@ export function BlogTable({ data, type }: BlogTableProps) {
                   </Button>
                 </DialogTrigger>
                 <DialogContent
-                  className="max-h-[90vh] max-w-4xl overflow-y-auto"
+                  className="max-h-[90vh] overflow-y-auto max-sm:max-w-4xl md:max-w-5xl"
                   dir="rtl"
                 >
                   <DialogHeader className="space-y-4 border-b pb-6">
@@ -584,14 +584,76 @@ export function BlogTable({ data, type }: BlogTableProps) {
                         <div className="rounded-lg bg-orange-100 p-2">
                           <FileText className="h-5 w-5 text-orange-600" />
                         </div>
-                        محتوى {getTypeLabel()}
+                        المحتوى
                       </h3>
                       <div className="max-h-96 overflow-y-auto rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
                         <div
-                          className="prose prose-slate max-w-none text-base leading-relaxed"
+                          className="blog-content-responsive"
                           dangerouslySetInnerHTML={{ __html: blog.content }}
                         />
                       </div>
+                      <style
+                        dangerouslySetInnerHTML={{
+                          __html: `
+                        .blog-content-responsive {
+                          max-width: none !important;
+                          width: 100% !important;
+                          word-break: break-word !important;
+                          overflow-wrap: break-word !important;
+                          hyphens: auto !important;
+                          line-height: 1.6 !important;
+                        }
+                        .blog-content-responsive * {
+                          max-width: none !important;
+                          width: 100% !important;
+                          word-break: break-word !important;
+                          overflow-wrap: break-word !important;
+                          box-sizing: border-box !important;
+                        }
+                        .blog-content-responsive p,
+                        .blog-content-responsive div,
+                        .blog-content-responsive h1,
+                        .blog-content-responsive h2,
+                        .blog-content-responsive h3,
+                        .blog-content-responsive h4,
+                        .blog-content-responsive h5,
+                        .blog-content-responsive h6,
+                        .blog-content-responsive span,
+                        .blog-content-responsive strong,
+                        .blog-content-responsive em,
+                        .blog-content-responsive ul,
+                        .blog-content-responsive ol,
+                        .blog-content-responsive li,
+                        .blog-content-responsive blockquote,
+                        .blog-content-responsive pre,
+                        .blog-content-responsive code {
+                          max-width: none !important;
+                          width: 100% !important;
+                          word-break: break-word !important;
+                          overflow-wrap: break-word !important;
+                          white-space: pre-wrap !important;
+                          box-sizing: border-box !important;
+                        }
+                        .blog-content-responsive img {
+                          max-width: 100% !important;
+                          width: auto !important;
+                          height: auto !important;
+                          display: block !important;
+                        }
+                        .blog-content-responsive table {
+                          width: 100% !important;
+                          max-width: none !important;
+                          table-layout: fixed !important;
+                          word-break: break-word !important;
+                        }
+                        .blog-content-responsive td,
+                        .blog-content-responsive th {
+                          word-break: break-word !important;
+                          overflow-wrap: break-word !important;
+                        }
+                        `,
+                        }}
+                      />
                     </div>
                     {/* Tags Card */}
                     {blog.tags && blog.tags.length > 0 && (

@@ -121,7 +121,7 @@ const BlogSection = async ({ id }: { id: string }) => {
         ))}
       </div>
       <div className="py-4" />
-      <LoadMoreComments blogId={id} pageSize={3} />
+      <LoadMoreComments blogId={id} pageSize={4} />
     </div>
   )
 }

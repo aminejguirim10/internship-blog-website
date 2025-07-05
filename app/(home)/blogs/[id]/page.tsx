@@ -79,7 +79,12 @@ const BlogPage = async ({
       </div>
       <div className="mt-4 flex gap-2 self-center md:mt-8 md:gap-4">
         {navigationsIconsItems.map((item, index) => (
-          <Link key={index} href={item.href} aria-label={item.label}>
+          <Link
+            key={index}
+            href={item.href}
+            aria-label={item.label}
+            target="_blank"
+          >
             <div className="bg-primary hover:bg-secondary flex items-center justify-center rounded-full p-2 text-white transition-colors duration-200">
               <item.icon className="size-5 md:size-8" />
             </div>

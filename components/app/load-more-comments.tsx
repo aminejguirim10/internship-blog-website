@@ -29,18 +29,22 @@ import {
   Clock,
   User,
   Smile,
+  Flag,
+  Shield,
 } from "lucide-react"
 import {
   createComment,
   deleteComment,
   updateComment,
 } from "@/actions/comment.actions"
+import { createSignal } from "@/actions/signal.actions"
 import { toast } from "sonner"
 import { formatDistanceToNow } from "date-fns"
 import { ar } from "date-fns/locale"
 import { getFallback } from "@/lib/utils"
 import Link from "next/link"
 import EmojiPicker, { Categories, EmojiClickData } from "emoji-picker-react"
+import { useIsEditor } from "@/hooks/use-is-editor"
 
 interface Comment {
   id: string
@@ -68,6 +72,7 @@ export function LoadMoreComments({
   pageSize = ITEMS_PER_PAGE,
 }: LoadMoreCommentsProps) {
   const { user, isLoaded } = useUser()
+  const { isAdmin } = useIsEditor()
 
   // Core state
   const [comments, setComments] = useState<Comment[]>([])
@@ -91,6 +96,13 @@ export function LoadMoreComments({
     null
   )
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+
+  // Signal state
+  const [reportingCommentId, setReportingCommentId] = useState<string | null>(
+    null
+  )
+  const [showReportDialog, setShowReportDialog] = useState(false)
+  const [isReporting, setIsReporting] = useState(false)
 
   // Emoji picker state
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
@@ -198,7 +210,7 @@ export function LoadMoreComments({
         setTotalComments((prev) => prev + 1)
         if (!hasComments) setHasComments(true)
       } else {
-        toast.error(result.message || "حدث خطأ أثناء إضافة التعليق")
+        toast.error("حدث خطأ أثناء إضافة التعليق")
       }
     } catch (error) {
       toast.error("حدث خطأ أثناء إضافة التعليق")
@@ -244,7 +256,7 @@ export function LoadMoreComments({
           )
           handleCancelEdit()
         } else {
-          toast.error(result.message || "حدث خطأ أثناء تعديل التعليق")
+          toast.error("حدث خطأ أثناء تعديل التعليق")
         }
       } catch (error) {
         toast.error("حدث خطأ أثناء تعديل التعليق")
@@ -263,28 +275,93 @@ export function LoadMoreComments({
 
   const confirmDeleteComment = useCallback(async () => {
     if (!deletingCommentId) return
+
+    const commentIdToDelete = deletingCommentId
+
+    // Close the dialog immediately and show loading toast for instant feedback
+    setShowDeleteDialog(false)
+    setDeletingCommentId(null)
+
+    toast.loading("جارٍ حذف التعليق...", {
+      id: "delete-loading",
+    })
+
+    // Process the deletion in the background using setTimeout
+
     try {
-      const result = await deleteComment(deletingCommentId)
+      const result = await deleteComment(commentIdToDelete)
+
+      // Close the loading toast
+      toast.dismiss("delete-loading")
+
       if (result.success) {
-        toast.success("تم حذف التعليق بنجاح")
+        // Update the UI only after successful deletion
         setComments((prev) =>
-          prev.filter((comment) => comment.id !== deletingCommentId)
+          prev.filter((comment) => comment.id !== commentIdToDelete)
         )
         setTotalComments((prev) => Math.max(0, prev - 1))
+        toast.success("تم حذف التعليق بنجاح")
       } else {
-        toast.error(result.message || "حدث خطأ أثناء حذف التعليق")
+        toast.error("حدث خطأ أثناء حذف التعليق")
       }
     } catch (error) {
+      toast.dismiss("delete-loading")
       toast.error("حدث خطأ أثناء حذف التعليق")
-    } finally {
-      setDeletingCommentId(null)
-      setShowDeleteDialog(false)
     }
   }, [deletingCommentId])
 
   const cancelDeleteComment = useCallback(() => {
     setDeletingCommentId(null)
     setShowDeleteDialog(false)
+  }, [])
+
+  // Report comment handlers
+  const handleReportComment = useCallback((commentId: string) => {
+    setReportingCommentId(commentId)
+    setShowReportDialog(true)
+  }, [])
+
+  const confirmReportComment = useCallback(async () => {
+    if (!reportingCommentId || !user) return
+
+    // Save the comment ID before resetting it
+    const commentIdToReport = reportingCommentId
+
+    setIsReporting(true)
+
+    // Close the dialog immediately for better UX
+    setShowReportDialog(false)
+    setReportingCommentId(null)
+
+    // Show processing message immediately
+    toast.loading("جاري إرسال التقرير...", { id: "report-loading" })
+
+    try {
+      const result = await createSignal(commentIdToReport)
+
+      // Close the loading toast
+      toast.dismiss("report-loading")
+
+      if (result.status === 201) {
+        toast.success(
+          "تم إرسال التقرير بنجاح. شكراً لك على المساعدة في الحفاظ على المجتمع آمناً."
+        )
+      } else if (result.status === 400) {
+        toast.warning("لقد قمت بالإبلاغ عن هذا التعليق من قبل.")
+      } else {
+        toast.error("حدث خطأ أثناء إرسال التقرير")
+      }
+    } catch (error) {
+      toast.dismiss("report-loading")
+      toast.error("حدث خطأ أثناء إرسال التقرير")
+    } finally {
+      setIsReporting(false)
+    }
+  }, [reportingCommentId, user])
+
+  const cancelReportComment = useCallback(() => {
+    setReportingCommentId(null)
+    setShowReportDialog(false)
   }, [])
 
   const isCommentEdited = useCallback((comment: Comment) => {
@@ -299,6 +376,13 @@ export function LoadMoreComments({
       return user?.id === comment.author.clerkId
     },
     [user?.id]
+  )
+
+  const canDeleteComment = useCallback(
+    (comment: Comment) => {
+      return isCommentOwner(comment) || isAdmin
+    },
+    [isCommentOwner, isAdmin]
   )
 
   const getCharacterCount = useCallback((text: string) => {
@@ -610,6 +694,7 @@ export function LoadMoreComments({
                     </Avatar>
 
                     <div className="min-w-0 flex-1">
+                      {" "}
                       <div className="mb-3 flex items-center justify-between">
                         <div className="flex flex-wrap items-center gap-3">
                           <h5 className="text-lg font-semibold text-slate-900">
@@ -632,39 +717,79 @@ export function LoadMoreComments({
                           )}
                         </div>
 
-                        {isCommentOwner(comment) && (
-                          <div className="flex items-center gap-1">
-                            <Badge
-                              variant="outline"
-                              className="text-primary bg-secondary/20 border-primary/20 text-xs"
-                            >
-                              <User className="ml-1 h-3 w-3" />
-                              مؤلف
-                            </Badge>
+                        <div className="flex items-center gap-2">
+                          {isCommentOwner(comment) && (
                             <div className="flex items-center gap-1">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleEditComment(comment)}
-                                className="h-8 w-8 p-0 text-blue-600 hover:cursor-pointer hover:bg-blue-50 hover:text-blue-700"
-                                title="تعديل التعليق"
+                              <Badge
+                                variant="outline"
+                                className="text-primary bg-secondary/20 border-primary/20 text-xs"
                               >
-                                <Edit3 className="h-4 w-4" />
-                              </Button>
+                                <User className="ml-1 h-3 w-3" />
+                                مؤلف
+                              </Badge>
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleEditComment(comment)}
+                                  className="h-8 w-8 p-0 text-blue-600 hover:cursor-pointer hover:bg-blue-50 hover:text-blue-700"
+                                  title="تعديل التعليق"
+                                >
+                                  <Edit3 className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() =>
+                                    handleDeleteComment(comment.id)
+                                  }
+                                  className="h-8 w-8 p-0 text-red-600 hover:cursor-pointer hover:bg-red-50 hover:text-red-700"
+                                  title="حذف التعليق"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Admin delete button for non-owned comments */}
+                          {!isCommentOwner(comment) && isAdmin && (
+                            <div className="flex items-center gap-1">
+                              <Badge
+                                variant="outline"
+                                className="border-red-200 bg-red-50 text-xs text-red-700"
+                              >
+                                <Shield className="ml-1 h-3 w-3" />
+                                مشرف
+                              </Badge>
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => handleDeleteComment(comment.id)}
                                 className="h-8 w-8 p-0 text-red-600 hover:cursor-pointer hover:bg-red-50 hover:text-red-700"
-                                title="حذف التعليق"
+                                title="حذف التعليق (صلاحية المشرف)"
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             </div>
-                          </div>
-                        )}
-                      </div>
+                          )}
 
+                          {/* Report button for non-owners and non-admins */}
+                          {user && !isCommentOwner(comment) && !isAdmin && (
+                            <div className="flex items-center gap-1">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleReportComment(comment.id)}
+                                className="h-8 w-8 p-0 text-orange-600 hover:cursor-pointer hover:bg-orange-50 hover:text-orange-700"
+                                title="الإبلاغ عن التعليق"
+                              >
+                                <Flag className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                       {/* Edit Comment Form with Emoji Picker */}
                       {editingCommentId === comment.id ? (
                         <div className="space-y-4 rounded-lg bg-slate-50 p-4">
@@ -883,6 +1008,65 @@ export function LoadMoreComments({
             >
               <Trash2 className="ml-1 h-4 w-4" />
               حذف التعليق
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Report Confirmation Dialog */}
+      <AlertDialog open={showReportDialog} onOpenChange={setShowReportDialog}>
+        <AlertDialogContent dir="rtl" className="max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-lg">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-100">
+                <Flag className="h-5 w-5 text-orange-600" />
+              </div>
+              تأكيد الإبلاغ عن التعليق
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base leading-relaxed text-slate-600">
+              هل أنت متأكد من رغبتك في الإبلاغ عن هذا التعليق؟ سيتم إرسال تقرير
+              إلى فريق الإدارة لمراجعة المحتوى. يرجى الإبلاغ فقط عن المحتوى
+              المخالف للقواعد.
+            </AlertDialogDescription>
+            <div className="mt-3 rounded-lg bg-orange-50 p-3 text-sm text-orange-800">
+              <div className="flex items-start gap-2">
+                <Shield className="mt-0.5 h-4 w-4" />
+                <div>
+                  <strong>أسباب الإبلاغ:</strong>
+                  <ul className="mt-1 list-inside list-disc space-y-1 text-xs">
+                    <li>محتوى مسيء أو مؤذي</li>
+                    <li>معلومات مضللة</li>
+                    <li>انتهاك حقوق الطبع والنشر</li>
+                    <li>محتوى غير مناسب</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="gap-2">
+            <AlertDialogCancel
+              onClick={cancelReportComment}
+              className="hover:cursor-pointer hover:bg-slate-100"
+              disabled={isReporting}
+            >
+              إلغاء
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmReportComment}
+              disabled={isReporting}
+              className="bg-orange-600 shadow-md hover:cursor-pointer hover:bg-orange-700"
+            >
+              {isReporting ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  جاري الإرسال...
+                </div>
+              ) : (
+                <>
+                  <Flag className="ml-1 h-4 w-4" />
+                  إرسال التقرير
+                </>
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

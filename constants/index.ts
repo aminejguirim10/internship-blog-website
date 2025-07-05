@@ -12,37 +12,37 @@ export const navigationsIconsItems = [
   {
     label: "telegram",
     icon: Icons.telegram,
-    href: "telegram.com",
+    href: "https://telegram.org",
   },
   {
     label: "whatsapp",
     icon: Icons.whatsapp,
-    href: "whatsapp.com",
+    href: "https://whatsapp.com",
   },
   {
     label: "youtube",
     icon: Icons.youtube,
-    href: "youtube.com",
+    href: "https://youtube.com",
   },
   {
     label: "linkedin",
     icon: Icons.linkedin,
-    href: "linkedin.com",
+    href: "https://linkedin.com",
   },
   {
     label: "twitter",
     icon: Icons.twitter,
-    href: "twitter.com",
+    href: "https://twitter.com",
   },
   {
     label: "instagram",
     icon: Icons.instagram,
-    href: "instagram.com",
+    href: "https://instagram.com",
   },
   {
     label: "facebook",
     icon: Icons.facebook,
-    href: "facebook.com",
+    href: "https://facebook.com",
   },
 ]
 
@@ -54,21 +54,21 @@ export const instituteLinks = [
 ]
 
 export const reportsLinks = [
-  { label: "ركن شهري", href: "/rapports" },
-  { label: "ركن شهري", href: "/rapports" },
+  { label: "ركن شهري", href: "/blogs" },
+  { label: "ركن شهري", href: "/blogs" },
 ]
 
 export const researchLinks = [
-  { label: "الأبحاث المتعلقة بالدين", href: "/recherches" },
+  { label: "الأبحاث المتعلقة بالدين", href: "/blogs" },
   {
     label: "الأبحاث السياسية",
-    href: "/recherches",
+    href: "/blogs",
     underlined: true,
   },
-  { label: "العلاقات الدولية", href: "/recherches" },
+  { label: "العلاقات الدولية", href: "/blogs" },
   {
     label: "العلاقات الإستراتيجية",
-    href: "/recherches",
+    href: "/blogs",
     underlined: true,
   },
 ]

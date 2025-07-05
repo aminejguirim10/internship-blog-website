@@ -114,7 +114,12 @@ export default function Navbar() {
         </div>
         <div className="hidden gap-2 md:flex">
           {navigationsIconsItems.map((item, index) => (
-            <Link key={index} href={item.href} aria-label={item.label}>
+            <Link
+              key={index}
+              href={item.href}
+              aria-label={item.label}
+              target="_blank"
+            >
               <div className="bg-primary hover:bg-secondary flex items-center justify-center rounded-full p-2 text-white transition-colors duration-200">
                 <item.icon className="size-5" />
               </div>

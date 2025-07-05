@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 export function useIsEditor() {
   const { user, isLoaded } = useUser()
   const [isEditor, setIsEditor] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -15,6 +16,7 @@ export function useIsEditor() {
 
     if (!user) {
       setIsEditor(false)
+      setIsAdmin(false)
       setIsLoading(false)
       return
     }
@@ -25,14 +27,17 @@ export function useIsEditor() {
 
         if (!response.ok) {
           setIsEditor(false)
+          setIsAdmin(false)
           setIsLoading(false)
           return
         }
 
         const data = await response.json()
         setIsEditor(data.isEditor)
+        setIsAdmin(data.isAdmin)
       } catch (error) {
         setIsEditor(false)
+        setIsAdmin(false)
       } finally {
         setIsLoading(false)
       }
@@ -41,5 +46,5 @@ export function useIsEditor() {
     checkEditorRole()
   }, [user, isLoaded])
 
-  return { isEditor, isLoading }
+  return { isEditor, isAdmin, isLoading }
 }

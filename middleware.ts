@@ -2,10 +2,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
 
 const isPublicRoute = createRouteMatcher([
   "/",
-  "/search",
-  "/events(.*)",
-  "/articles(.*)",
-  "/rapports(.*)",
+  "/blogs(.*)",
   "/contact-us",
   "/about-us",
   "/recherches(.*)",
@@ -14,6 +11,7 @@ const isPublicRoute = createRouteMatcher([
   "/sign-up(.*)",
   "/api/uploadthing", // Public API route for Uploadthing for not causing the callback error
   "/api/comments", // Public API route for comments
+  "/api/categories", // Public API route for categories
 ])
 export default clerkMiddleware(async (auth, req) => {
   if (!isPublicRoute(req)) {
