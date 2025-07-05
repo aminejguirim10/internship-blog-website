@@ -1,13 +1,12 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 import { useInView } from "react-intersection-observer"
 import { useUser } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,7 +18,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
-
 import {
   MessageCircle,
   Send,
@@ -30,6 +28,7 @@ import {
   X,
   Clock,
   User,
+  Smile,
 } from "lucide-react"
 import {
   createComment,
@@ -41,6 +40,7 @@ import { formatDistanceToNow } from "date-fns"
 import { ar } from "date-fns/locale"
 import { getFallback } from "@/lib/utils"
 import Link from "next/link"
+import EmojiPicker, { Categories, EmojiClickData } from "emoji-picker-react"
 
 interface Comment {
   id: string
@@ -60,7 +60,6 @@ interface LoadMoreCommentsProps {
   pageSize?: number
 }
 
-// Constants for better maintainability
 const MAX_COMMENT_LENGTH = 1000
 const ITEMS_PER_PAGE = 10
 
@@ -72,7 +71,7 @@ export function LoadMoreComments({
 
   // Core state
   const [comments, setComments] = useState<Comment[]>([])
-  const [totalComments, setTotalComments] = useState(0) // Total count from server
+  const [totalComments, setTotalComments] = useState(0)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
   const [hasComments, setHasComments] = useState(true)
@@ -93,56 +92,44 @@ export function LoadMoreComments({
   )
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
+  // Emoji picker state
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [showEditEmojiPicker, setShowEditEmojiPicker] = useState(false)
+  const newCommentRef = useRef<HTMLTextAreaElement>(null)
+  const editCommentRef = useRef<HTMLTextAreaElement>(null)
+
   const { ref, inView } = useInView({
     threshold: 0,
     rootMargin: "100px",
   })
 
-  // Optimized loadMore function with better error handling
+  // Load more comments
   const loadMore = useCallback(async () => {
     if (isLoading || !hasMore) return
-
     setIsLoading(true)
     try {
       const res = await fetch(
         `/api/comments?blogId=${blogId}&page=${page}&pageSize=${pageSize}`
       )
-
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`)
-      }
-
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`)
       const data = await res.json()
-
       if (
         !data?.comments ||
         !Array.isArray(data.comments) ||
         data.comments.length === 0
       ) {
         setHasMore(false)
-        if (comments.length === 0) {
-          setHasComments(false)
-        }
-        // Set total count even if no new comments
-        if (data?.totalCount !== undefined) {
-          setTotalComments(data.totalCount)
-        }
+        if (comments.length === 0) setHasComments(false)
+        if (data?.totalCount !== undefined) setTotalComments(data.totalCount)
         return
       }
-
       setComments((prev) => [...prev, ...data.comments])
       setPage((prev) => prev + 1)
       setHasMore(data.hasMore)
-
-      // Update total count from server response
-      if (data?.totalCount !== undefined) {
-        setTotalComments(data.totalCount)
-      }
+      if (data?.totalCount !== undefined) setTotalComments(data.totalCount)
     } catch (error) {
       setHasMore(false)
-      if (comments.length === 0) {
-        setHasComments(false)
-      }
+      if (comments.length === 0) setHasComments(false)
       toast.error("حدث خطأ أثناء جلب التعليقات")
     } finally {
       setIsLoading(false)
@@ -150,64 +137,66 @@ export function LoadMoreComments({
   }, [isLoading, hasMore, blogId, page, pageSize, comments.length])
 
   useEffect(() => {
-    if (inView && hasMore && !isLoading) {
-      loadMore()
-    }
+    if (inView && hasMore && !isLoading) loadMore()
   }, [inView, hasMore, isLoading, loadMore])
 
-  // Comment submission with validation
+  // Handle emoji selection
+  const handleEmojiClick = useCallback(
+    (emojiData: EmojiClickData, isEdit: boolean) => {
+      const emoji = emojiData.emoji
+      if (isEdit) {
+        setEditContent((prev) => prev + emoji)
+        if (editCommentRef.current) {
+          editCommentRef.current.focus()
+        }
+      } else {
+        setNewComment((prev) => prev + emoji)
+        if (newCommentRef.current) {
+          newCommentRef.current.focus()
+        }
+      }
+      setShowEmojiPicker(false)
+      setShowEditEmojiPicker(false)
+    },
+    []
+  )
+
+  // Comment submission
   const handleSubmitComment = useCallback(async () => {
     if (!user) {
       toast.error("يجب تسجيل الدخول لإضافة تعليق")
       return
     }
-
     const trimmedComment = newComment.trim()
     if (!trimmedComment) {
       toast.error("يرجى كتابة تعليق")
       return
     }
-
     if (trimmedComment.length > MAX_COMMENT_LENGTH) {
       toast.error(`التعليق يجب أن يكون أقل من ${MAX_COMMENT_LENGTH} حرف`)
       return
     }
-
     setIsSubmitting(true)
     try {
       const result = await createComment(blogId, trimmedComment)
-
-      if (result.success) {
+      if (result.success && result.data) {
         toast.success("تم إضافة التعليق بنجاح")
         setNewComment("")
-
-        // Use the returned comment data from the server
-        if (result.data) {
-          // Add the new comment directly to the top of the list
-          const newCommentData = {
-            id: result.data.id,
-            content: result.data.content,
-            createdAt: new Date(result.data.createdAt),
-            updatedAt: new Date(result.data.updatedAt),
-            author: {
-              id: result.data.author.id,
-              name: result.data.author.name,
-              image: result.data.author.image,
-              clerkId: result.data.author.clerkId,
-            },
-          }
-
-          // Add to the beginning of comments array
-          setComments((prev) => [newCommentData, ...prev])
+        const newCommentData = {
+          id: result.data.id,
+          content: result.data.content,
+          createdAt: new Date(result.data.createdAt),
+          updatedAt: new Date(result.data.updatedAt),
+          author: {
+            id: result.data.author.id,
+            name: result.data.author.name,
+            image: result.data.author.image,
+            clerkId: result.data.author.clerkId,
+          },
         }
-
-        // Increment total count
+        setComments((prev) => [newCommentData, ...prev])
         setTotalComments((prev) => prev + 1)
-
-        // Update hasComments state if this is the first comment
-        if (!hasComments) {
-          setHasComments(true)
-        }
+        if (!hasComments) setHasComments(true)
       } else {
         toast.error(result.message || "حدث خطأ أثناء إضافة التعليق")
       }
@@ -216,7 +205,7 @@ export function LoadMoreComments({
     } finally {
       setIsSubmitting(false)
     }
-  }, [user, newComment, blogId, loadMore])
+  }, [user, newComment, blogId, hasComments])
 
   // Edit comment handlers
   const handleEditComment = useCallback((comment: Comment) => {
@@ -227,6 +216,7 @@ export function LoadMoreComments({
   const handleCancelEdit = useCallback(() => {
     setEditingCommentId(null)
     setEditContent("")
+    setShowEditEmojiPicker(false)
   }, [])
 
   const handleUpdateComment = useCallback(
@@ -236,19 +226,15 @@ export function LoadMoreComments({
         toast.error("يرجى كتابة محتوى التعليق")
         return
       }
-
       if (trimmedContent.length > MAX_COMMENT_LENGTH) {
         toast.error(`التعليق يجب أن يكون أقل من ${MAX_COMMENT_LENGTH} حرف`)
         return
       }
-
       setIsUpdating(true)
       try {
         const result = await updateComment(commentId, trimmedContent)
-
         if (result.success) {
           toast.success("تم تعديل التعليق بنجاح")
-          // Update the comment in the state
           setComments((prev) =>
             prev.map((comment) =>
               comment.id === commentId
@@ -277,7 +263,6 @@ export function LoadMoreComments({
 
   const confirmDeleteComment = useCallback(async () => {
     if (!deletingCommentId) return
-
     try {
       const result = await deleteComment(deletingCommentId)
       if (result.success) {
@@ -285,7 +270,6 @@ export function LoadMoreComments({
         setComments((prev) =>
           prev.filter((comment) => comment.id !== deletingCommentId)
         )
-        // Decrement total count
         setTotalComments((prev) => Math.max(0, prev - 1))
       } else {
         toast.error(result.message || "حدث خطأ أثناء حذف التعليق")
@@ -303,7 +287,6 @@ export function LoadMoreComments({
     setShowDeleteDialog(false)
   }, [])
 
-  // Utility functions
   const isCommentEdited = useCallback((comment: Comment) => {
     return (
       new Date(comment.updatedAt).getTime() >
@@ -328,7 +311,6 @@ export function LoadMoreComments({
     }
   }, [])
 
-  // Helper function to show user's own comments count
   const getUserCommentsCount = useCallback(() => {
     if (!user) return 0
     return comments.filter((comment) => comment.author.id === user.id).length
@@ -350,7 +332,7 @@ export function LoadMoreComments({
 
   return (
     <div className="space-y-8" dir="rtl">
-      {/* Enhanced Header */}
+      {/* Header */}
       <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-50 via-purple-50 to-indigo-50 p-6">
         <div className="relative z-10 flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg">
@@ -362,7 +344,6 @@ export function LoadMoreComments({
             </h3>
             <p className="text-slate-600">شارك أفكارك وتفاعل مع المجتمع</p>
           </div>
-          {/* TODO:: Maybe to remove */}
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2 rounded-lg bg-white/60 px-3 py-1.5 backdrop-blur-sm">
               <User className="h-4 w-4 text-slate-500" />
@@ -385,12 +366,11 @@ export function LoadMoreComments({
             )}
           </div>
         </div>
-        {/* Background decoration */}
         <div className="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-blue-200/30"></div>
         <div className="absolute -bottom-3 -left-3 h-12 w-12 rounded-full bg-purple-200/30"></div>
       </div>
 
-      {/* Enhanced Add Comment Form */}
+      {/* Add Comment Form with Emoji Picker */}
       {user ? (
         <Card className="border-0 shadow-lg ring-1 ring-slate-200/50">
           <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100/50 py-4">
@@ -413,12 +393,22 @@ export function LoadMoreComments({
             <div className="space-y-4">
               <div className="relative">
                 <Textarea
+                  ref={newCommentRef}
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="شاركنا رأيك أو تعليقك حول هذه المدونة..."
                   className="min-h-[120px] resize-none border-slate-200 bg-slate-50/50 text-right placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-blue-500/20"
-                  maxLength={MAX_COMMENT_LENGTH + 50} // Allow slight overflow for UX
+                  maxLength={MAX_COMMENT_LENGTH + 50}
                 />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowEmojiPicker((prev) => !prev)}
+                  className="absolute top-3 left-3 h-8 w-8 p-0 text-slate-600 hover:bg-slate-100"
+                  title="إضافة إيموجي"
+                >
+                  <Smile className="h-5 w-5" />
+                </Button>
                 {newComment && (
                   <div className="absolute bottom-3 left-3">
                     <Badge
@@ -433,8 +423,45 @@ export function LoadMoreComments({
                     </Badge>
                   </div>
                 )}
+                {showEmojiPicker && (
+                  <div className="absolute top-12 left-0 z-10">
+                    <EmojiPicker
+                      onEmojiClick={(emojiData) =>
+                        handleEmojiClick(emojiData, false)
+                      }
+                      previewConfig={{ showPreview: false }}
+                      skinTonesDisabled
+                      height={350}
+                      width={300}
+                      searchPlaceholder="البحث عن إيموجي..."
+                      categories={[
+                        { name: "مقترحة", category: Categories.SUGGESTED },
+                        { name: "مخصصة", category: Categories.CUSTOM },
+                        {
+                          name: "الابتسامات والأشخاص",
+                          category: Categories.SMILEYS_PEOPLE,
+                        },
+                        {
+                          name: "الحيوانات والطبيعة",
+                          category: Categories.ANIMALS_NATURE,
+                        },
+                        {
+                          name: "الطعام والشراب",
+                          category: Categories.FOOD_DRINK,
+                        },
+                        {
+                          name: "السفر والأماكن",
+                          category: Categories.TRAVEL_PLACES,
+                        },
+                        { name: "الأنشطة", category: Categories.ACTIVITIES },
+                        { name: "الأشياء", category: Categories.OBJECTS },
+                        { name: "الرموز", category: Categories.SYMBOLS },
+                        { name: "الأعلام", category: Categories.FLAGS },
+                      ]}
+                    />
+                  </div>
+                )}
               </div>
-
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-xs text-slate-500">
                   {newCommentStats.isOverLimit ? (
@@ -452,7 +479,6 @@ export function LoadMoreComments({
                     <span>اكتب تعليقك (حد أقصى {MAX_COMMENT_LENGTH} حرف)</span>
                   )}
                 </div>
-
                 <Button
                   onClick={handleSubmitComment}
                   disabled={
@@ -500,7 +526,7 @@ export function LoadMoreComments({
         </Card>
       )}
 
-      {/* Enhanced Comments List */}
+      {/* Comments List */}
       <div className="space-y-4">
         {!hasComments && comments.length === 0 && !isLoading ? (
           <Card className="border-0 shadow-lg ring-1 ring-slate-200/50">
@@ -518,7 +544,6 @@ export function LoadMoreComments({
           </Card>
         ) : (
           <>
-            {/* Info card about comment editing */}
             {user && comments.length > 0 && (
               <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
                 <div className="flex items-start gap-3">
@@ -538,7 +563,7 @@ export function LoadMoreComments({
               </div>
             )}
 
-            {comments.map((comment, index) => (
+            {comments.map((comment) => (
               <Card
                 key={comment.id}
                 className={`group border-0 shadow-md ring-1 ring-slate-200/50 transition-all duration-200 hover:shadow-lg hover:ring-slate-300/50 ${
@@ -552,7 +577,6 @@ export function LoadMoreComments({
                 }`}
               >
                 <CardContent className="p-6">
-                  {/* Show editing/deleting status */}
                   {(editingCommentId === comment.id ||
                     deletingCommentId === comment.id) && (
                     <div className="mb-4 flex items-center gap-2 rounded-lg bg-blue-50 p-3 text-sm">
@@ -610,7 +634,6 @@ export function LoadMoreComments({
 
                         {isCommentOwner(comment) && (
                           <div className="flex items-center gap-1">
-                            {/* Show owner badge */}
                             <Badge
                               variant="outline"
                               className="text-primary bg-secondary/20 border-primary/20 text-xs"
@@ -618,8 +641,6 @@ export function LoadMoreComments({
                               <User className="ml-1 h-3 w-3" />
                               مؤلف
                             </Badge>
-
-                            {/* Action buttons - visible on hover or always on mobile */}
                             <div className="flex items-center gap-1">
                               <Button
                                 variant="ghost"
@@ -630,7 +651,6 @@ export function LoadMoreComments({
                               >
                                 <Edit3 className="h-4 w-4" />
                               </Button>
-
                               <Button
                                 variant="ghost"
                                 size="sm"
@@ -645,17 +665,29 @@ export function LoadMoreComments({
                         )}
                       </div>
 
-                      {/* Enhanced Comment Content or Edit Form */}
+                      {/* Edit Comment Form with Emoji Picker */}
                       {editingCommentId === comment.id ? (
                         <div className="space-y-4 rounded-lg bg-slate-50 p-4">
                           <div className="relative">
                             <Textarea
+                              ref={editCommentRef}
                               value={editContent}
                               onChange={(e) => setEditContent(e.target.value)}
                               className="min-h-[100px] resize-none border-slate-200 bg-white text-right focus:border-blue-500 focus:ring-blue-500/20"
                               placeholder="تعديل التعليق..."
                               maxLength={MAX_COMMENT_LENGTH + 50}
                             />
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                setShowEditEmojiPicker((prev) => !prev)
+                              }
+                              className="absolute top-3 left-3 h-8 w-8 p-0 text-slate-600 hover:bg-slate-100"
+                              title="إضافة إيموجي"
+                            >
+                              <Smile className="h-5 w-5" />
+                            </Button>
                             {editContent && (
                               <div className="absolute bottom-3 left-3">
                                 <Badge
@@ -670,8 +702,63 @@ export function LoadMoreComments({
                                 </Badge>
                               </div>
                             )}
+                            {showEditEmojiPicker && (
+                              <div className="absolute top-12 left-0 z-10">
+                                <EmojiPicker
+                                  onEmojiClick={(emojiData) =>
+                                    handleEmojiClick(emojiData, true)
+                                  }
+                                  previewConfig={{ showPreview: false }}
+                                  skinTonesDisabled
+                                  height={350}
+                                  width={300}
+                                  searchPlaceholder="البحث عن إيموجي..."
+                                  categories={[
+                                    {
+                                      name: "مقترحة",
+                                      category: Categories.SUGGESTED,
+                                    },
+                                    {
+                                      name: "مخصصة",
+                                      category: Categories.CUSTOM,
+                                    },
+                                    {
+                                      name: "الابتسامات والأشخاص",
+                                      category: Categories.SMILEYS_PEOPLE,
+                                    },
+                                    {
+                                      name: "الحيوانات والطبيعة",
+                                      category: Categories.ANIMALS_NATURE,
+                                    },
+                                    {
+                                      name: "الطعام والشراب",
+                                      category: Categories.FOOD_DRINK,
+                                    },
+                                    {
+                                      name: "السفر والأماكن",
+                                      category: Categories.TRAVEL_PLACES,
+                                    },
+                                    {
+                                      name: "الأنشطة",
+                                      category: Categories.ACTIVITIES,
+                                    },
+                                    {
+                                      name: "الأشياء",
+                                      category: Categories.OBJECTS,
+                                    },
+                                    {
+                                      name: "الرموز",
+                                      category: Categories.SYMBOLS,
+                                    },
+                                    {
+                                      name: "الأعلام",
+                                      category: Categories.FLAGS,
+                                    },
+                                  ]}
+                                />
+                              </div>
+                            )}
                           </div>
-
                           <div className="flex items-center justify-between">
                             <div className="text-xs text-slate-500">
                               {editCommentStats.isOverLimit ? (
@@ -687,7 +774,6 @@ export function LoadMoreComments({
                                 </span>
                               )}
                             </div>
-
                             <div className="flex gap-2">
                               <Button
                                 variant="outline"
@@ -737,7 +823,7 @@ export function LoadMoreComments({
               </Card>
             ))}
 
-            {/* Enhanced Load More */}
+            {/* Load More */}
             {hasMore && (
               <div className="flex justify-center py-8" ref={ref}>
                 <div className="flex flex-col items-center gap-3">
@@ -756,7 +842,6 @@ export function LoadMoreComments({
               </div>
             )}
 
-            {/* Show completion message when all comments are loaded */}
             {!hasMore &&
               comments.length > 0 &&
               totalComments > comments.length && (
@@ -770,7 +855,7 @@ export function LoadMoreComments({
         )}
       </div>
 
-      {/* Enhanced Delete Confirmation Dialog */}
+      {/* Delete Confirmation Dialog */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <AlertDialogContent dir="rtl" className="max-w-md">
           <AlertDialogHeader>
