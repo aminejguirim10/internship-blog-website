@@ -70,7 +70,6 @@ import {
 import { toast } from "sonner"
 import Image from "next/image"
 import { deleteBlog, responseBlog } from "@/actions/blog.actions"
-import { useRouter } from "next/navigation"
 import type { BlogStatus } from "@prisma/client"
 import {
   Dialog,
@@ -157,7 +156,6 @@ export function BlogTable({ data, type }: BlogTableProps) {
 
   // Global search state
   const [globalFilter, setGlobalFilter] = React.useState("")
-  const router = useRouter()
 
   // Remove global dialog states as they will be managed per row
 
@@ -348,7 +346,6 @@ export function BlogTable({ data, type }: BlogTableProps) {
             if (response.status === 200) {
               toast.success("✅ تم حذف المحتوى بنجاح")
               setDeleteDialogOpen(false)
-              router.refresh()
             } else {
               toast.error("❌ فشل في حذف المحتوى")
             }
@@ -376,7 +373,6 @@ export function BlogTable({ data, type }: BlogTableProps) {
               }
               // Close the main review dialog
               setReviewDialogOpen(false)
-              router.refresh()
             } else {
               toast.error("❌ فشل في تحديث حالة المحتوى")
             }

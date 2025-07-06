@@ -26,7 +26,7 @@ import { toast } from "sonner"
 import { useDropzone } from "@uploadthing/react"
 import { useUploadThing } from "@/lib/uploadthing"
 import { createEvent } from "@/actions/event.actions"
-import { useRouter } from "next/navigation"
+
 import { fileTypes } from "@/constants"
 import { eventSchema } from "@/lib/schema"
 
@@ -37,7 +37,6 @@ export function CreateEventDialog() {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
-  const router = useRouter()
 
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventSchema),
@@ -138,7 +137,6 @@ export function CreateEventDialog() {
         toast.success("تم إنشاء الحدث بنجاح!")
         resetForm()
         setOpen(false)
-        router.refresh()
       } else {
         toast.error("حدث خطأ أثناء إنشاء الحدث")
       }

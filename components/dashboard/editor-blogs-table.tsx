@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -155,7 +154,6 @@ export function EditorBlogTable({
 
   // Global search state
   const [globalFilter, setGlobalFilter] = React.useState("")
-  const router = useRouter()
 
   const columns: ColumnDef<Blog>[] = [
     {
@@ -330,7 +328,6 @@ export function EditorBlogTable({
             if (response.status === 200) {
               toast.success("✅ تم حذف المحتوى بنجاح")
               setDeleteDialogOpen(false)
-              router.refresh()
             } else {
               toast.error("❌ فشل في حذف المحتوى")
             }

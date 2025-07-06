@@ -67,7 +67,6 @@ import {
 import { EditCategoryDialog } from "./edit-category-dialog"
 import { deleteCategory } from "@/actions/category.actions"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
 
 interface Category {
   id: string
@@ -94,7 +93,6 @@ export function CategoriesTable({ categories }: CategoriesTableProps) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [globalFilter, setGlobalFilter] = React.useState("")
   const [deletingId, setDeletingId] = React.useState<string | null>(null)
-  const router = useRouter()
 
   const handleDelete = async (categoryId: string, blogCount: number) => {
     if (blogCount > 0) {
@@ -110,7 +108,6 @@ export function CategoriesTable({ categories }: CategoriesTableProps) {
       const result = await deleteCategory(categoryId)
       if (result.status === 200) {
         toast.success("✅ تم حذف الفئة بنجاح")
-        router.refresh()
       } else {
         toast.error("❌ فشل في حذف الفئة")
       }

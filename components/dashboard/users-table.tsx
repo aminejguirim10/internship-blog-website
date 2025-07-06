@@ -66,7 +66,6 @@ import {
 import { toast } from "sonner"
 import Image from "next/image"
 import { deleteUser } from "@/actions/user.actions"
-import { useRouter } from "next/navigation"
 
 // User type based
 interface PrismaUser {
@@ -245,7 +244,6 @@ const columns: ColumnDef<PrismaUser>[] = [
     cell: ({ row }) => {
       const user = row.original
       const [isDeleting, setIsDeleting] = React.useState(false)
-      const router = useRouter()
 
       const handleDelete = async () => {
         setIsDeleting(true)
@@ -253,7 +251,6 @@ const columns: ColumnDef<PrismaUser>[] = [
           const response = await deleteUser(user.id)
           if (response.status === 200) {
             toast.success("✅ تم حذف المستخدم بنجاح")
-            router.refresh()
           } else {
             toast.error("❌ فشل في حذف المستخدم")
           }

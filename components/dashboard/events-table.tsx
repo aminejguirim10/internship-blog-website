@@ -78,7 +78,6 @@ import { toast } from "sonner"
 import Image from "next/image"
 import { EditEventDialog } from "@/components/dashboard/edit-event-dialog"
 import { deleteEvent } from "@/actions/event.actions"
-import { useRouter } from "next/navigation"
 
 // Event type based
 interface Event {
@@ -279,7 +278,6 @@ const columns: ColumnDef<Event>[] = [
       const event = row.original
       const [isDialogOpen, setIsDialogOpen] = React.useState(false)
       const [isDeleting, setIsDeleting] = React.useState(false)
-      const router = useRouter()
 
       const handleDelete = async () => {
         setIsDeleting(true)
@@ -288,7 +286,6 @@ const columns: ColumnDef<Event>[] = [
           if (response.status === 200) {
             toast.success("✅ تم حذف الحدث بنجاح")
             setIsDialogOpen(false) // Fermer le dialog de détails
-            router.refresh()
           } else {
             toast.error("❌ فشل في حذف الحدث")
           }
@@ -313,7 +310,7 @@ const columns: ColumnDef<Event>[] = [
               </Button>
             </DialogTrigger>
             <DialogContent
-              className="max-h-[90vh] max-w-4xl overflow-y-auto"
+              className="max-h-[90vh] overflow-y-auto max-sm:max-w-4xl md:max-w-5xl"
               dir="rtl"
             >
               <DialogHeader className="space-y-4 border-b pb-6">

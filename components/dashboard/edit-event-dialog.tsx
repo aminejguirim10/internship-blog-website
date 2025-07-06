@@ -28,7 +28,6 @@ import { toast } from "sonner"
 import { useDropzone } from "@uploadthing/react"
 import { useUploadThing } from "@/lib/uploadthing"
 import { updateEvent } from "@/actions/event.actions"
-import { useRouter } from "next/navigation"
 import { fileTypes } from "@/constants"
 
 const eventSchema = z.object({
@@ -69,7 +68,6 @@ export function EditEventDialog({
   const [imagePreview, setImagePreview] = useState<string | null>(event.image)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
-  const router = useRouter()
 
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventSchema),
@@ -163,7 +161,6 @@ export function EditEventDialog({
         toast.success("تم تحديث الحدث بنجاح!")
         setOpen(false)
         onSuccess?.() // Appeler le callback pour fermer tous les dialogs
-        router.refresh()
       } else {
         toast.error("حدث خطأ أثناء تحديث الحدث")
       }

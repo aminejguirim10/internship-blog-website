@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/form"
 import { toast } from "sonner"
 import { createCategory } from "@/actions/category.actions"
-import { useRouter } from "next/navigation"
 import { categorySchema } from "@/lib/schema"
 
 type CategoryFormData = z.infer<typeof categorySchema>
@@ -31,7 +30,6 @@ type CategoryFormData = z.infer<typeof categorySchema>
 export function CreateCategoryDialog() {
   const [open, setOpen] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const router = useRouter()
 
   const form = useForm<CategoryFormData>({
     resolver: zodResolver(categorySchema),
@@ -51,7 +49,6 @@ export function CreateCategoryDialog() {
         })
         form.reset()
         setOpen(false)
-        router.refresh()
       } else if (result.status === 400) {
         toast.error("فئة بهذا الاسم موجودة بالفعل", {
           description: "يرجى اختيار اسم آخر للفئة",
