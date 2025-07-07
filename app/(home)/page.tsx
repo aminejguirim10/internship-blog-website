@@ -11,6 +11,7 @@ import { OrbitingCirclesSection } from "@/components/app/orbiting-circles-sectio
 import HomeFaqs from "@/components/app/home-faqs"
 import HomeLatestBlogsLabel from "@/components/app/home-latest-blogs-label"
 import HomeLabelSkeleton from "@/components/skeleton/home-label-skeleton"
+import NewsLetter from "@/components/app/news-letter"
 
 const imgdes1 = ImageWithDescriptionItems[2]
 const imgdes2 = ImageWithDescriptionItems[1]
@@ -85,6 +86,7 @@ export default function HomePage() {
           <OrbitingCirclesSection />
         </div>
       </div>
+      <NewsLetter />
     </section>
   )
 }

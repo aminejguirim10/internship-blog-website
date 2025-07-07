@@ -3,6 +3,7 @@
 import { checkAdmin } from "@/lib/auth"
 import { prisma } from "@/lib/db"
 import { revalidatePath } from "next/cache"
+import { sendWhatsAppMessage } from "@/lib/twilio"
 
 export const createEvent = async (
   title: string,
@@ -12,7 +13,7 @@ export const createEvent = async (
   link: string,
   hour: string
 ) => {
-  const admin = checkAdmin()
+  const admin = await checkAdmin()
   if (!admin) {
     return { message: "Admin not authenticated", status: 401 }
   }
@@ -27,7 +28,45 @@ export const createEvent = async (
         hour,
       },
     })
+
     revalidatePath("/")
+
+    setImmediate(async () => {
+      const baseUrl = process.env.NEXT_URL
+      const eventUrl = `${baseUrl}/events/${event.id}`
+      const eventDate = new Date(date).toLocaleDateString("fr-FR")
+
+      const message = `🎪 فعالية جديدة !
+
+🎯 العنوان: ${title}
+
+📅 التاريخ: ${eventDate}
+⏰ الوقت: ${hour}
+
+📝 تم إضافة فعالية جديدة مميزة لا تفوتوها!
+
+🔗 ${eventUrl}
+
+📲 سجل مشاركتك الآن ولا تفوت هذه الفرصة!
+
+---
+🌟 نراكم قريباً في الفعالية
+
+🎉 فريق الفعاليات`
+
+      const users = await prisma.newsletterUser.findMany({
+        select: {
+          phoneNumber: true,
+        },
+      })
+
+      if (users.length > 0) {
+        for (const user of users) {
+          await sendWhatsAppMessage(user.phoneNumber, message)
+        }
+      }
+    })
+
     return { message: "Event created successfully", status: 201 }
   } catch (error: any) {
     return { message: "Error creating event ", status: 500 }
@@ -35,7 +74,7 @@ export const createEvent = async (
 }
 
 export const deleteEvent = async (eventId: string) => {
-  const admin = checkAdmin()
+  const admin = await checkAdmin()
   if (!admin) {
     return { message: "Admin not authenticated", status: 401 }
   }
@@ -61,7 +100,7 @@ export const updateEvent = async (
   link: string,
   hour: string
 ) => {
-  const admin = checkAdmin()
+  const admin = await checkAdmin()
   if (!admin) {
     return { message: "Admin not authenticated", status: 401 }
   }

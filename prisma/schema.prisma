@@ -140,6 +140,15 @@ model Signal {
   @@map("signals")
 }
 
+model NewsletterUser {
+  id          String   @id @default(cuid())
+  phoneNumber String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("newsletter_users")
+}
+
 enum Role {
   USER
   EDITOR

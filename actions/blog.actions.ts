@@ -2,10 +2,10 @@
 
 import { prisma } from "@/lib/db"
 import { checkAdmin, checkEditor } from "@/lib/auth"
-
 import { revalidatePath } from "next/cache"
 import nodemailer from "nodemailer"
 import { responseBlogTemplate, createBlogTemplate } from "@/lib/email"
+import { sendWhatsAppMessage } from "@/lib/twilio"
 
 export const createBlog = async (
   title: string,
@@ -97,6 +97,7 @@ export const responseBlog = async (
   if (!admin) {
     return { message: "Admin not authenticated", status: 401 }
   }
+
   const blog = await prisma.blog.findUnique({
     where: { id: idBlog },
     select: {
@@ -107,6 +108,7 @@ export const responseBlog = async (
   if (!blog) {
     return { message: "Blog not found", status: 404 }
   }
+
   try {
     if (response === "REJECTED") {
       await prisma.blog.delete({
@@ -118,25 +120,60 @@ export const responseBlog = async (
         data: { status: "ACCEPTED" },
       })
     }
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.NODE_MAILER_AUTHOR_MAIL!,
-        pass: process.env.NODE_MAILER_SECRET!,
-      },
+
+    revalidatePath("/")
+    setImmediate(async () => {
+      const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.NODE_MAILER_AUTHOR_MAIL!,
+          pass: process.env.NODE_MAILER_SECRET!,
+        },
+      })
+
+      const mailOptions = {
+        from: process.env.NODE_MAILER_AUTHOR_MAIL!,
+        to: blog.author?.email,
+        subject: `${response === "ACCEPTED" ? "🎉 تم نشر مقالك!" : "📝 نتيجة مراجعة مقالك"} - ${blog.title}`,
+        html: responseBlogTemplate(blog.author?.name!, response, blog.title),
+      }
+
+      await transporter.sendMail(mailOptions)
+
+      if (response === "ACCEPTED") {
+        const baseUrl = process.env.NEXT_URL
+        const blogUrl = `${baseUrl}/blogs/${idBlog}`
+        const message = `🎉 مدونة جديدة متاحة الآن!
+
+📖 العنوان: ${blog.title}
+
+✨ تم نشر مقال جديد على موقعنا ونحن متحمسون لمشاركته معكم!
+
+🔗 ${blogUrl}
+
+📱 شاركه مع أصدقائك ولا تنسى ترك تعليقك!
+
+---
+💡 للحصول على آخر التحديثات، تابعونا باستمرار
+
+🌟 فريق المدونة`
+
+        const users = await prisma.newsletterUser.findMany({
+          select: {
+            phoneNumber: true,
+          },
+        })
+
+        if (users.length > 0) {
+          for (const user of users) {
+            await sendWhatsAppMessage(user.phoneNumber, message)
+          }
+        }
+      }
     })
 
-    const mailOptions = {
-      from: process.env.NODE_MAILER_AUTHOR_MAIL!,
-      to: blog.author?.email,
-      subject: `${response === "ACCEPTED" ? "🎉 تم نشر مقالك!" : "📝 نتيجة مراجعة مقالك"} - ${blog.title}`,
-      html: responseBlogTemplate(blog.author?.name!, response, blog.title),
-    }
-
-    await transporter.sendMail(mailOptions)
-    revalidatePath("/")
     return { message: "Blog response updated successfully", status: 200 }
   } catch (error: any) {
     return { message: "Error responding to blog", status: 500 }
