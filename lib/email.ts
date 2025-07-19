@@ -47,7 +47,8 @@ export const contactAdminTemplate = (
           <td>
             <img
               alt="معهدي"
-              height="50"
+              height="80"
+              width="100"
               src="${process.env.NEXT_URL}/assets/logo.png"
               style="
                 display: block;
@@ -198,7 +199,8 @@ export const createApplicationTemplate = (
           <td>
             <img
               alt="معهدي"
-              height="50"
+              height="80"
+              width="100"
               src="${process.env.NEXT_URL}/assets/logo.png"
               style="
                 display: block;
@@ -369,7 +371,8 @@ export const responseApplicationTemplate = (
                     <div style="background-color: #ffffff; border-radius: 12px; padding: 32px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                         <img
                             alt="معهدي"
-                            height="60"
+                            height="80"
+                            width="100"
                             src="${process.env.NEXT_URL}/assets/logo.png"
                             style="
                                 display: block;
@@ -587,7 +590,8 @@ export const createBlogTemplate = (
             <div style="background-color: #ffffff; border-radius: 12px; padding: 32px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
               <img
                 alt="معهدي"
-                height="60"
+                height="80"
+                 width="100"
                 src="${process.env.NEXT_URL}/assets/logo.png"
                 style="
                   display: block;
@@ -805,7 +809,8 @@ export const responseBlogTemplate = (
                         <div style="background-color: #ffffff; border-radius: 12px; padding: 32px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                             <img
                                 alt="معهدي"
-                                height="60"
+                                height="80"
+                                width="100"
                                 src="${process.env.NEXT_URL}/assets/logo.png"
                                 style="
                                     display: block;
