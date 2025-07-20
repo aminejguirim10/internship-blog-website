@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs"
 import { arSA } from "@clerk/localizations"
 import { Toaster } from "@/components/ui/sonner"
 import "./globals.css"
+import VercelAnalytics from "@/components/layout/vercel-analytics"
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -31,6 +32,7 @@ export default function RootLayout({
         <body className={`${poppins.variable} antialiased`}>
           {children}
           <Toaster />
+          <VercelAnalytics />
         </body>
       </html>
     </ClerkProvider>
