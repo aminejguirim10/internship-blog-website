@@ -51,6 +51,17 @@ export default function SidebarFilters({
     searchParams.get("author") || ""
   )
 
+  // Synchroniser les états avec les paramètres URL quand ils changent
+  useEffect(() => {
+    setSelectedType(searchParams.get("categoryId"))
+    setSelectedDate(
+      searchParams.get("date")
+        ? parseDateFromLocal(searchParams.get("date")!)
+        : undefined
+    )
+    setAuthorInput(searchParams.get("author") || "")
+  }, [searchParams])
+
   // Debounce author input
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -87,9 +98,10 @@ export default function SidebarFilters({
                 <div key={category.id} className="mb-2 flex items-center">
                   <Checkbox
                     checked={selectedType === category.id}
-                    onCheckedChange={() => {
-                      setSelectedType(category.id)
-                      updateParams("categoryId", category.id)
+                    onCheckedChange={(checked) => {
+                      const newCategoryId = checked ? category.id : undefined
+                      setSelectedType(newCategoryId || null)
+                      updateParams("categoryId", newCategoryId)
                     }}
                   />
                   <span className="mr-2">{category.name}</span>
