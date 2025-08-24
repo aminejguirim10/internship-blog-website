@@ -33,10 +33,10 @@ export default function SidebarFilters({
     return `${year}-${month}-${day}`
   }
 
-  // Fonction pour parser une date depuis une string locale
+  // Function to parse a date from a local string
   const parseDateFromLocal = (dateString: string): Date => {
     const [year, month, day] = dateString.split("-").map(Number)
-    return new Date(year, month - 1, day) // month - 1 car les mois commencent à 0
+    return new Date(year, month - 1, day) // month - 1 because months are zero-based
   }
 
   const [selectedType, setSelectedType] = useState(
@@ -50,29 +50,43 @@ export default function SidebarFilters({
   const [authorInput, setAuthorInput] = useState(
     searchParams.get("author") || ""
   )
+  const [lastCategoryId, setLastCategoryId] = useState(
+    searchParams.get("categoryId")
+  )
 
-  // Synchroniser les états avec les paramètres URL quand ils changent
+  // Synchronize states only when the category changes or on initial load
   useEffect(() => {
-    setSelectedType(searchParams.get("categoryId"))
-    setSelectedDate(
-      searchParams.get("date")
-        ? parseDateFromLocal(searchParams.get("date")!)
-        : undefined
-    )
-    setAuthorInput(searchParams.get("author") || "")
-  }, [searchParams])
+    const currentCategoryId = searchParams.get("categoryId")
+
+    // If it's the first render or the category has changed
+    if (lastCategoryId === null || currentCategoryId !== lastCategoryId) {
+      // Reset all filters when the category changes
+      setSelectedType(currentCategoryId)
+      setSelectedDate(
+        searchParams.get("date")
+          ? parseDateFromLocal(searchParams.get("date")!)
+          : undefined
+      )
+      const newAuthor = searchParams.get("author") || ""
+      setAuthorInput(newAuthor)
+      setLastCategoryId(currentCategoryId)
+    }
+  }, [searchParams.get("categoryId"), lastCategoryId])
 
   // Debounce author input
   useEffect(() => {
     const handler = setTimeout(() => {
       const params = new URLSearchParams(searchParams)
-      if (authorInput) params.set("author", authorInput)
-      else params.delete("author")
+      if (authorInput.trim()) {
+        params.set("author", authorInput)
+      } else {
+        params.delete("author")
+      }
       params.set("page", "1")
       router.replace(`?${params.toString()}`)
     }, 400)
     return () => clearTimeout(handler)
-  }, [authorInput])
+  }, [authorInput, searchParams, router])
 
   // Update URL params on filter change
   const updateParams = (key: string, value: string | undefined) => {
