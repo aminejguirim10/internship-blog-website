@@ -22,6 +22,8 @@ Welcome to the **Professional Blog Platform**, your comprehensive solution for c
 
 👉 **Responsive Design:** Mobile-first approach ensuring optimal experience across all devices and screen sizes.
 
+👉 **AI Chatbot:** Intelligent chatbot for user assistance and content discovery.
+
 ## ⚙️ Technologies Used
 
 - **Frontend:** [Next.js 14](https://nextjs.org/), [TailwindCSS](https://tailwindcss.com/), [TypeScript](https://www.typescriptlang.org/)
@@ -92,6 +94,9 @@ NODE_MAILER_SECRET="your_gmail_app_password"
 TWILIO_ACCOUNT_SID="your_twilio_account_sid"
 TWILIO_AUTH_TOKEN="your_twilio_auth_token"
 TWILIO_WHATSAPP_NUMBER="your_twilio_whatsapp_number"
+
+# AI Chatbot
+GROQ_API_KEY="your_groq_api_key"
 ```
 
 5. Set up the database:

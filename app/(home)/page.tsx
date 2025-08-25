@@ -12,6 +12,7 @@ import HomeFaqs from "@/components/app/home-faqs"
 import HomeLatestBlogsLabel from "@/components/app/home-latest-blogs-label"
 import HomeLabelSkeleton from "@/components/skeleton/home-label-skeleton"
 import NewsLetter from "@/components/app/news-letter"
+import { ChatBot } from "@/components/app/chat-bot"
 
 const imgdes1 = ImageWithDescriptionItems[2]
 const imgdes2 = ImageWithDescriptionItems[1]
@@ -87,6 +88,7 @@ export default function HomePage() {
         </div>
       </div>
       <NewsLetter />
+      <ChatBot />
     </section>
   )
 }

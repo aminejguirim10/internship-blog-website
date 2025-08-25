@@ -13,6 +13,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/comments", // Public API route for comments
   "/api/categories", // Public API route for categories
   "/api/webhooks(.*)",
+  "/api/chat",
 ])
 export default clerkMiddleware(async (auth, req) => {
   if (!isPublicRoute(req)) {
