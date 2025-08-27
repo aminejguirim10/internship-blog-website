@@ -15,6 +15,9 @@ import Table from "@tiptap/extension-table"
 import TableRow from "@tiptap/extension-table-row"
 import TableHeader from "@tiptap/extension-table-header"
 import TableCell from "@tiptap/extension-table-cell"
+import ListItem from "@tiptap/extension-list-item"
+import BulletList from "@tiptap/extension-bullet-list"
+import OrderedList from "@tiptap/extension-ordered-list"
 import { Extension } from "@tiptap/core"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -49,7 +52,6 @@ import {
   Type,
   SubscriptIcon,
   SuperscriptIcon,
-  TableIcon,
   Minus,
   Undo,
   Redo,
@@ -59,7 +61,7 @@ import {
 } from "lucide-react"
 import { useState, useEffect, useCallback } from "react"
 
-// Extension personnalisée pour la taille de police
+// Custom extension for font size
 const FontSize = Extension.create({
   name: "fontSize",
 
@@ -129,10 +131,38 @@ export default function RichTextEditor({
   const [selectedTextColor, setSelectedTextColor] = useState("#000000")
   const [selectedHighlightColor, setSelectedHighlightColor] =
     useState("#FFFF00")
+  const [fontFamily, setFontFamily] = useState("default")
+  const [fontSize, setFontSize] = useState("default")
+  const [heading, setHeading] = useState("p")
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        // Disable default bullet list and ordered list from StarterKit
+        bulletList: false,
+        orderedList: false,
+        listItem: false,
+      }),
+      // Configure lists properly
+      ListItem.configure({
+        HTMLAttributes: {
+          class: "leading-normal",
+        },
+      }),
+      BulletList.configure({
+        keepMarks: true,
+        keepAttributes: false,
+        HTMLAttributes: {
+          class: "list-disc space-y-1 my-4 pr-6",
+        },
+      }),
+      OrderedList.configure({
+        keepMarks: true,
+        keepAttributes: false,
+        HTMLAttributes: {
+          class: "list-decimal space-y-1 my-4 pr-6",
+        },
+      }),
       Underline,
       TextStyle,
       FontSize,
@@ -159,18 +189,37 @@ export default function RichTextEditor({
       Superscript,
       Table.configure({
         resizable: true,
+        HTMLAttributes: {
+          class: "border-collapse border border-gray-300 my-4",
+        },
       }),
-      TableRow,
-      TableHeader,
-      TableCell,
+      TableRow.configure({
+        HTMLAttributes: {
+          class: "border-b border-gray-300",
+        },
+      }),
+      TableHeader.configure({
+        HTMLAttributes: {
+          class:
+            "border border-gray-300 bg-gray-50 px-3 py-2 text-left font-semibold",
+        },
+      }),
+      TableCell.configure({
+        HTMLAttributes: {
+          class:
+            "border border-gray-300 px-3 py-2 break-words w-32 min-w-[120px] max-w-[200px]",
+        },
+      }),
     ],
     content,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML())
       updateCurrentColors()
+      updateSelectionStates()
     },
     onSelectionUpdate: ({ editor }) => {
       updateCurrentColors()
+      updateSelectionStates()
     },
     editorProps: {
       attributes: {
@@ -180,11 +229,11 @@ export default function RichTextEditor({
     },
   })
 
-  // Fonction pour mettre à jour les couleurs actuelles basées sur la sélection
+  // Function to update current colors based on selection
   const updateCurrentColors = useCallback(() => {
     if (!editor) return
 
-    // Récupérer la couleur du texte actuel
+    // Get current text color
     const textColor = editor.getAttributes("textStyle").color
     if (textColor) {
       setCurrentTextColor(textColor)
@@ -194,23 +243,54 @@ export default function RichTextEditor({
       setSelectedTextColor("#000000")
     }
 
-    // Récupérer la couleur de surlignage actuelle
+    // Get current highlight color
     const highlightColor = editor.getAttributes("highlight").color
     if (highlightColor) {
       setCurrentHighlightColor(highlightColor)
       setSelectedHighlightColor(highlightColor)
     } else if (editor.isActive("highlight")) {
-      // Si le surlignage est actif mais sans couleur spécifique, utiliser jaune par défaut
+      // If highlight is active but without specific color, use default yellow
       setCurrentHighlightColor("#FFFF00")
       setSelectedHighlightColor("#FFFF00")
+    }
+  }, [editor])
+
+  // Function to update selection states
+  const updateSelectionStates = useCallback(() => {
+    if (!editor) return
+
+    // Update font family
+    const currentFontFamily = editor.getAttributes("textStyle").fontFamily
+    setFontFamily(currentFontFamily || "default")
+
+    // Update font size
+    const currentFontSize = editor.getAttributes("textStyle").fontSize
+    setFontSize(currentFontSize || "default")
+
+    // Update heading
+    if (editor.isActive("heading", { level: 1 })) {
+      setHeading("h1")
+    } else if (editor.isActive("heading", { level: 2 })) {
+      setHeading("h2")
+    } else if (editor.isActive("heading", { level: 3 })) {
+      setHeading("h3")
+    } else if (editor.isActive("heading", { level: 4 })) {
+      setHeading("h4")
+    } else if (editor.isActive("heading", { level: 5 })) {
+      setHeading("h5")
+    } else if (editor.isActive("heading", { level: 6 })) {
+      setHeading("h6")
+    } else {
+      setHeading("p")
     }
   }, [editor])
 
   useEffect(() => {
     if (editor) {
       updateCurrentColors()
+      updateSelectionStates()
     }
-  }, [editor, updateCurrentColors])
+  }, [editor, updateCurrentColors, updateSelectionStates])
 
   if (!editor) {
     return null
@@ -223,48 +303,40 @@ export default function RichTextEditor({
     }
   }
 
-  const insertTable = () => {
-    editor
-      .chain()
-      .focus()
-      .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-      .run()
-  }
-
-  // Fonction améliorée pour appliquer la couleur du texte
+  // Enhanced function to apply text color
   const applyTextColor = (color: string) => {
     if (editor.state.selection.empty) {
-      // Si aucune sélection, définir la couleur pour le prochain texte tapé
+      // If no selection, set color for next typed text
       editor.chain().focus().setColor(color).run()
     } else {
-      // Si du texte est sélectionné, appliquer la couleur à la sélection
+      // If text is selected, apply color to selection
       editor.chain().focus().setColor(color).run()
     }
     setCurrentTextColor(color)
     setSelectedTextColor(color)
   }
 
-  // Fonction améliorée pour appliquer la couleur de surlignage
+  // Enhanced function to apply highlight color
   const applyHighlightColor = (color: string) => {
     if (editor.state.selection.empty) {
-      // Si aucune sélection, définir la couleur pour le prochain texte tapé
+      // If no selection, set color for next typed text
       editor.chain().focus().toggleHighlight({ color }).run()
     } else {
-      // Si du texte est sélectionné, appliquer le surlignage à la sélection
+      // If text is selected, apply highlight to selection
       editor.chain().focus().toggleHighlight({ color }).run()
     }
     setCurrentHighlightColor(color)
     setSelectedHighlightColor(color)
   }
 
-  // Fonction pour supprimer la couleur du texte
+  // Function to remove text color
   const removeTextColor = () => {
     editor.chain().focus().unsetColor().run()
     setCurrentTextColor("#000000")
     setSelectedTextColor("#000000")
   }
 
-  // Fonction pour supprimer le surlignage
+  // Function to remove highlight
   const removeHighlight = () => {
     editor.chain().focus().unsetHighlight().run()
     setCurrentHighlightColor("#FFFF00")
@@ -305,8 +377,9 @@ export default function RichTextEditor({
 
         {/* Font Family */}
         <Select
-          value={editor.getAttributes("textStyle").fontFamily || ""}
+          value={fontFamily}
           onValueChange={(value) => {
+            setFontFamily(value)
             if (value === "default") {
               editor.chain().focus().unsetFontFamily().run()
             } else {
@@ -334,8 +407,9 @@ export default function RichTextEditor({
 
         {/* Font Size */}
         <Select
-          value={editor.getAttributes("textStyle").fontSize || ""}
+          value={fontSize}
           onValueChange={(value) => {
+            setFontSize(value)
             if (value === "default") {
               //@ts-ignore
               editor.chain().focus().unsetFontSize().run()
@@ -411,7 +485,7 @@ export default function RichTextEditor({
           <Strikethrough className="h-4 w-4" />
         </Button>
 
-        {/* Text Color Picker - Amélioré */}
+        {/* Text Color Picker - Enhanced */}
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -534,7 +608,7 @@ export default function RichTextEditor({
                   variant="outline"
                   size="sm"
                   onClick={removeTextColor}
-                  className="flex-1"
+                  className="flex-1 bg-transparent"
                 >
                   إزالة اللون
                 </Button>
@@ -552,7 +626,7 @@ export default function RichTextEditor({
           </PopoverContent>
         </Popover>
 
-        {/* Highlight Color Picker - Amélioré */}
+        {/* Highlight Color Picker - Enhanced */}
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -629,9 +703,9 @@ export default function RichTextEditor({
                     "#B5179E",
                     "#7209B7",
                     "#480CA8",
-                    "#3F37C9",
                     "#4CC9F0",
                     "#4895EF",
+                    "#488B8E",
                     "#4361EE",
                     "#3F37C9",
                     "#FEF3C7",
@@ -643,7 +717,6 @@ export default function RichTextEditor({
                     "#E0E7FF",
                     "#C7D2FE",
                     "#A7F3D0",
-                    "#FBBF24",
                     "#FDE047",
                     "#A3E635",
                     "#34D399",
@@ -654,6 +727,7 @@ export default function RichTextEditor({
                     "#FB7185",
                     "#FBBF24",
                     "#F59E0B",
+                    "#89F0F6",
                   ].map((color) => (
                     <button
                       key={color}
@@ -677,7 +751,7 @@ export default function RichTextEditor({
                   variant="outline"
                   size="sm"
                   onClick={removeHighlight}
-                  className="flex-1"
+                  className="flex-1 bg-transparent"
                 >
                   إزالة التمييز
                 </Button>
@@ -729,6 +803,9 @@ export default function RichTextEditor({
             setCurrentHighlightColor("#FFFF00")
             setSelectedTextColor("#000000")
             setSelectedHighlightColor("#FFFF00")
+            setFontFamily("default")
+            setFontSize("default")
+            setHeading("p")
           }}
           title="مسح التنسيق"
         >
@@ -739,22 +816,9 @@ export default function RichTextEditor({
 
         {/* Headers */}
         <Select
-          value={
-            editor.isActive("heading", { level: 1 })
-              ? "h1"
-              : editor.isActive("heading", { level: 2 })
-                ? "h2"
-                : editor.isActive("heading", { level: 3 })
-                  ? "h3"
-                  : editor.isActive("heading", { level: 4 })
-                    ? "h4"
-                    : editor.isActive("heading", { level: 5 })
-                      ? "h5"
-                      : editor.isActive("heading", { level: 6 })
-                        ? "h6"
-                        : "p"
-          }
+          value={heading}
           onValueChange={(value) => {
+            setHeading(value)
             if (value === "p") {
               editor.chain().focus().setParagraph().run()
             } else {
@@ -785,7 +849,7 @@ export default function RichTextEditor({
 
         <div className="mx-1 h-6 w-px bg-slate-300" />
 
-        {/* Lists */}
+        {/* Lists - Fixed implementation */}
         <Button
           type="button"
           variant="ghost"
@@ -808,12 +872,16 @@ export default function RichTextEditor({
           <ListOrdered className="h-4 w-4" />
         </Button>
 
-        {/* Indentation */}
+        {/* Indentation - Fixed for lists */}
         <Button
           type="button"
           variant="ghost"
           size="sm"
-          onClick={() => editor.chain().focus().sinkListItem("listItem").run()}
+          onClick={() => {
+            if (editor.can().sinkListItem("listItem")) {
+              editor.chain().focus().sinkListItem("listItem").run()
+            }
+          }}
           disabled={!editor.can().sinkListItem("listItem")}
           title="زيادة المسافة البادئة"
         >
@@ -824,7 +892,11 @@ export default function RichTextEditor({
           type="button"
           variant="ghost"
           size="sm"
-          onClick={() => editor.chain().focus().liftListItem("listItem").run()}
+          onClick={() => {
+            if (editor.can().liftListItem("listItem")) {
+              editor.chain().focus().liftListItem("listItem").run()
+            }
+          }}
           disabled={!editor.can().liftListItem("listItem")}
           title="تقليل المسافة البادئة"
         >
@@ -888,7 +960,7 @@ export default function RichTextEditor({
 
         <div className="mx-1 h-6 w-px bg-slate-300" />
 
-        {/* Quote and Code */}
+        {/* Quote and Code - Fixed blockquote */}
         <Button
           type="button"
           variant="ghost"
@@ -928,16 +1000,6 @@ export default function RichTextEditor({
           type="button"
           variant="ghost"
           size="sm"
-          onClick={insertTable}
-          title="إدراج جدول"
-        >
-          <TableIcon className="h-4 w-4" />
-        </Button>
-
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
           title="خط أفقي"
         >
@@ -946,16 +1008,209 @@ export default function RichTextEditor({
       </div>
 
       {/* Editor */}
-      <EditorContent
-        editor={editor}
-        className="min-h-[400px] focus-within:outline-none"
-      />
+      <div className="relative">
+        <EditorContent
+          editor={editor}
+          className="min-h-[400px] focus-within:outline-none"
+        />
 
-      {!content && (
-        <div className="pointer-events-none absolute top-30 right-6 text-slate-400">
-          {placeholder || "ابدأ في كتابة قصتك..."}
+        {/* Placeholder - Fixed positioning */}
+        {!content && (
+          <div className="pointer-events-none absolute top-6 right-6 text-slate-400">
+            {placeholder || "ابدأ في كتابة قصتك..."}
+          </div>
+        )}
+      </div>
+
+      {/* Table Controls - Show when table is selected */}
+      {editor.isActive("table") && (
+        <div className="border-t border-slate-200 bg-slate-50 p-2">
+          <div className="flex flex-wrap gap-1 text-sm">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => editor.chain().focus().addRowBefore().run()}
+              title="إضافة صف قبل"
+              className="text-xs"
+            >
+              + صف قبل
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => editor.chain().focus().addRowAfter().run()}
+              title="إضافة صف بعد"
+              className="text-xs"
+            >
+              + صف بعد
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => editor.chain().focus().deleteRow().run()}
+              title="حذف صف"
+              className="text-xs text-red-600"
+            >
+              - صف
+            </Button>
+            <div className="mx-1 h-6 w-px bg-slate-300" />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => editor.chain().focus().addColumnBefore().run()}
+              title="إضافة عمود قبل"
+              className="text-xs"
+            >
+              + عمود قبل
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => editor.chain().focus().addColumnAfter().run()}
+              title="إضافة عمود بعد"
+              className="text-xs"
+            >
+              + عمود بعد
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => editor.chain().focus().deleteColumn().run()}
+              title="حذف عمود"
+              className="text-xs text-red-600"
+            >
+              - عمود
+            </Button>
+            <div className="mx-1 h-6 w-px bg-slate-300" />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => editor.chain().focus().mergeCells().run()}
+              title="دمج خلايا"
+              className="text-xs"
+              disabled={!editor.can().mergeCells()}
+            >
+              دمج
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => editor.chain().focus().splitCell().run()}
+              title="تقسيم خلية"
+              className="text-xs"
+              disabled={!editor.can().splitCell()}
+            >
+              تقسيم
+            </Button>
+            <div className="mx-1 h-6 w-px bg-slate-300" />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => editor.chain().focus().deleteTable().run()}
+              title="حذف جدول"
+              className="text-xs text-red-600"
+            >
+              🗑 حذف جدول
+            </Button>
+          </div>
         </div>
       )}
+
+      {/* Custom CSS for better styling */}
+      <style jsx>{`
+        .ProseMirror {
+          outline: none;
+        }
+
+        .ProseMirror blockquote {
+          border-right: 3px solid #cbd5e1;
+          padding-right: 1rem;
+          margin: 1rem 0;
+          font-style: italic;
+          color: #64748b;
+          background-color: #f8fafc;
+          padding: 1rem;
+          border-radius: 0.375rem;
+        }
+
+        .ProseMirror pre {
+          background-color: #1e293b;
+          color: #e2e8f0;
+          padding: 1rem;
+          border-radius: 0.375rem;
+          font-family: "Courier New", monospace;
+          overflow-x: auto;
+        }
+
+        .ProseMirror code {
+          background-color: #f1f5f9;
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem;
+          font-family: "Courier New", monospace;
+          font-size: 0.875em;
+        }
+
+        .ProseMirror pre code {
+          background-color: transparent;
+          padding: 0;
+          color: inherit;
+        }
+
+        .ProseMirror ul {
+          list-style-type: disc;
+          list-style-position: outside;
+          padding-right: 1.5rem;
+          margin: 1rem 0;
+        }
+
+        .ProseMirror ol {
+          list-style-type: decimal;
+          list-style-position: outside;
+          padding-right: 1.5rem;
+          margin: 1rem 0;
+        }
+
+        .ProseMirror li {
+          margin: 0.25rem 0;
+        }
+
+        /* Improved table styling for responsiveness */
+        .ProseMirror .tableWrapper {
+          margin: 1rem 0;
+          overflow-x: auto;
+          max-width: 100%;
+          border-radius: 0.375rem;
+          border: 1px solid #e2e8f0;
+          width: 100%;
+          box-sizing: border-box;
+          position: relative;
+        }
+
+        /* Responsive behavior for mobile devices */
+
+        .ProseMirror hr {
+          border: none;
+          border-top: 2px solid #e2e8f0;
+          margin: 2rem 0;
+        }
+
+        .ProseMirror p.is-editor-empty:first-child::before {
+          content: attr(data-placeholder);
+          float: right;
+          color: #9ca3af;
+          pointer-events: none;
+          height: 0;
+        }
+      `}</style>
     </div>
   )
 }
