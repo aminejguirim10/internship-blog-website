@@ -53,7 +53,7 @@ export default function Footer() {
                 <li key={index}>
                   <Link
                     href={link.href}
-                    className="flex items-center text-white"
+                    className="flex w-fit items-center text-white"
                   >
                     <span className="ml-2">•</span>
                     <span className="hover:text-secondary transition-colors duration-200 hover:underline hover:underline-offset-8">
@@ -72,7 +72,7 @@ export default function Footer() {
                 <li key={index}>
                   <Link
                     href={link.href}
-                    className="flex items-center text-white"
+                    className="flex w-fit items-center text-white"
                   >
                     <span className="ml-2">•</span>
                     <span className="hover:text-secondary transition-colors duration-200 hover:underline hover:underline-offset-8">
@@ -91,7 +91,7 @@ export default function Footer() {
                 <li key={index}>
                   <Link
                     href={link.href}
-                    className="flex items-center text-white"
+                    className="flex w-fit items-center text-white"
                   >
                     <span className="ml-2">•</span>
                     <span className="hover:text-secondary transition-colors duration-200 hover:underline hover:underline-offset-8">

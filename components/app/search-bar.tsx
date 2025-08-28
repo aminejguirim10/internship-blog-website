@@ -2,42 +2,66 @@
 
 import { Input } from "@/components/ui/input"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 
 export default function SearchBar() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
   const [value, setValue] = useState(searchParams.get("title") || "")
-  const [lastCategoryId, setLastCategoryId] = useState(
-    searchParams.get("categoryId")
-  )
 
-  // Synchronize only when the category changes or on initial load
+  // Sync value with URL params when URL changes
   useEffect(() => {
-    const currentCategoryId = searchParams.get("categoryId")
-    const currentTitle = searchParams.get("title") || ""
+    const urlTitle = searchParams.get("title") || ""
+    setValue(urlTitle)
+  }, [searchParams])
 
-    // If it's the first render or the category has changed
-    if (lastCategoryId === null || currentCategoryId !== lastCategoryId) {
-      setValue(currentTitle)
-      setLastCategoryId(currentCategoryId)
-    }
-    // Otherwise, do not modify the value if the user is typing
-  }, [searchParams.get("categoryId"), lastCategoryId]) // Seulement surveiller categoryId
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
+  // Centralized URL update function
+  const updateURL = useCallback(
+    (title: string) => {
       const params = new URLSearchParams(searchParams)
-      if (value.trim()) {
-        params.set("title", value)
+
+      if (title.trim()) {
+        params.set("title", title)
       } else {
         params.delete("title")
       }
+
+      // Reset to page 1 when searching
       params.set("page", "1")
+
       router.replace(`?${params.toString()}`)
-    }, 400)
-    return () => clearTimeout(handler)
-  }, [value, searchParams, router])
+    },
+    [searchParams, router]
+  )
+
+  // Handle input change with debouncing
+  const handleInputChange = useCallback(
+    (inputValue: string) => {
+      setValue(inputValue)
+
+      // Clear existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+
+      // Set new timeout
+      timeoutRef.current = setTimeout(() => {
+        updateURL(inputValue)
+      }, 400)
+    },
+    [updateURL]
+  )
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
 
   return (
     <div className="mb-6 md:w-1/2">
@@ -45,7 +69,7 @@ export default function SearchBar() {
         type="text"
         placeholder="...بحث"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => handleInputChange(e.target.value)}
       />
     </div>
   )

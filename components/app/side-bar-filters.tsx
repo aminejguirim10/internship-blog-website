@@ -3,7 +3,7 @@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Calendar } from "@/components/ui/calendar"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { Input } from "@/components/ui/input"
 import {
   Popover,
@@ -25,6 +25,7 @@ export default function SidebarFilters({
 }) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const authorTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const formatDateToLocal = (date: Date): string => {
     const year = date.getFullYear()
@@ -33,14 +34,14 @@ export default function SidebarFilters({
     return `${year}-${month}-${day}`
   }
 
-  // Function to parse a date from a local string
   const parseDateFromLocal = (dateString: string): Date => {
     const [year, month, day] = dateString.split("-").map(Number)
-    return new Date(year, month - 1, day) // month - 1 because months are zero-based
+    return new Date(year, month - 1, day)
   }
 
+  // Initialize states from URL params
   const [selectedType, setSelectedType] = useState(
-    searchParams.get("categoryId")
+    searchParams.get("categoryId") || null
   )
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     searchParams.get("date")
@@ -50,52 +51,84 @@ export default function SidebarFilters({
   const [authorInput, setAuthorInput] = useState(
     searchParams.get("author") || ""
   )
-  const [lastCategoryId, setLastCategoryId] = useState(
-    searchParams.get("categoryId")
+
+  // Centralized URL update function
+  const updateURL = useCallback(
+    (updates: Record<string, string | undefined>, resetPage = true) => {
+      const params = new URLSearchParams(searchParams)
+
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value) {
+          params.set(key, value)
+        } else {
+          params.delete(key)
+        }
+      })
+
+      if (resetPage) {
+        params.set("page", "1")
+      }
+
+      router.replace(`?${params.toString()}`)
+    },
+    [searchParams, router]
   )
 
-  // Synchronize states only when the category changes or on initial load
+  // Sync states with URL params when URL changes
   useEffect(() => {
-    const currentCategoryId = searchParams.get("categoryId")
+    const urlCategoryId = searchParams.get("categoryId")
+    const urlDate = searchParams.get("date")
+    const urlAuthor = searchParams.get("author") || ""
 
-    // If it's the first render or the category has changed
-    if (lastCategoryId === null || currentCategoryId !== lastCategoryId) {
-      // Reset all filters when the category changes
-      setSelectedType(currentCategoryId)
-      setSelectedDate(
-        searchParams.get("date")
-          ? parseDateFromLocal(searchParams.get("date")!)
-          : undefined
-      )
-      const newAuthor = searchParams.get("author") || ""
-      setAuthorInput(newAuthor)
-      setLastCategoryId(currentCategoryId)
-    }
-  }, [searchParams.get("categoryId"), lastCategoryId])
+    setSelectedType(urlCategoryId)
+    setSelectedDate(urlDate ? parseDateFromLocal(urlDate) : undefined)
+    setAuthorInput(urlAuthor)
+  }, [searchParams])
 
-  // Debounce author input
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      const params = new URLSearchParams(searchParams)
-      if (authorInput.trim()) {
-        params.set("author", authorInput)
-      } else {
-        params.delete("author")
+  // Handle category change
+  const handleCategoryChange = useCallback(
+    (categoryId: string | null) => {
+      setSelectedType(categoryId)
+      updateURL({ categoryId: categoryId || undefined })
+    },
+    [updateURL]
+  )
+
+  // Handle date change
+  const handleDateChange = useCallback(
+    (date: Date | undefined) => {
+      setSelectedDate(date)
+      updateURL({ date: date ? formatDateToLocal(date) : undefined })
+    },
+    [updateURL]
+  )
+
+  // Handle author input change with debouncing
+  const handleAuthorChange = useCallback(
+    (value: string) => {
+      setAuthorInput(value)
+
+      // Clear existing timeout
+      if (authorTimeoutRef.current) {
+        clearTimeout(authorTimeoutRef.current)
       }
-      params.set("page", "1")
-      router.replace(`?${params.toString()}`)
-    }, 400)
-    return () => clearTimeout(handler)
-  }, [authorInput, searchParams, router])
 
-  // Update URL params on filter change
-  const updateParams = (key: string, value: string | undefined) => {
-    const params = new URLSearchParams(searchParams)
-    if (value) params.set(key, value)
-    else params.delete(key)
-    params.set("page", "1")
-    router.replace(`?${params.toString()}`)
-  }
+      // Set new timeout
+      authorTimeoutRef.current = setTimeout(() => {
+        updateURL({ author: value.trim() || undefined })
+      }, 400)
+    },
+    [updateURL]
+  )
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (authorTimeoutRef.current) {
+        clearTimeout(authorTimeoutRef.current)
+      }
+    }
+  }, [])
 
   return (
     <aside className="h-fit w-96 p-4 max-lg:mr-4 lg:w-[160px] lg:border-r lg:border-r-gray-200 xl:w-64">
@@ -113,9 +146,8 @@ export default function SidebarFilters({
                   <Checkbox
                     checked={selectedType === category.id}
                     onCheckedChange={(checked) => {
-                      const newCategoryId = checked ? category.id : undefined
-                      setSelectedType(newCategoryId || null)
-                      updateParams("categoryId", newCategoryId)
+                      const newCategoryId = checked ? category.id : null
+                      handleCategoryChange(newCategoryId)
                     }}
                   />
                   <span className="mr-2">{category.name}</span>
@@ -145,15 +177,13 @@ export default function SidebarFilters({
             <Calendar
               mode="single"
               selected={selectedDate}
-              onSelect={(date) => {
-                setSelectedDate(date)
-                updateParams("date", date ? formatDateToLocal(date) : undefined)
-              }}
+              onSelect={handleDateChange}
               initialFocus
             />
           </PopoverContent>
         </Popover>
       </div>
+
       {isBlog && (
         <>
           <div className="mb-4 border border-gray-200" />
@@ -163,7 +193,7 @@ export default function SidebarFilters({
               type="text"
               placeholder="اسم الكاتب"
               value={authorInput}
-              onChange={(e) => setAuthorInput(e.target.value)}
+              onChange={(e) => handleAuthorChange(e.target.value)}
             />
           </div>
         </>
