@@ -72,19 +72,22 @@ Create a new file named `.env` in the root of your project and add the following
 ```bash
 # Supabase Database Configuration
 DATABASE_URL="your_supabase_postgresql_connection_string"
+DIRECT_URL="your_supabase_direct_url"
 
 # Clerk Authentication
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="your_clerk_publishable_key"
 CLERK_SECRET_KEY="your_clerk_secret_key"
 NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
 NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
+NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/
+NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/
+CLERK_WEBHOOK_SIGNING_SECRET="your_clerk_webhook_signing_secret"
 
 # Application URLs
 NEXT_URL="http://localhost:3000"
 
 # File Upload (UploadThing)
-UPLOADTHING_SECRET="your_uploadthing_secret"
-UPLOADTHING_APP_ID="your_uploadthing_app_id"
+UPLOADTHING_TOKEN="your_uploadthing_token"
 
 # Email Configuration (Nodemailer)
 NODE_MAILER_AUTHOR_MAIL="your_email@gmail.com"
@@ -93,7 +96,7 @@ NODE_MAILER_SECRET="your_gmail_app_password"
 # WhatsApp Notifications (Twilio)
 TWILIO_ACCOUNT_SID="your_twilio_account_sid"
 TWILIO_AUTH_TOKEN="your_twilio_auth_token"
-TWILIO_WHATSAPP_NUMBER="your_twilio_whatsapp_number"
+TWILIO_WHATSAPP_FROM="your_twilio_whatsapp_from"
 
 # AI Chatbot
 GROQ_API_KEY="your_groq_api_key"
