@@ -1,13 +1,24 @@
+import { tools } from "@/lib/ai-tools"
 import { groq } from "@ai-sdk/groq"
-import { streamText, convertToModelMessages } from "ai"
+import {
+  streamText,
+  convertToModelMessages,
+  tool,
+  UIMessage,
+  UIDataTypes,
+  InferUITools,
+} from "ai"
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30
 
+export type ChatTools = InferUITools<typeof tools>
+export type ChatMessage = UIMessage<never, UIDataTypes, ChatTools>
+
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { messages } = body
+    const { messages }: { messages: ChatMessage[] } = body
 
     if (!messages || !Array.isArray(messages)) {
       return new Response(
@@ -60,13 +71,24 @@ export async function POST(req: Request) {
 8. شرح وظيفة لوحة التحكم للمحررين والمشرفين فقط.
 9. تشجيع المستخدمين على الاشتراك في النشرة البريدية.
 10. الرد دائمًا باللغة العربية فقط، بأسلوب مفيد، مهني ومهذب.
+11. استخدام الأدوات المتاحة للبحث في المقالات والأحداث عند الحاجة.
+
+🔧 الأدوات المتاحة:
+- البحث عن المقالات بالعنوان أو المحتوى أو العلامات
+- الحصول على أحدث المقالات وملخصاتها
+- البحث عن الأحداث وأحدثها
+- الحصول على ملخصات الأحداث
+- البحث عن المقالات الأكثر مشاهدة
+- البحث عن المقالات الأكثر تعليقاً
 
 🚫 التعليمات الصارمة:
 - لا تجب إطلاقًا على أي سؤال لا يتعلق بالموقع أو المدونات. 
 - إذا طرح المستخدم سؤالاً خارج هذا السياق (مثل الرياضة، السياسة، العلوم... إلخ)، يجب أن يكون الرد فقط:
   "عذرًا، لا يمكنني الإجابة على هذا السؤال. أنا مساعد مخصص لموقع المدونات فقط."
-- يجب أن يكون الرد دائمًا باللغة العربية فقط.`,
+- يجب أن يكون الرد دائمًا باللغة العربية فقط.
+- لا تستخدم الجداول في الردود، بل استخدم قوائم نصية أو فقرات قصيرة لضمان عرض مناسب في واجهة الدردشة الصغيرة.`,
       messages: convertToModelMessages(messages),
+      tools,
     })
 
     return result.toUIMessageStreamResponse()
