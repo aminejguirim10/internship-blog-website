@@ -522,7 +522,7 @@ export function ChatBot() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="اكتب رسالتك هنا... يمكنك أن تسأل عن المدونات أو الأحداث"
-                    className="focus:border-primary focus:ring-primary/20 h-4 flex-1 resize-none rounded-2xl border-gray-200 bg-white px-4 py-2 text-right"
+                    className="focus:border-primary focus:ring-primary/20 h-4 flex-1 resize-none rounded-2xl border-gray-200 bg-white px-4 py-2 text-right max-sm:px-2 max-sm:py-1 max-sm:text-sm"
                     disabled={isProcessing}
                     rows={2}
                     maxLength={1000}

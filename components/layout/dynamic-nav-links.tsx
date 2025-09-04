@@ -10,12 +10,14 @@ interface DynamicNavLinksProps {
   className?: string
   categories: Category[]
   isLoading: boolean
+  onLinkClick?: () => void
 }
 
 export default function DynamicNavLinks({
   className,
   categories,
   isLoading,
+  onLinkClick,
 }: DynamicNavLinksProps) {
   const isMobile = className?.includes("flex-col")
 
@@ -43,6 +45,7 @@ export default function DynamicNavLinks({
         <Link
           key={category.id}
           href={`/blogs?categoryId=${category.id}`}
+          onClick={onLinkClick}
           className={
             isMobile
               ? "block rounded-lg px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-teal-50 hover:text-teal-700"

@@ -11,6 +11,7 @@ import { Icons } from "@/components/shared/icons"
 import { navigationItems, navigationsIconsItems } from "@/constants"
 import Link from "next/link"
 import DynamicNavLinks from "@/components/layout/dynamic-nav-links"
+import { useState } from "react"
 
 interface Category {
   id: string
@@ -23,8 +24,10 @@ interface NavbarSheetProps {
 }
 
 const NavbarSheet = ({ categories, isLoadingCategories }: NavbarSheetProps) => {
+  const [open, setOpen] = useState(false)
+  const handleClose = () => setOpen(false)
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <div className="flex h-full items-center justify-between rounded-full px-4 sm:px-6 md:hidden lg:px-8">
         <span className="text-lg font-semibold text-white">القائمة</span>
         <SheetTrigger className="hover:bg-secondary rounded-full px-2 py-2 transition-colors duration-200 hover:cursor-pointer">
@@ -42,6 +45,7 @@ const NavbarSheet = ({ categories, isLoadingCategories }: NavbarSheetProps) => {
           <Link
             key={"الرئيسية"}
             href={"/"}
+            onClick={handleClose}
             className="block rounded-lg px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-teal-50 hover:text-teal-700"
           >
             الرئيسية
@@ -50,11 +54,13 @@ const NavbarSheet = ({ categories, isLoadingCategories }: NavbarSheetProps) => {
             className="flex-col space-y-2"
             categories={categories}
             isLoading={isLoadingCategories}
+            onLinkClick={handleClose}
           />
           {navigationItems.map((item, index) => (
             <Link
               key={index}
               href={item.href}
+              onClick={handleClose}
               className="block rounded-lg px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-teal-50 hover:text-teal-700"
             >
               {item.label}
