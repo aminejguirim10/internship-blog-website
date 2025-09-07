@@ -26,7 +26,7 @@ Welcome to the **Professional Blog Platform**, your comprehensive solution for c
 
 ## ⚙️ Technologies Used
 
-- **Frontend:** [Next.js 14](https://nextjs.org/), [TailwindCSS](https://tailwindcss.com/), [TypeScript](https://www.typescriptlang.org/)
+- **Frontend:** [Next.js 15](https://nextjs.org/), [TailwindCSS](https://tailwindcss.com/), [TypeScript](https://www.typescriptlang.org/)
 - **Backend:** Next.js Server Actions and API Routes
 - **Database:** [Supabase](https://supabase.com/) with [PostgreSQL](https://www.postgresql.org/)
 - **ORM:** [Prisma](https://www.prisma.io/)
