@@ -48,7 +48,7 @@ export async function generateAISummary(
          الحدث: ${truncatedContent}`
 
     const result = await generateText({
-      model: groq("meta-llama/llama-4-scout-17b-16e-instruct"),
+      model: groq("openai/gpt-oss-120b"),
       prompt,
       maxOutputTokens: 400, // for summary
     })

@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     }
 
     const result = streamText({
-      model: groq("meta-llama/llama-4-scout-17b-16e-instruct"),
+      model: groq("openai/gpt-oss-120b"),
       system: `أنت مساعد ذكي لموقع مدونات تركي يخدم المحتوى العربي. 
 موقعنا هو منصة مدونات متكاملة مقرها تركيا، وتضم آلاف المقالات والفئات، 
 مع نظام متقدم للمحررين والإدارة. 
